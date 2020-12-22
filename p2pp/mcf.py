@@ -410,11 +410,16 @@ def gcode_parselines():
         if g[gcode.MOVEMENT] & 4:
             v.keep_z = g[gcode.Z]
 
+        if g[gcode.MOVEMENT] & 16:
+            v.keep_speed = g[gcode.F]
+
         # this goes for all situations: START and UNLOAD are not needed
         if current_block_class in [CLS_TOOL_START, CLS_TOOL_UNLOAD]:
             gcode.move_to_comment(g, "--P2PP-- tool unload")
             gcode.issue_command(g)
             continue
+
+
 
         # --------------------- TOWER DELTA PROCESSING
         if v.tower_delta:
@@ -548,7 +553,8 @@ def gcode_parselines():
                     gcode.issue_code(v.temp2_stored_command)
                     v.temp2_stored_command = ""
 
-                gcode.issue_code("G1 Z{} ;P2PP correct z-moves".format(v.keep_z))
+                gcode.issue_code("G1 Z{} F10800 ;P2PP correct z-moves".format(v.keep_z))
+                gcode.issue_code("G1 F8640 ; correct speed")
 
                 v.toolchange_processed = False
 
@@ -610,10 +616,6 @@ def generate(input_file, output_file):
     except IOError:
         gui.log_warning("Error Reading: '{}'".format(input_file))
         return
-
-
-
-
 
     gui.create_logitem("Reading File " + input_file)
     gui.progress_string(1)
@@ -697,7 +699,7 @@ def generate(input_file, output_file):
     if len(v.skippable_layer) == 0:
         gui.log_warning("LAYER configuration is missing.")
         gui.close_button_enable()
-        sys.exit()
+        sys.exit(-1)
     else:
         if v.tower_delta:
             v.skippable_layer[0] = False

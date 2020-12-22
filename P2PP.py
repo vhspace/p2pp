@@ -94,6 +94,6 @@ else:
 
         gui.progress_string(0)
         gui.close_button_enable()
-        exit()
+        sys.exit(-1)
 
 gui.close_button_enable()

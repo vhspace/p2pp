@@ -120,7 +120,7 @@ def create_emptyline():
 
 
 def on_click():
-    app.exit(0)
+    sys.exit(0)
 
 
 def close_button_enable():
