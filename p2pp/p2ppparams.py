@@ -267,6 +267,8 @@ def check_config_parameters(keyword, value):
             gui.create_logitem("Could not check for latest online version")
 
     if keyword == "DO_NOT_GENERATE_M0":
+        return
+        # this command has been obsoleted as harmful to the print
         v.generate_M0 = False
         return
 

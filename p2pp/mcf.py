@@ -553,10 +553,12 @@ def gcode_parselines():
                     gcode.issue_code(v.temp2_stored_command)
                     v.temp2_stored_command = ""
 
-                gcode.issue_code("G1 Z{} F10800 ;P2PP correct z-moves".format(v.keep_z))
                 gcode.issue_code("G1 F8640 ; correct speed")
+                gcode.issue_command(g)
+                gcode.issue_code("G1 Z{} F10800 ;P2PP correct z-moves".format(v.keep_z))
 
                 v.toolchange_processed = False
+                continue
 
             if current_block_class == CLS_TOOL_PURGE:
                 if g[gcode.F] is not None and g[gcode.F] > v.purgetopspeed and g[gcode.E]:
@@ -734,7 +736,10 @@ def generate(input_file, output_file):
         if v.splice_offset == 0:
             gui.log_warning("SPLICE_OFFSET not defined")
         for line in v.processed_gcode:
-            opf.write(line)
+            try:
+                opf.write(line)
+            except:
+                gui.log_warning("Line : {} could not be written to output".format(line))
             opf.write("\n")
         opf.close()
 
