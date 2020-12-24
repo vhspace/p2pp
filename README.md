@@ -1,5 +1,7 @@
 # p2pp - **Palette2 Post Processing tool for PrusaSlicer/Slic3r PE**
 
+# LATEST RELEASES CAN BE DOWNLOADED [HERE](https://www.dropbox.com/sh/q0vhg6u90a8wbox/AAB2jEGWGZBYlqXnTCLkojCla?dl=0)
+
 **Tested with version PrusaSlicer 2.2.0/2.1.0**
 earlier versions may generate different code patterns and may not work correctly
 
