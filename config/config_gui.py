@@ -95,8 +95,8 @@ def get_config():
     return cfg
 
 def on_config():
+
     error = 0
-    warning = 0
 
     basicconfig = []
 
@@ -139,7 +139,7 @@ def on_config():
     ]
 
     if cfg["linearpingenable"]:
-        basiccode.append(";P2PP EXTRAENDFILAMENT=".format(cfg["linearping"]))
+        basiccode.append(";P2PP LINEARPINGLENGTHT=".format(cfg["linearping"]))
 
     if cfg["consolewait"]:
         basiccode.append(";P2PP CONSOLEWAIT")
@@ -177,7 +177,7 @@ def on_config():
         ";P2PP BIGBRAIN3D_MOTORPOWER_NORMAL = {}".format(cfg["bb_motormin"]),
         ";P2PP BIGBRAIN3D_FAN_OFF_DELAY = {}".format(cfg["bb_fandelay"]),
         ";P2PP BIGBRAIN3D_ENABLE",
-        ";P2PP IGBRAIN3D_PRIME_BLOBS = {}".format(cfg["bb_priming"]),
+        ";P2PP BIGBRAIN3D_PRIME_BLOBS = {}".format(cfg["bb_priming"]),
         ";P2PP BIGBRAIN3D_NUMBER_OF_WHACKS = {}".format(cfg["bb_whacks"]) ]
 
     if cfg["bb_left"]:
@@ -211,66 +211,81 @@ def on_config():
 
 
     for i in output_printers:
-        try:
-            create_logitem("Generating config based on pinrter profile {}".format(i),"blue")
-            cofg = copy.deepcopy(configs["printers"][i])
+        # try:
+        create_logitem("Generating config based on pinrter profile {} ".format(i), "blue")
+        store = copy.deepcopy(configs["printers"][i])
 
-            cofg["single_extruder_single_extruder_multi_material"] = 1
+        store["single_extruder_multi_material"] = 1
 
-            tmp = cofg["retract_before_travel"].split(",")
-            if len(tmp) == 1:
-                for i in conf.printer_extend_parameters_comma:
-                    cofg[i] = ",".join([cofg[i]]*4)
-                for i in conf.printer_extend_parameters_semicolon:
-                    cofg[i] = ";".join([cofg[i]] * 4)
+        tmp = store["retract_before_travel"].split(",")
+        print(len(tmp))
+        if len(tmp) == 1:
+            for item in conf.printer_extend_parameters_comma:
+                store[item] = ",".join([store[item],store[item],store[item],store[item]])
+            for item in conf.printer_extend_parameters_semicolon:
+                store[item] = ";".join([store[item],store[item],store[item],store[item]])
 
+        store["start_gcode"] += "\\n"+"\\n".join(basiccode)
+        basic_startcode = store["start_gcode"]
 
+        create_logitem("--> BASIC CONFIG}")
+        conf.writeconfig("printer", "P2PP - " + i, store)
 
-            cofg["start_gcod"] += "\\n"+"\\n".join(basiccode)
-            basic_startcode = cfg["start_gcod"]
+        if cfg["sw_enable"]:
+            create_logitem("--> SideWipe CONFIG}")
+            store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(swcode)
+            conf.writeconfig("printer", "P2PP - SideWipe " + i, store)
 
-            create_logitem("--> BASIC CONFIG}")
-            conf.writeconfig("printer", i, cofg)
+        if cfg["bb_enable"]:
+            create_logitem("--> BigBrain 3D CONFIG}")
+            store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(bbcode)
+            conf.writeconfig("printer", "P2PP - BB3D " + i, store)
 
-            if cfg["sw_enable"]:
-                create_logitem("--> SideWipe CONFIG}")
-                cofg["start_gcod"] = basic_startcode + "\\n" + "\\n".join(swcode)
-                conf.writeconfig("printer","SideWipe "+ i, cofg)
+        if cfg["tower_enable"]:
+            create_logitem("--> Tower Delta CONFIG}")
+            store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(twcode)
+            conf.writeconfig("printer", "P2PP - TowerDelta " + i, store)
 
-            if cfg["bb_enable"]:
-                create_logitem("--> BigBrain 3D CONFIG}")
-                cofg["start_gcod"] = basic_startcode + "\\n" + "\\n".join(bbcode)
-                conf.writeconfig("printer", "BB3D " + i, cofg)
+        if cfg["fp_enable"]:
+            create_logitem("--> Full Purge Reduction CONFIG}")
+            store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(fpcode)
+            conf.writeconfig("printer", "P2PP - FullPurge " + i, store)
 
-            if cfg["tower_enable"]:
-                create_logitem("--> Tower Delta CONFIG}")
-                cofg["start_gcod"] = basic_startcode + "\\n" + "\\n".join(twcode)
-                conf.writeconfig("printer", "TowerDelta " + i, cofg)
-
-            if cfg["fp_enable"]:
-                create_logitem("--> Full Purge Reduction CONFIG}")
-                cofg["start_gcod"] = basic_startcode + "\\n" + "\\n".join(fpcode)
-                conf.writeconfig("printer", "FullPurge " + i, cofg)
-
-        except:
-            create_logitem("Missing info for {}".format(i), "red")
+        # except:
+        #     create_logitem("Error Writing output file {}".format(i), "red")
 
 
     for i in output_prints:
-        cofg = configs["prints"][i]
-        cofg["layer_gcode"] = "\\n".join(layergcode)
+        create_logitem("Generating config based on print profile {}".format(i))
+        store = configs["prints"][i]
+        store["layer_gcode"] = "\\n".join(layergcode)
         if cfg["addmcf"]:
-            name = cofg["output_filename_format"]
+            name = store["output_filename_format"]
             if ".mcf." not in name:
-                cofg["output_filename_format"] = cofg["output_filename_format"].replace(".gcode", ".mcf.gcode")
+                store["output_filename_format"] = store["output_filename_format"].replace(".gcode", ".mcf.gcode")
+        store["post process"] = conf.scriptname()
+        store["single_extruder_multi_material_priming"] = "0"
+        store["min_skirt_length"] = "0"
+        store["skirts"] = "0"
+        conf.writeconfig("print", "P2PP - "+i, store)
 
-        create_logitem("Generating config based on  print profile {}".format(i))
-        conf.create_print_config("P2PP - "+i, cofg)
 
     for i in output_filaments:
-        cofg = configs["filaments"][i]
         create_logitem("Generating config based on  filament profile {}".format(i))
-        conf.create_filament_config("P2PP - "+i, cofg)
+        store = configs["filaments"][i]
+        store["compatible_printers_condition"] = "single_extruder_multi_material"
+        store["filament_ramming_parameters"] = ""
+        store["filament_minimal_purge_on_wipe_tower"] = 0
+        store["filament_cooling_final_speed"] = 0
+        store["filament_cooling_initial_speed"] = 0
+        store["filament_cooling_moves"] = 0
+        store["filament_toolchange_delay"] = 0
+        store["filament_unload_time"] = 0
+        store["filament_unloading_speed"] = 0
+        store["filament_unloading_speed_start"] = 0
+        store["filament_loading_speed"] = 0
+        store["filament_loading_speed_start"] = 0
+        conf.writeconfig("filament", "P2PP - "+i, store)
 
     if error > 0:
         print("Total errors to correct: {}".format(error))
@@ -280,11 +295,7 @@ def on_config():
 
 
 def init_gui():
-    global form
-
-
-
-    prefix = 'P2PP - '
+    global form, configs
 
     if sys.platform != 'darwin':
             ui = "{}\\p2ppconf.ui".format(os.path.dirname(sys.argv[0]))
@@ -332,13 +343,12 @@ def init_gui():
             if abs(float(tmpStore["filament_diameter"]) - 1.75) < 0.10:
                 fil = fil[:-4]
                 form.filamentlist.addItem(fil)
-                configs["filament"][fil] = tmpStore
+                configs["filaments"][fil] = tmpStore
         except:
             pass
 
     form.exitButton.clicked.connect(on_click)
     form.applyConfig.clicked.connect(on_config)
     window.show()
-
     get_config()
     app.exec()

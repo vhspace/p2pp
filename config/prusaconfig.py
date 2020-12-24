@@ -90,8 +90,9 @@ def writeconfig( tpe, inifile, store):
         file = addtopath(folder(tpe), inifile + ".ini")
         outputfile = open(file, "wb")
         outputfile.write("# Generated config file [{}]with P2PP Configurator {}".format(inifile, separator).encode('ascii'))
-        for entry in sorted(store.keys):
+        for entry in sorted(store.keys()):
             outputfile.write("{} = {}{}".format(entry , store[entry], separator).encode('ascii'))
+
     except:
         print("error writing config file {}".format(inifile))
         pass
@@ -115,23 +116,7 @@ def set_config_item(config, name, value):
                 return True
     return False
 
-def create_filament_config( name, store ):
-    store["compatible_printers_condition"] = "single_extruder_multi_material"
-    store["filament_ramming_parameters"] = ""
-    store["filament_minimal_purge_on_wipe_tower"] = 0
-    store["filament_cooling_final_speed"] = 0
-    store["filament_cooling_initial_speed"] = 0
-    store["filament_cooling_moves"] = 0
-    store["filament_toolchange_delay"] = 0
-    store["filament_unload_time"] = 0
-    store["filament_unloading_speed"] = 0
-    store["filament_unloading_speed_start"] = 0
-    writeconfig("filament", name, store)
 
-def create_print_config(name, store):
-    store["post process"] = scriptname()
-    store["single_extruder_multi_material_priming"] = "0"
-    store["min_skirt_length"] = "0"
-    store["skirts"] = "0"
-    writeconfig("print", name, store)
+
+
 
