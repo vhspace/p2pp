@@ -134,12 +134,12 @@ def on_config():
     basiccode = [
         ";P2PP PRINTERPROFILE={}".format(cfg["printerprofile"]),
         ";P2PP SPLICEOFFSET={}".format(cfg["spliceoffset"]),
-        ";P2PP EXTRAENDFILAMENT=".format(cfg["extrafilament"]),
+        ";P2PP EXTRAENDFILAMENT={}".format(cfg["extrafilament"]),
         ";P2PP MATERIAL_DEFAULT=0_0_0",
     ]
 
     if cfg["linearpingenable"]:
-        basiccode.append(";P2PP LINEARPINGLENGTHT=".format(cfg["linearping"]))
+        basiccode.append(";P2PP LINEARPINGLENGTHT={}".format(cfg["linearping"]))
 
     if cfg["consolewait"]:
         basiccode.append(";P2PP CONSOLEWAIT")
