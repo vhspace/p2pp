@@ -9,6 +9,7 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication
 import image_rc
 import config.qdroptarget
+import config.qmulticombo
 import config.prusaconfig as conf
 import sys
 import os
