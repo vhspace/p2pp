@@ -13,8 +13,6 @@ import sys
 import os
 import copy
 
-
-
 form = None
 
 configs = {"printers": {},
@@ -111,8 +109,8 @@ def on_config():
 
     create_logitem("Checking supplied infrmation...")
 
-    if cfg["printers"]=="" or cfg["prints"]=="" or cfg["filaments"]=="":
-        create_logitem("  Chose at least 1 printer, 1 print and 1 filament profile", "red")
+    if cfg["printers"]=="" and cfg["prints"]=="" and cfg["filaments"]=="":
+        create_logitem("  Chose at least a printer,  print or filament profile", "red")
         create_logitem("  Processing ENDED", "red")
         return
 
@@ -204,16 +202,29 @@ def on_config():
     if cfg["fp_autoadd"]:
         swcode.append(";P2PP AUTOADDPURGE")
 
-    output_printers = cfg["printers"].split(",")
-    output_prints= cfg["prints"].split(",")
-    output_filaments = cfg["filaments"].split(",")
+    if len(cfg["printers"]) > 0:
+        output_printers = cfg["printers"].split(",")
+    else:
+        output_printers = []
+
+    if len(cfg["prints"]) > 0:
+        output_prints= cfg["prints"].split(",")
+    else:
+        output_prints = []
+
+    if len(cfg["filaments"]) > 0:
+        output_filaments = cfg["filaments"].split(",")
+    else:
+        output_filaments = []
 
 
 
     for i in output_printers:
-        # try:
+
         create_logitem("Generating config based on pinrter profile {} ".format(i), "blue")
         store = copy.deepcopy(configs["printers"][i])
+
+        store["layer_gcode"] = "\\n".join(layergcode)
 
         store["single_extruder_multi_material"] = 1
 
@@ -228,37 +239,32 @@ def on_config():
         store["start_gcode"] += "\\n"+"\\n".join(basiccode)
         basic_startcode = store["start_gcode"]
 
-        create_logitem("--> BASIC CONFIG}")
-        conf.writeconfig("printer", "P2PP - " + i, store)
+        create_logitem("--> BASIC CONFIG")
+        conf.writeconfig("printer", "P2PP - Basic -" + i, store)
 
         if cfg["sw_enable"]:
-            create_logitem("--> SideWipe CONFIG}")
+            create_logitem("--> SideWipe CONFIG")
             store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(swcode)
-            conf.writeconfig("printer", "P2PP - SideWipe " + i, store)
+            conf.writeconfig("printer", "P2PP - SideWipe -" + i, store)
 
         if cfg["bb_enable"]:
-            create_logitem("--> BigBrain 3D CONFIG}")
+            create_logitem("--> BigBrain 3D CONFIG")
             store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(bbcode)
-            conf.writeconfig("printer", "P2PP - BB3D " + i, store)
+            conf.writeconfig("printer", "P2PP - BB3D -" + i, store)
 
         if cfg["tower_enable"]:
-            create_logitem("--> Tower Delta CONFIG}")
+            create_logitem("--> Tower Delta CONFIG")
             store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(twcode)
-            conf.writeconfig("printer", "P2PP - TowerDelta " + i, store)
+            conf.writeconfig("printer", "P2PP - TowerDelta -" + i, store)
 
         if cfg["fp_enable"]:
-            create_logitem("--> Full Purge Reduction CONFIG}")
+            create_logitem("--> Full Purge Reduction CONFIG")
             store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(fpcode)
-            conf.writeconfig("printer", "P2PP - FullPurge " + i, store)
-
-        # except:
-        #     create_logitem("Error Writing output file {}".format(i), "red")
-
+            conf.writeconfig("printer", "P2PP - FullPurge -" + i, store)
 
     for i in output_prints:
         create_logitem("Generating config based on print profile {}".format(i))
         store = configs["prints"][i]
-        store["layer_gcode"] = "\\n".join(layergcode)
         if cfg["addmcf"]:
             name = store["output_filename_format"]
             if ".mcf." not in name:
@@ -274,7 +280,7 @@ def on_config():
         create_logitem("Generating config based on  filament profile {}".format(i))
         store = configs["filaments"][i]
         store["compatible_printers_condition"] = "single_extruder_multi_material"
-        store["filament_ramming_parameters"] = ""
+        store["filament_ramming_parameters"] = "10 10| 0.05 6.6 0.45 6.8 0.95 7.8 1.45 8.3 1.95 9.7 2.45 10 2.95 7.6 3.45 7.6 3.95 7.6 4.45 7.6 4.95 7.6"
         store["filament_minimal_purge_on_wipe_tower"] = 0
         store["filament_cooling_final_speed"] = 0
         store["filament_cooling_initial_speed"] = 0
@@ -307,7 +313,7 @@ def init_gui():
     window = Window()
     form = Form()
     form.setupUi(window)
-    # form.h.addWidget(QDroptarget("DROP\nAPP\nHERE"))
+
 
     printers = conf.get_configs("printer")
     for p in printers:
@@ -346,6 +352,7 @@ def init_gui():
                 configs["filaments"][fil] = tmpStore
         except:
             pass
+
 
     form.exitButton.clicked.connect(on_click)
     form.applyConfig.clicked.connect(on_config)

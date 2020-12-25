@@ -1,3 +1,11 @@
+__author__ = 'Tom Van den Eede'
+__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
+__credits__ = ['Tom Van den Eede']
+__license__ = 'GPLv3 '
+__maintainer__ = 'Tom Van den Eede'
+__email__ = 'P2PP@pandora.be'
+
+
 from PyQt5.QtWidgets  import QComboBox, QStyledItemDelegate
 from PyQt5.QtCore import QEvent
 from PyQt5.QtGui import QStandardItem, QFontMetrics

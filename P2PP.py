@@ -13,12 +13,19 @@ import os
 import platform
 import sys
 
-import p2pp.checkversion as checkversion
-import p2pp.gui as gui
-import p2pp.mcf as mcf
-import p2pp.variables as v
-import version as ver
-import traceback
+
+if len(sys.argv) == 2 and sys.argv[1].lower()=="-config":
+    import config.config_gui as gui
+    import config.prusaconfig as prusaconfig
+    gui.init_gui()
+    sys.exit(-1)
+else:
+    import p2pp.checkversion as checkversion
+    import p2pp.mcf as mcf
+    import p2pp.variables as v
+    import version as ver
+    import traceback
+    import p2pp.gui as gui
 
 v.version = ver.Version
 

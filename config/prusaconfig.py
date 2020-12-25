@@ -5,10 +5,10 @@ __license__ = 'GPLv3 '
 __maintainer__ = 'Tom Van den Eede'
 __email__ = 'P2PP@pandora.be'
 
-from os import listdir
 import sys
 import os
-import config.config_gui as gui
+import configparser
+import config.config_gui as conf
 
 configs_printers = {}
 configs_prints = {}
@@ -56,12 +56,12 @@ def get_configs(type = None):
 
 
 def scriptname():
-    scriptname ="unknown"
+    rval = "unknown"
     if sys.platform == 'darwin':
-        scriptname = "open -W -a P2PP.app --args"
+        rval = "open -W -a P2PP.app --args"
     elif sys.platform == 'windows':
-        scriptname = "{}\\p2pp.exe".format(os.path.dirname(sys.argv[0]).replace(" ", "! "))
-    return scriptname
+        rval = "{}\\p2pp.exe".format(os.path.dirname(sys.argv[0]).replace(" ", "! "))
+    return rval
 
 
 def loadconfig(tpe, inifile, store):
@@ -80,6 +80,18 @@ def loadconfig(tpe, inifile, store):
         pass
 
 
+def processdrop( file ):
+    return
+    config = configparser.ConfigParser()
+    if sys.platform == "darwin":
+        config.read(file+"Contents/Resources/profiles/PrusaResearch.ini")
+        for key in config.__dict__["_sections"].keys():
+            if key.startswith("filament:"):
+                print(key, config.__dict__["_sections"][key])
+                store = config.__dict__["_sections"][key]
+
+
+
 def writeconfig( tpe, inifile, store):
 
     if sys.platform == "windows":
@@ -95,26 +107,27 @@ def writeconfig( tpe, inifile, store):
 
     except:
         print("error writing config file {}".format(inifile))
-        pass
 
 
-def get_config_item( config, name ):
+def omega_inspect(file):
+    lines = []
+    try:
+        inf = open(file, "r")
+        lines = inf.readlines()
+        inf.close()
+    except:
+        return
 
-    if config is not None:
-        for configline in config:
-            if configline.startswitch(name+" = "):
-                return (configline[len(name+" = ")])
+    for item in lines:
+        item.strip()
+        if item.startswith("O22 D") and len(item) == 22:
+            conf.form.printerprofile.setText(item[5:21].upper())
+            conf.create_logitem("Retrieved printer profile ID {} from {}".format(item[5:21], file))
 
-    return None
+def retrieveconfig(file):
+    pass
 
 
-def set_config_item(config, name, value):
-    if config is not None:
-        for configline in config:
-            if configline.startswitch(name + " = "):
-                configline = name + " = " + value
-                return True
-    return False
 
 
 
