@@ -8,6 +8,7 @@ __email__ = 'P2PP@pandora.be'
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication
 import image_rc
+import config.qdroptarget
 import config.prusaconfig as conf
 import sys
 import os
