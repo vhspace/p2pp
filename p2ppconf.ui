@@ -7,12 +7,22 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1092</width>
-    <height>844</height>
+    <width>1100</width>
+    <height>860</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>P2PP - Prusa Slicer 2.3.0 configurator</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="image.qrc">
+    <normaloff>:/newPrefix/icons/icon.png</normaloff>:/newPrefix/icons/icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -229,7 +239,7 @@
        <widget class="QCheckBox" name="backup">
         <property name="geometry">
          <rect>
-          <x>250</x>
+          <x>270</x>
           <y>365</y>
           <width>576</width>
           <height>25</height>
@@ -248,7 +258,7 @@
         </property>
         <property name="geometry">
          <rect>
-          <x>415</x>
+          <x>435</x>
           <y>410</y>
           <width>251</width>
           <height>30</height>
@@ -261,7 +271,7 @@
        <widget class="QDropTarget" name="droptgt_canvas">
         <property name="geometry">
          <rect>
-          <x>450</x>
+          <x>475</x>
           <y>225</y>
           <width>166</width>
           <height>111</height>
@@ -273,64 +283,23 @@ CANVAS GCODE
 HERE</string>
         </property>
        </widget>
-       <widget class="QTextBrowser" name="textBrowser">
+       <widget class="QLabel" name="label_26">
         <property name="geometry">
          <rect>
-          <x>305</x>
-          <y>135</y>
-          <width>461</width>
-          <height>66</height>
+          <x>230</x>
+          <y>150</y>
+          <width>661</width>
+          <height>56</height>
          </rect>
         </property>
-        <property name="palette">
-         <palette>
-          <active>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>209</red>
-              <green>209</green>
-              <blue>209</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </active>
-          <inactive>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>209</red>
-              <green>209</green>
-              <blue>209</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </inactive>
-          <disabled>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>212</red>
-              <green>208</green>
-              <blue>200</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </disabled>
-         </palette>
+        <property name="text">
+         <string>Use the drop target below to retrieve the Profile ID from the GCODE of a print you performed before (e.g. with Canvas)</string>
         </property>
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
-        <property name="frameShadow">
-         <enum>QFrame::Plain</enum>
-        </property>
-        <property name="html">
-         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Use the drop target below to retrieve the Profile ID from the GCODE of a print you performed before (e.g. with Canvas)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <property name="wordWrap">
+         <bool>true</bool>
         </property>
        </widget>
       </widget>
@@ -339,8 +308,8 @@ p, li { white-space: pre-wrap; }
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1074</width>
-         <height>470</height>
+         <width>1082</width>
+         <height>486</height>
         </rect>
        </property>
        <attribute name="label">
@@ -630,8 +599,8 @@ p, li { white-space: pre-wrap; }
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1074</width>
-         <height>470</height>
+         <width>1082</width>
+         <height>486</height>
         </rect>
        </property>
        <attribute name="label">
@@ -1185,20 +1154,14 @@ p, li { white-space: pre-wrap; }
          </rect>
         </property>
         <property name="text">
-         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;NOTES:&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;*&lt;/span&gt;&lt;span style=&quot; font-weight:600; vertical-align:sub;&quot;&gt;1&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;  &lt;/span&gt;Lowering the Z-height below current print height poses a risk of crashing the X-gantry into the print.  Using this feature requires Caution when selection the location and orientation of the purge block in order to avoid collisione&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;*&lt;/span&gt;&lt;span style=&quot; font-weight:600; vertical-align:sub;&quot;&gt;2&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt; &lt;/span&gt;There is an (experimental) feature in PrusaSlicer called &amp;quot;&lt;span style=&quot; font-style:italic;&quot;&gt;No Sparse Layers&lt;/span&gt;&amp;quot; under &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;PRINT SETTINGS&lt;/span&gt; &amp;gt;&amp;gt; &lt;span style=&quot; font-weight:600;&quot;&gt;Multiple Extruders&lt;/span&gt; &amp;gt;&amp;gt; &lt;span style=&quot; font-weight:600;&quot;&gt;Wipe Tower&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;that offers similar functionality but does not offer the option to limit the delta so more chance of a collision.&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>NOTES:
+
+Lowering the Z-height below current print height poses a risk of crashing the X-gantry into the print.  Using this feature requires Caution when selection the location and orientation of the purge block in order to avoid collisione
+
+There  is an (experimental) feature in PrusaSlicer called No Sparse Layers under RINT SETTINGS/Multiple Extruders/Wipe Towerthat offers similar functionality but does not offer the option to limit the delta so more chance of a collision.</string>
         </property>
         <property name="textFormat">
-         <enum>Qt::RichText</enum>
+         <enum>Qt::PlainText</enum>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -1219,16 +1182,13 @@ p, li { white-space: pre-wrap; }
          </rect>
         </property>
         <property name="text">
-         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;NOTE:&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;*&lt;/span&gt;&lt;span style=&quot; font-weight:600; vertical-align:sub;&quot;&gt;1&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;  &lt;/span&gt;Lowering the Z-height below current print height poses a risk of crashing the X-gantry into the print.  Using this feature requires Caution when selection the location and orientation of the purge block in order to avoid collisione&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>NOTES:
+
+Lowering the Z-height below current print height poses a risk of crashing the X-gantry into the print.  Using this feature requires Caution when selection the location and orientation of the purge block in order to avoid collisione
+</string>
         </property>
         <property name="textFormat">
-         <enum>Qt::RichText</enum>
+         <enum>Qt::PlainText</enum>
         </property>
         <property name="wordWrap">
          <bool>true</bool>

@@ -305,10 +305,12 @@ def on_config():
 def init_gui():
     global form, configs
 
-    if sys.platform != 'darwin':
-            ui = "{}\\p2ppconf.ui".format(os.path.dirname(sys.argv[0]))
+    if sys.platform == 'darwin':
+        ui = "p2ppconf.ui"
     else:
         ui = "p2ppconf.ui"
+        if len(os.path.dirname(sys.argv[0]) )>0 :
+            ui = "{}\\p2ppconf.ui".format(os.path.dirname(sys.argv[0]))
 
     Form, Window = uic.loadUiType(ui)
     app = QApplication([])
@@ -357,6 +359,7 @@ def init_gui():
 
     form.exitButton.clicked.connect(on_click)
     form.applyConfig.clicked.connect(on_config)
+    form.toolBox.setCurrentIndex(0)
     window.show()
     get_config()
     app.exec()
