@@ -355,7 +355,6 @@ def init_gui():
         except:
             pass
 
-
     form.exitButton.clicked.connect(on_click)
     form.applyConfig.clicked.connect(on_config)
     window.show()

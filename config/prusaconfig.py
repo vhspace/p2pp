@@ -27,7 +27,7 @@ printer_extend_parameters_semicolon = ["extruder_colour" ]
 def addtopath( path , addition):
     if sys.platform == 'darwin':
         return path+"/"+addition
-    elif sys.platform == 'windows':
+    elif sys.platform.upper.startswith('WIN'):
         return path + "\\" + addition
 
 def folder(suffix = None):
@@ -35,7 +35,7 @@ def folder(suffix = None):
         folder = os.path.expanduser('~/Library/Application Support/PrusaSlicer')
         if suffix is not None:
             folder = folder + "/" + suffix
-    elif sys.platform == 'windows':
+    elif sys.platform.upper.startswith('WIN'):
         folder = os.path.expanduser('~\\AppData\\Roaming\\PrusaSlicer')
         if suffix is not None:
             folder = folder + "\\" + suffix
@@ -46,7 +46,7 @@ def folder(suffix = None):
 def scriptname():
     if sys.platform == 'darwin':
         return "open -W -a P2PP.app --args"
-    elif sys.platform == 'windows':
+    elif sys.platform.upper.startswith('WIN'):
         return  "{}\\p2pp.exe".format(os.path.dirname(sys.argv[0]).replace(" ", "! "))
 
 
@@ -59,7 +59,7 @@ def scriptname():
     rval = "unknown"
     if sys.platform == 'darwin':
         rval = "open -W -a P2PP.app --args"
-    elif sys.platform == 'windows':
+    elif sys.platform.upper.startswith('WIN'):
         rval = "{}\\p2pp.exe".format(os.path.dirname(sys.argv[0]).replace(" ", "! "))
     return rval
 
@@ -94,7 +94,7 @@ def processdrop( file ):
 
 def writeconfig( tpe, inifile, store):
 
-    if sys.platform == "windows":
+    if sys.platform.upper.startswith('WIN'):
         separator = "\n"
     else:
         separator = "\r\n"
