@@ -14,6 +14,7 @@ import config.prusaconfig as conf
 import sys
 import os
 import copy
+import pickle
 
 form = None
 
@@ -28,6 +29,72 @@ def create_logitem(text, color="#000000"):
     word = '<span style=\" color: {}\">  {}</span>'.format(color, text)
     form.log.append(word)
 
+def config_file():
+    cfile = "lastconf.conf"
+
+    if sys.platform != 'darwin':
+        if len(os.path.dirname(sys.argv[0]) )>0 :
+            cfile = "{}\\p2ppconf.ui".format(os.path.dirname(sys.argv[0]))
+
+    return cfile
+
+
+def set_config():
+    try:
+        cfg = pickle.load(open(config_file(), "rb"))
+    except:
+        return
+
+    ## Basic P2PP
+    form.printerprofile.setText(cfg["printerprofile"])
+    form.spliceoffset.setText(cfg["spliceoffset"])
+    form.extrafilament.setText(cfg["extrafilament"])
+    form.consolewait.setChecked(cfg["consolewait"] )
+    form.saveunprocessed.setChecked(cfg["saveunprocessed"])
+    form.absoluteextruder.setChecked(cfg["absoluteextrusion"])
+    form.convertfilename.setChecked(cfg["addmcf"])
+    form.linearping_enable.setChecked(cfg["linearpingenable"])
+    form.linearping.setText(cfg["linearping"])
+
+
+    #Sidewipe
+    form.sidewipe_enable.setChecked(cfg["sw_enable"])
+    form.sidewipe_autoadd.setChecked(cfg["sw_autoadd"])
+    form.sw_xloc.setText(cfg["sw_xloc"])
+    form.sw_miny.setText(cfg["sw_miny"])
+    form.sw_maxy.setText(cfg["sw_maxy"])
+    form.sw_wipeFeedrate.setText(cfg["sw_wiperate"])
+
+
+    #BB3D
+    form.bb_enable.setChecked(cfg["bb_enable"])
+    form.bb3d_autoadd.setChecked(cfg["bb_enable"])
+    form.bb3d_left.setChecked(cfg["bb_left"])
+    form.bb3d_blobsize.setText(cfg["bb_blobsize"])
+    form.bb3d_coolingtime.setText(cfg["bb_cooling"])
+    form.bb3d_locx.setText(cfg["bb_xloc"])
+    form.bb3d_motorhigh.setText(cfg["bb_motormax"])
+    form.bb3d_motorlow.setText(cfg["bb_motormin"] )
+    form.bb3d_fanoffdelay.setText(cfg["bb_fandelay"])
+    form.bb3d_primingblobs.setText(cfg["bb_priming"])
+    form.bb3d_whacks.setText(cfg["bb_whacks"])
+
+    #Towerdelta
+    form.towerdelta.setChecked(cfg["tower_enable"])
+    form.maxdelta.setText(cfg["tower_maxdelta"])
+
+    #Full Purge
+    form.fullpurge_enable.setChecked(cfg["fp_enable"])
+    form.fp_autoadd.setChecked(cfg["fp_autoadd"])
+    form.fp_wipefeedrate.setText(cfg["fp_wiperate"])
+
+    #Accessory Mode Palette2
+    form.accmode_p2.setChecked(cfg["accmode_p2"])
+
+    #Accessory Mode Palette+
+    form.accmode_p2.setChecked(cfg["accmode_pplus"])
+    form.pplusppm.setText(cfg["accmode_ppm"])
+    form.pplus_loading.setText(cfg["accmode_lo"])
 
 
 def get_config():
@@ -51,6 +118,8 @@ def get_config():
     cfg["addmcf"] = form.convertfilename.isChecked()
     cfg["linearpingenable"] = form.linearping_enable.isChecked()
     cfg["linearping"] = form.linearping.text()
+    if float(cfg["linearping"]) < 350:
+        cfg["linearping"] = "350"
 
     #Sidewipe
 
@@ -69,8 +138,8 @@ def get_config():
     cfg["bb_blobsize"] = form.bb3d_blobsize.text()
     cfg["bb_cooling"] = form.bb3d_coolingtime.text()
     cfg["bb_xloc"] = form.bb3d_locx.text()
-    cfg["bb_motormin"] = form.bb3d_motorhigh.text()
-    cfg["bb_motormax"] = form.bb3d_motorlow.text()
+    cfg["bb_motormin"] = form.bb3d_motorlow.text()
+    cfg["bb_motormax"] = form.bb3d_motorhigh.text()
     cfg["bb_fandelay"] = form.bb3d_fanoffdelay.text()
     cfg["bb_priming"] = form.bb3d_primingblobs.text()
     cfg["bb_whacks"] = form.bb3d_whacks.text()
@@ -92,7 +161,53 @@ def get_config():
     cfg["accmode_ppm"] = form.pplusppm.text()
     cfg["accmode_lo"] = form.pplus_loading.text()
 
+    try:
+        cfile = config_file()
+        pickle.dump(cfg, open(cfile, "wb"))
+    except:
+        pass
+
+
+
     return cfg
+
+def remove_p2ppconfig(store):
+
+    removeditems = [";P2PP PRINTERPROFILE",
+                        ";P2PP SPLICEOFFSET",
+                        ";P2PP EXTRAENDFILAMENT",
+                        ";P2PP MATERIAL_DEFAULT",
+                        ";P2PP LINEARPINGLENGTHT",
+                        ";P2PP CONSOLEWAIT",
+                        ";P2PP SAVEUNPROCESSED",
+                        ";P2PP SIDEWIPE",
+                        ";P2PP WIPEFEEDRATE",
+                        ";P2PP AUTOADDPURGE",
+                        ";P2PP BIGBRAIN3D",
+                        ";P2PP PURGETOWERDELTA",
+                        ";P2PP FULLPURGEREDUCTION",
+                        ";P2PP ACCESSORYMODE",
+                        ";P2PP P+PPM",
+                        ";P2PP P+LOADINGOFFSET",
+                    ]
+    try:
+        gcodelines = store["start_gcode"].split("\\n")
+        result = []
+        for line in gcodelines:
+            removed = False
+            if line.startswith(";P2PP"):
+                for rlin in removeditems:
+                    if rlin in line:
+                        removed = True
+                        break
+            if not removed:
+                result.append(line)
+            else:
+                create_logitem("Previous config line removed: {}".format(line),"blue")
+        store["startup_gcode"] = "\\n".join(result)
+    except KeyError:
+        pass
+
 
 def on_config():
 
@@ -226,6 +341,8 @@ def on_config():
         create_logitem("Generating config based on pinrter profile {} ".format(i), "blue")
         store = copy.deepcopy(configs["printers"][i])
 
+        remove_p2ppconfig(store)
+
         store["layer_gcode"] = "\\n".join(layergcode)
 
         store["single_extruder_multi_material"] = 1
@@ -242,6 +359,16 @@ def on_config():
         basic_startcode = store["start_gcode"]
 
         create_logitem("--> BASIC CONFIG")
+
+        if i.startswith("P2PP"):
+            i = i.replace("P2PP - Basic -", "")
+            i = i.replace("P2PP - SideWipe -", "")
+            i = i.replace("P2PP - BB3D -", "")
+            i = i.replace("P2PP - TowerDelta -", "")
+            i = i.replace("P2PP - FullPurge -", "")
+            i = i.replace("P2PP - P2 AccMode -", "")
+            i = i.replace("P2PP - PPlus AccMode -", "")
+
         conf.writeconfig("printer", "P2PP - Basic -" + i, store)
 
         if cfg["sw_enable"]:
@@ -263,6 +390,20 @@ def on_config():
             create_logitem("--> Full Purge Reduction CONFIG")
             store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(fpcode)
             conf.writeconfig("printer", "P2PP - FullPurge -" + i, store)
+
+        if cfg["accmode_p2"]:
+            create_logitem("--> P2PP Accessory Mode Config")
+            store["start_gcode"] = basic_startcode + "\\n; ;P2PP ACCESSORYMODE_MAF"
+            conf.writeconfig("printer", "P2PP - P2 AccMode -" + i, store)
+
+        if cfg["accmode_pplus"]:
+            create_logitem("--> P2PP Accessory Mode Config")
+            basic_startcode = basic_startcode + "\\n;P2PP ACCESSORYMODE_MSF"
+            basic_startcode = basic_startcode + "\\n;P2PP P+PPM={}".format(cfg["accmode_ppm"])
+            basic_startcode = basic_startcode + "\\n;P2PP P+LOADINGOFFSET={}".format(cfg["accmode_lo"])
+            store["start_gcode"] = basic_startcode
+
+            conf.writeconfig("printer", "P2PP - PPlus AccMode -" + i, store)
 
     for i in output_prints:
         create_logitem("Generating config based on print profile {}".format(i))
@@ -305,10 +446,9 @@ def on_config():
 def init_gui():
     global form, configs
 
-    if sys.platform == 'darwin':
-        ui = "p2ppconf.ui"
-    else:
-        ui = "p2ppconf.ui"
+    ui = "p2ppconf.ui"
+
+    if sys.platform != 'darwin':
         if len(os.path.dirname(sys.argv[0]) )>0 :
             ui = "{}\\p2ppconf.ui".format(os.path.dirname(sys.argv[0]))
 
@@ -318,7 +458,6 @@ def init_gui():
     form = Form()
     form.setupUi(window)
 
-
     printers = conf.get_configs("printer")
     for p in printers:
         if not p.endswith(".ini"):
@@ -327,12 +466,11 @@ def init_gui():
         conf.loadconfig("printer", p, tmpStore )
         p = p[:-4]
         configs["printers"][p] = tmpStore
-
-        try:
-            if not tmpStore["single_extruder_multi_material"] == "1":
-                form.printerlist.addItem(p)
-        except KeyError:
-            pass
+        # try:
+        #     if not tmpStore["single_extruder_multi_material"] == "1":
+        form.printerlist.addItem(p)
+        # except KeyError:
+        #     pass
 
     prints = conf.get_configs("print")
     prints = [p for p in prints if p.endswith(".ini") ]
@@ -357,9 +495,12 @@ def init_gui():
         except:
             pass
 
+    set_config()
+
     form.exitButton.clicked.connect(on_click)
     form.applyConfig.clicked.connect(on_config)
     form.toolBox.setCurrentIndex(0)
+    form.printerlist.setCurrentIndex(-1)
     window.show()
     get_config()
     app.exec()

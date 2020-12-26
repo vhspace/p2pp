@@ -76,6 +76,7 @@ def loadconfig(tpe, inifile, store):
                 fields = line.split("=",1)
                 if len(fields) == 2:
                     store[fields[0].strip()] = fields[1].strip()
+
     except:
         pass
 

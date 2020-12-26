@@ -119,7 +119,7 @@
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
-       <widget class="QMultiCombo" name="printerlist">
+       <widget class="QComboBox" name="printerlist">
         <property name="geometry">
          <rect>
           <x>0</x>
