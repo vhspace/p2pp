@@ -358,7 +358,6 @@ def on_config():
         store["single_extruder_multi_material"] = 1
 
         tmp = store["retract_before_travel"].split(",")
-        print(len(tmp))
         if len(tmp) == 1:
             for item in conf.printer_extend_parameters_comma:
                 store[item] = ",".join([store[item],store[item],store[item],store[item]])
@@ -447,7 +446,7 @@ def on_config():
         conf.writeconfig("filament", "P2PP - "+i, store)
 
     if error > 0:
-        print("Total errors to correct: {}".format(error))
+        create_logitem("Total errors to correct: {}".format(error),"red")
 
     form.statusBar.showMessage("Processing Completed, see log panel for info")
 

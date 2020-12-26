@@ -47,7 +47,7 @@ def scriptname():
     if sys.platform == 'darwin':
         return "open -W -a P2PP.app --args"
     else:
-        return  "{}\\p2pp.exe".format(os.path.dirname(sys.argv[0]).replace(" ", "! "))
+        return "{}\\p2pp.exe".format(os.path.dirname(sys.argv[0]).replace(" ", "! "))
 
 
 def get_configs(type = None):
@@ -107,7 +107,7 @@ def writeconfig( tpe, inifile, store):
             outputfile.write("{} = {}{}".format(entry , store[entry], separator).encode('ascii'))
 
     except:
-        print("error writing config file {}".format(inifile))
+        conf.create_logitem("error writing config file {}".format(inifile),"red")
 
 
 def omega_inspect(file):
@@ -129,7 +129,6 @@ def omega_inspect(file):
 
     conf.create_logitem("Could not retrieve Printer Profile ID supplied file")
     conf.form.statusBar.showMessage("Could not retrieve Printer Profile ID supplied file")
-
 
 def retrieveconfig(file):
     pass
