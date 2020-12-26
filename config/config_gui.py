@@ -96,6 +96,8 @@ def set_config():
     form.pplusppm.setText(cfg["accmode_ppm"])
     form.pplus_loading.setText(cfg["accmode_lo"])
 
+    form.statusBar.showMessage("Retrieved previous confniguration")
+
 
 def get_config():
 
@@ -174,21 +176,21 @@ def get_config():
 def remove_p2ppconfig(store):
 
     removeditems = [";P2PP PRINTERPROFILE",
-                        ";P2PP SPLICEOFFSET",
-                        ";P2PP EXTRAENDFILAMENT",
-                        ";P2PP MATERIAL_DEFAULT",
-                        ";P2PP LINEARPINGLENGTHT",
-                        ";P2PP CONSOLEWAIT",
-                        ";P2PP SAVEUNPROCESSED",
-                        ";P2PP SIDEWIPE",
-                        ";P2PP WIPEFEEDRATE",
-                        ";P2PP AUTOADDPURGE",
-                        ";P2PP BIGBRAIN3D",
-                        ";P2PP PURGETOWERDELTA",
-                        ";P2PP FULLPURGEREDUCTION",
-                        ";P2PP ACCESSORYMODE",
-                        ";P2PP P+PPM",
-                        ";P2PP P+LOADINGOFFSET",
+                    ";P2PP SPLICEOFFSET",
+                    ";P2PP EXTRAENDFILAMENT",
+                    ";P2PP MATERIAL_DEFAULT",
+                    ";P2PP LINEARPINGLENGTHT",
+                    ";P2PP CONSOLEWAIT",
+                    ";P2PP SAVEUNPROCESSED",
+                    ";P2PP SIDEWIPE",
+                    ";P2PP WIPEFEEDRATE",
+                    ";P2PP AUTOADDPURGE",
+                    ";P2PP BIGBRAIN3D",
+                    ";P2PP PURGETOWERDELTA",
+                    ";P2PP FULLPURGEREDUCTION",
+                    ";P2PP ACCESSORYMODE",
+                    ";P2PP P+PPM",
+                    ";P2PP P+LOADINGOFFSET",
                     ]
     try:
         gcodelines = store["start_gcode"].split("\\n")
@@ -215,24 +217,32 @@ def on_config():
 
     basicconfig = []
 
-    form.toolBox.setCurrentIndex(7)
+    #form.toolBox.setCurrentIndex(7)
+
     create_logitem("Processing started...")
+    form.statusBar.showMessage("Processing...")
     if not form.backup.isChecked():
         create_logitem("  Make a backup of your current setup before starting", "red")
         create_logitem("  Processing ENDED", "red")
+        form.statusBar.showMessage("Processing Error occurred - Backup not confirmed")
+        form.toolBox.setCurrentIndex(7)
         return
 
     cfg = get_config()
 
-    create_logitem("Checking supplied infrmation...")
+    create_logitem("Checking supplied information...")
 
     if cfg["printers"]=="" and cfg["prints"]=="" and cfg["filaments"]=="":
         create_logitem("  Chose at least a printer,  print or filament profile", "red")
         create_logitem("  Processing ENDED", "red")
+        form.statusBar.showMessage("Processing Error occurred - No item selected")
+        form.toolBox.setCurrentIndex(7)
         return
 
     if len(cfg["printerprofile"]) != 16:
-        create_logitem("  Invalid printer profile is", "red")
+        create_logitem("  Invalid printer profile ID", "red")
+        form.statusBar.showMessage("Processing Error occurred - Invalid printer profile ID")
+        form.toolBox.setCurrentIndex(7)
         error += 1
 
     ### LAYERCONFIG
@@ -418,11 +428,10 @@ def on_config():
         store["skirts"] = "0"
         conf.writeconfig("print", "P2PP - "+i, store)
 
-
     for i in output_filaments:
         create_logitem("Generating config based on  filament profile {}".format(i))
         store = configs["filaments"][i]
-        store["compatible_printers_condition"] = "single_extruder_multi_material"
+        store["compatible_printers_condition"] = ""
         store["filament_ramming_parameters"] = "10 10| 0.05 6.6 0.45 6.8 0.95 7.8 1.45 8.3 1.95 9.7 2.45 10 2.95 7.6 3.45 7.6 3.95 7.6 4.45 7.6 4.95 7.6"
         store["filament_minimal_purge_on_wipe_tower"] = 0
         store["filament_cooling_final_speed"] = 0
@@ -439,7 +448,7 @@ def on_config():
     if error > 0:
         print("Total errors to correct: {}".format(error))
 
-
+    form.statusBar.showMessage("Processing Completed, see log panel for info")
 
 
 

@@ -124,6 +124,12 @@ def omega_inspect(file):
         if item.startswith("O22 D") and len(item) == 22:
             conf.form.printerprofile.setText(item[5:21].upper())
             conf.create_logitem("Retrieved printer profile ID {} from {}".format(item[5:21], file))
+            conf.form.statusBar.showMessage("Retrieved printer profile ID {} from {}".format(item[5:21], file))
+            return
+
+    conf.create_logitem("Could not retrieve Printer Profile ID supplied file")
+    conf.form.statusBar.showMessage("Could not retrieve Printer Profile ID supplied file")
+
 
 def retrieveconfig(file):
     pass

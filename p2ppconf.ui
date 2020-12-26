@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1100</width>
-    <height>860</height>
+    <width>1095</width>
+    <height>895</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -94,6 +94,14 @@
        <number>4</number>
       </property>
       <widget class="QWidget" name="page_6">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1077</width>
+         <height>496</height>
+        </rect>
+       </property>
        <attribute name="label">
         <string>Prusa Configurations</string>
        </attribute>
@@ -577,6 +585,14 @@ HERE</string>
        </widget>
       </widget>
       <widget class="QWidget" name="page_7">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1082</width>
+         <height>486</height>
+        </rect>
+       </property>
        <attribute name="label">
         <string>Basic Material Definitions</string>
        </attribute>
@@ -1096,6 +1112,14 @@ HERE</string>
        </widget>
       </widget>
       <widget class="QWidget" name="TowerDeltaConfiguration">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1082</width>
+         <height>486</height>
+        </rect>
+       </property>
        <attribute name="label">
         <string>Tower Delta Configuration</string>
        </attribute>
@@ -1169,6 +1193,14 @@ There  is an (experimental) feature in PrusaSlicer called No Sparse Layers under
        </widget>
       </widget>
       <widget class="QWidget" name="page_5">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1082</width>
+         <height>486</height>
+        </rect>
+       </property>
        <attribute name="label">
         <string>Full Purge Configuration</string>
        </attribute>
@@ -1254,6 +1286,14 @@ Lowering the Z-height below current print height poses a risk of crashing the X-
        </widget>
       </widget>
       <widget class="QWidget" name="page_8">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1082</width>
+         <height>486</height>
+        </rect>
+       </property>
        <attribute name="label">
         <string>Accessory Mode Configuration</string>
        </attribute>
@@ -1362,6 +1402,14 @@ Lowering the Z-height below current print height poses a risk of crashing the X-
        </widget>
       </widget>
       <widget class="QWidget" name="page_9">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1082</width>
+         <height>486</height>
+        </rect>
+       </property>
        <attribute name="label">
         <string>Processing Log</string>
        </attribute>
@@ -1478,6 +1526,7 @@ Lowering the Z-height below current print height poses a risk of crashing the X-
     </item>
    </layout>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <customwidgets>
   <customwidget>
@@ -1494,6 +1543,7 @@ Lowering the Z-height below current print height poses a risk of crashing the X-
  <resources>
   <include location="image.qrc"/>
   <include location="../../../../image.qrc"/>
+  <include location="../../.designer/backup/image.qrc"/>
  </resources>
  <connections/>
 </ui>
