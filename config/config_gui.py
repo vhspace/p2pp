@@ -426,6 +426,7 @@ def on_config():
         store["single_extruder_multi_material_priming"] = "0"
         store["min_skirt_length"] = "0"
         store["skirts"] = "0"
+        store["compatible_printers_condition"] = ""
         conf.writeconfig("print", "P2PP - "+i, store)
 
     for i in output_filaments:
