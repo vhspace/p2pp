@@ -24,6 +24,8 @@ printer_extend_parameters_comma = ["deretract_speed", "extruder_offset", "max_la
 printer_extend_parameters_semicolon = ["extruder_colour" ]
 
 
+
+
 def addtopath( path , addition):
     if sys.platform == 'darwin':
         return path+"/"+addition
@@ -66,6 +68,7 @@ def scriptname():
 
 def loadconfig(tpe, inifile, store):
     try:
+        store.clear()
         file = addtopath(folder(tpe), inifile)
         inputfile = open(file, "r")
         config = inputfile.readlines()
@@ -93,7 +96,7 @@ def processdrop( file ):
 
 
 
-def writeconfig( tpe, inifile, store):
+def writeconfig( tpe, inifile, outstore):
 
     if sys.platform == "darwin":
         separator = "\n"
@@ -103,8 +106,8 @@ def writeconfig( tpe, inifile, store):
         file = addtopath(folder(tpe), inifile + ".ini")
         outputfile = open(file, "wb")
         outputfile.write("# Generated config file [{}]with P2PP Configurator {}".format(inifile, separator).encode('ascii'))
-        for entry in sorted(store.keys()):
-            outputfile.write("{} = {}{}".format(entry , store[entry], separator).encode('ascii'))
+        for entry in sorted(outstore.keys()):
+            outputfile.write("{} = {}{}".format(entry , outstore[entry], separator).encode('ascii'))
 
     except:
         conf.create_logitem("error writing config file {}".format(inifile),"red")

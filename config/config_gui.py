@@ -364,6 +364,7 @@ def on_config():
             for item in conf.printer_extend_parameters_semicolon:
                 store[item] = ";".join([store[item],store[item],store[item],store[item]])
 
+
         store["start_gcode"] += "\\n"+"\\n".join(basiccode)
         basic_startcode = store["start_gcode"]
 
@@ -416,21 +417,22 @@ def on_config():
 
     for i in output_prints:
         create_logitem("Generating config based on print profile {}".format(i))
-        store = configs["prints"][i]
+        store_prt = copy.deepcopy(configs["prints"][i])
+
         if cfg["addmcf"]:
-            name = store["output_filename_format"]
+            name = store_prt["output_filename_format"]
             if ".mcf." not in name:
-                store["output_filename_format"] = store["output_filename_format"].replace(".gcode", ".mcf.gcode")
-        store["post process"] = conf.scriptname()
-        store["single_extruder_multi_material_priming"] = "0"
-        store["min_skirt_length"] = "0"
-        store["skirts"] = "0"
-        store["compatible_printers_condition"] = ""
-        conf.writeconfig("print", "P2PP - "+i, store)
+                store_prt["output_filename_format"] = store_prt["output_filename_format"].replace(".gcode", ".mcf.gcode")
+        store_prt["post process"] = conf.scriptname()
+        store_prt["single_extruder_multi_material_priming"] = "0"
+        store_prt["min_skirt_length"] = "0"
+        store_prt["skirts"] = "0"
+        store_prt["compatible_printers_condition"] = ""
+        conf.writeconfig("print", "P2PP - "+i, store_prt)
 
     for i in output_filaments:
         create_logitem("Generating config based on  filament profile {}".format(i))
-        store = configs["filaments"][i]
+        store =  copy.deepcopy(configs["filaments"][i])
         store["compatible_printers_condition"] = ""
         store["filament_ramming_parameters"] = "10 10| 0.05 6.6 0.45 6.8 0.95 7.8 1.45 8.3 1.95 9.7 2.45 10 2.95 7.6 3.45 7.6 3.95 7.6 4.45 7.6 4.95 7.6"
         store["filament_minimal_purge_on_wipe_tower"] = 0
@@ -484,6 +486,7 @@ def init_gui():
     prints = conf.get_configs("print")
     prints = [p for p in prints if p.endswith(".ini") ]
     for prt in prints:
+        tmpStore = {}
         conf.loadconfig("print", prt, tmpStore)
         prt = prt[:-4]
         form.printlist.addItem(prt)
