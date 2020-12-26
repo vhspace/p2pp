@@ -338,6 +338,7 @@ def gcode_parselines():
                 purgetower.purge_create_layers(v.wipe_tower_info_minx, v.wipe_tower_info_miny, v.wipe_tower_xsize,
                                                v.wipe_tower_ysize)
                 purgetower.purge_generate_brim()
+                v.toolchange_processed = False
             gcode.issue_command(g)
             continue
 

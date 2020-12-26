@@ -95,7 +95,7 @@ def create_commandstring(gcode_tupple):
             p = p + " " + gcode_tupple[COMMENT]
     else:
         p = gcode_tupple[COMMENT]
-
+    #
     # try:
     #     p = p + ";\t{} - ".format(gcode_tupple[CLASS])+v.classes[gcode_tupple[CLASS]]
     # except KeyError:
