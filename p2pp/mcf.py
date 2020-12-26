@@ -348,7 +348,7 @@ def gcode_parselines():
                 gcode_process_toolchange(int(g[gcode.COMMAND][1:]))
                 if not v.debug_leaveToolCommands:
                     gcode.move_to_comment(g, "--P2PP-- Color Change")
-                    v.toolchange_processed = True
+                    v.toolchange_processed = (current_block_class != CLS_NORMAL)
             else:
                 if current_block_class == CLS_TOOL_UNLOAD:
                     if g[gcode.COMMAND] in ["G4", "M900"]:
