@@ -88,7 +88,7 @@
     <item>
      <widget class="QToolBox" name="toolBox">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="tabSpacing">
        <number>4</number>
@@ -109,7 +109,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>5</y>
           <width>1056</width>
           <height>20</height>
          </rect>
@@ -305,8 +305,8 @@ under a new name and it should show up here</string>
        <widget class="QDropTarget" name="droptgt_canvas">
         <property name="geometry">
          <rect>
-          <x>475</x>
-          <y>225</y>
+          <x>740</x>
+          <y>200</y>
           <width>166</width>
           <height>111</height>
          </rect>
@@ -324,9 +324,9 @@ HERE</string>
        <widget class="QLabel" name="label_26">
         <property name="geometry">
          <rect>
-          <x>230</x>
-          <y>150</y>
-          <width>661</width>
+          <x>600</x>
+          <y>125</y>
+          <width>421</width>
           <height>56</height>
          </rect>
         </property>
@@ -338,6 +338,19 @@ HERE</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="includeDefault">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>235</y>
+          <width>386</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Add prusa Default items to dropdown</string>
         </property>
        </widget>
       </widget>

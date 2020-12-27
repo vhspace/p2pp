@@ -12,7 +12,8 @@ import config.config_gui as conf
 
 configs_printers = {}
 configs_prints = {}
-configs_fiaments = {}
+configs_filaments = {}
+default_store = {}
 
 
 printer_extend_parameters_comma = ["deretract_speed", "extruder_offset", "max_layer_height",
@@ -22,8 +23,6 @@ printer_extend_parameters_comma = ["deretract_speed", "extruder_offset", "max_la
                                    "retract_lift_below", "retract_restart_extra", "retract_restart_extra_toolchange",
                                    "retract_speed", "wipe"]
 printer_extend_parameters_semicolon = ["extruder_colour" ]
-
-
 
 
 def addtopath( path , addition):
@@ -66,6 +65,76 @@ def scriptname():
     return rval
 
 
+def load_default_configs():
+    global default_store
+
+    def enumerate_section(section):
+        inherits = []
+        sect_store = {}
+        for name in c.options(section):
+            value = c.get(section, name)
+            if name == "inherits":
+                inherits = value.split(";")
+                for inh in range(len(inherits)):
+                    item = prefix + inherits[inh].strip()
+                    sect_store.update(enumerate_section(item))
+            else:
+                sect_store[name] = value
+
+        return sect_store
+
+    default_store.clear()
+    cfg_folder = folder("vendor")
+    c = configparser.RawConfigParser()
+    c.read(os.path.join(cfg_folder, "PrusaResearch.ini"))
+
+    for sect in c.sections():
+        pos = sect.find(":")
+        if pos > 0 :
+            prefix = sect[:pos+1]
+            if sect[pos+1] == "*" or prefix == "printer_model:":
+                continue
+        else:
+            continue
+
+        default_store[sect.strip()] = enumerate_section(sect)
+
+
+def add_config(configs):
+
+    for item in default_store.keys():
+
+        ci = default_store[item]
+
+        if item.startswith("filament:"):
+            if "MMU" in item or "0.6" in item:
+                continue
+            nme = "(default) - " + item[len("filament:"):]
+            configs["filaments"][nme] = ci
+
+        elif item.startswith("print:"):
+            if "0.6 "in item:
+                continue
+            try:
+                if 0.1 <= float(ci['layer_height']) <= 0.3:
+                    nme = "(default) - " + item[len("print:"):]
+                    configs["prints"][nme] = ci
+            except KeyError:
+                continue
+
+        elif item.startswith("printer:"):
+            if "MMU" in item or "0.6 "in item:
+                continue
+            try:
+                if not ci['printer_technology'].upper() == "FFF":
+                    continue
+            except KeyError:
+                pass
+
+            nme = "(default) - " + item[len("printer:"):]
+            configs["printers"][nme] = ci
+
+
 def loadconfig(tpe, inifile, store):
     try:
         store.clear()
@@ -102,6 +171,11 @@ def writeconfig( tpe, inifile, outstore):
         separator = "\n"
     else:
         separator = "\r\n"
+
+    inifile = inifile.strip()
+    if inifile.startswith("(default) - "):
+        inifile = inifile[len("(default) - "):]
+
     try:
         file = addtopath(folder(tpe), inifile + ".ini")
         outputfile = open(file, "wb")

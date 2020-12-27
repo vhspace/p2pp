@@ -150,8 +150,16 @@ def get_config():
     ### Prusa config items
 
     cfg["printers"] = form.printerlist.currentText()
-    cfg["prints"] = form.printlist.currentText()
-    cfg["filaments"] = form.filamentlist.currentText()
+    if cfg["printers"] is None or cfg["printers"] == "":
+        cfg["printers"] = []
+    else:
+        cfg["printers"] = [ form.printerlist.currentText() ]
+    cfg["prints"] = form.printlist.currentData()
+    if cfg["prints"]  is None:
+        cfg["prints"] = []
+    cfg["filaments"] = form.filamentlist.currentData()
+    if cfg["filaments"] is None:
+        cfg["filaments"] = []
 
     ## Basic P2PP
     cfg["printerprofile"] = form.printerprofile.text()
@@ -216,8 +224,6 @@ def get_config():
     except:
         pass
 
-
-
     return cfg
 
 def remove_p2ppconfig(store):
@@ -279,7 +285,7 @@ def on_config():
 
     create_logitem("Checking supplied information...")
 
-    if cfg["printers"]=="" and cfg["prints"]=="" and cfg["filaments"]=="":
+    if cfg["printers"]==[] and cfg["prints"]==[] and cfg["filaments"]==[]:
         create_logitem("  Chose at least a printer,  print or filament profile", "red")
         create_logitem("  Processing ENDED", "red")
         form.statusBar.showMessage("Processing Error occurred - No item selected")
@@ -377,25 +383,9 @@ def on_config():
     if cfg["fp_autoadd"]:
         swcode.append(";P2PP AUTOADDPURGE")
 
-    if len(cfg["printers"]) > 0:
-        output_printers = cfg["printers"].split(",")
-    else:
-        output_printers = []
 
-    if len(cfg["prints"]) > 0:
-        output_prints= cfg["prints"].split(",")
-    else:
-        output_prints = []
-
-    if len(cfg["filaments"]) > 0:
-        output_filaments = cfg["filaments"].split(",")
-    else:
-        output_filaments = []
-
-
-
-    for i in output_printers:
-
+    for i in cfg["printers"]:
+        i = i.strip()
         create_logitem("Generating config based on pinrter profile {} ".format(i), "blue")
         store = copy.deepcopy(configs["printers"][i])
 
@@ -408,9 +398,15 @@ def on_config():
         tmp = store["retract_before_travel"].split(",")
         if len(tmp) == 1:
             for item in conf.printer_extend_parameters_comma:
-                store[item] = ",".join([store[item],store[item],store[item],store[item]])
+                try:
+                    store[item] = ",".join([store[item],store[item],store[item],store[item]])
+                except KeyError:
+                    pass
             for item in conf.printer_extend_parameters_semicolon:
-                store[item] = ";".join([store[item],store[item],store[item],store[item]])
+                try:
+                    store[item] = ";".join([store[item],store[item],store[item],store[item]])
+                except KeyError:
+                    pass
 
 
         store["start_gcode"] += "\\n"+"\\n".join(basiccode)
@@ -463,7 +459,8 @@ def on_config():
 
             conf.writeconfig("printer", "P2PP - PPlus AccMode -" + i, store)
 
-    for i in output_prints:
+    for i in cfg["prints"]:
+        i = i.strip()
         create_logitem("Generating config based on print profile {}".format(i))
         store_prt = copy.deepcopy(configs["prints"][i])
 
@@ -478,7 +475,8 @@ def on_config():
         store_prt["compatible_printers_condition"] = ""
         conf.writeconfig("print", "P2PP - "+i, store_prt)
 
-    for i in output_filaments:
+    for i in cfg["filaments"]:
+        i = i.strip()
         create_logitem("Generating config based on  filament profile {}".format(i))
         store =  copy.deepcopy(configs["filaments"][i])
         store["compatible_printers_condition"] = ""
@@ -500,6 +498,30 @@ def on_config():
 
     form.statusBar.showMessage("Processing Completed, see log panel for info")
 
+
+
+def populate_dropdowns( ):
+    global form, configs
+
+    check = form.includeDefault.isChecked()
+
+    form.printerlist.clear()
+    for printer in configs["printers"].keys():
+        if check or not printer.startswith("(default) -"):
+            form.printerlist.addItem(printer)
+    form.printerlist.setCurrentIndex(-1)
+
+    form.printlist.clear()
+    for prnt in configs["prints"].keys():
+       if check or not prnt.startswith("(default) -"):
+            form.printlist.addItem(prnt)
+    form.printlist.setCurrentIndex(-1)
+
+    form.filamentlist.clear()
+    for filament in configs["filaments"].keys():
+        if check or not filament.startswith("(default) -"):
+            form.filamentlist.addItem(filament)
+    form.filamentlist.setCurrentIndex(-1)
 
 
 def init_gui():
@@ -555,8 +577,11 @@ def init_gui():
         except:
             pass
 
+    conf.load_default_configs()
+    conf.add_config(configs)
+    populate_dropdowns()
     set_config()
-
+    form.includeDefault.stateChanged.connect(populate_dropdowns)
     form.exitButton.clicked.connect(on_click)
     form.applyConfig.clicked.connect(on_config)
     form.toolBox.setCurrentIndex(0)
