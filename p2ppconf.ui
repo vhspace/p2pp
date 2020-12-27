@@ -88,7 +88,7 @@
     <item>
      <widget class="QToolBox" name="toolBox">
       <property name="currentIndex">
-       <number>6</number>
+       <number>2</number>
       </property>
       <property name="tabSpacing">
        <number>4</number>
@@ -690,17 +690,37 @@ Ping length is 350mm.</string>
        <attribute name="label">
         <string>Basic Material Definitions</string>
        </attribute>
-       <widget class="QLabel" name="label_2">
+       <widget class="QTextBrowser" name="materials">
         <property name="geometry">
          <rect>
-          <x>415</x>
-          <y>195</y>
-          <width>386</width>
-          <height>20</height>
+          <x>10</x>
+          <y>10</y>
+          <width>1041</width>
+          <height>471</height>
          </rect>
         </property>
-        <property name="text">
-         <string>WORK IN PROGRESS</string>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+        <property name="html">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;; P2PP -   MATERIAL SPLICING INFORMATION&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;; P2PP -   All lines should be prefiex by ;P2PP MATERIAL_&amp;lt;material_1&amp;gt;_&amp;lt;material_2&amp;gt;_heating_compression_cooling&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;; P2PP -   &amp;lt;material_1&amp;gt; is the OUTGOING material&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;; P2PP -   &amp;lt;material_2&amp;gt; is the INCOMING material&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;; P2PP -   heating cooling and compression are the parameters taken from splice tuning&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;; P2PP -   MATERIAL_DEFAULT specifies the factors in case the conbination of spliced materials is not found&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;;P2PP MATERIAL_DEFAULT_0_0_0&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;;P2PP MATERIAL_PLA_PLA_0_0_0 &lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;;P2PP MATERIAL_PLA_PLA_0_0_0 &lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="acceptRichText">
+         <bool>false</bool>
         </property>
        </widget>
       </widget>

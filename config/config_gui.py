@@ -40,66 +40,110 @@ def config_file():
 
 
 def set_config():
-    try:
-        cfg = pickle.load(open(config_file(), "rb"))
-    except:
-        return
+    try: cfg = pickle.load(open(config_file(), "rb"))
+    except KeyError: return
 
     ## Basic P2PP
-    form.printerprofile.setText(cfg["printerprofile"])
-    form.spliceoffset.setText(cfg["spliceoffset"])
-    form.extrafilament.setText(cfg["extrafilament"])
-    form.consolewait.setChecked(cfg["consolewait"] )
-    form.saveunprocessed.setChecked(cfg["saveunprocessed"])
-    form.absoluteextruder.setChecked(cfg["absoluteextrusion"])
-    form.convertfilename.setChecked(cfg["addmcf"])
-    form.linearping_enable.setChecked(cfg["linearpingenable"])
-    form.linearping.setText(cfg["linearping"])
+    try: form.printerprofile.setText(cfg["printerprofile"])
+    except KeyError: pass
+    try: form.spliceoffset.setText(cfg["spliceoffset"])
+    except KeyError: pass
+    try: form.extrafilament.setText(cfg["extrafilament"])
+    except KeyError: pass
+    try: form.consolewait.setChecked(cfg["consolewait"] )
+    except KeyError: pass
+    try: form.saveunprocessed.setChecked(cfg["saveunprocessed"])
+    except KeyError: pass
+    try: form.absoluteextruder.setChecked(cfg["absoluteextrusion"])
+    except KeyError: pass
+    try: form.convertfilename.setChecked(cfg["addmcf"])
+    except KeyError: pass
+    try: form.linearping_enable.setChecked(cfg["linearpingenable"])
+    except KeyError: pass
+    try: form.linearping.setText(cfg["linearping"])
+    except KeyError: pass
 
+    #MATERIALS
+
+    try: form.materials.setText(cfg["materials"].replace("\\n", "\n"))
+    except KeyError: pass
 
     #Sidewipe
-    form.sidewipe_enable.setChecked(cfg["sw_enable"])
-    form.sidewipe_autoadd.setChecked(cfg["sw_autoadd"])
-    form.sw_xloc.setText(cfg["sw_xloc"])
-    form.sw_miny.setText(cfg["sw_miny"])
-    form.sw_maxy.setText(cfg["sw_maxy"])
-    form.sw_wipeFeedrate.setText(cfg["sw_wiperate"])
+    try: form.sidewipe_enable.setChecked(cfg["sw_enable"])
+    except KeyError: pass
+    try: form.sidewipe_autoadd.setChecked(cfg["sw_autoadd"])
+    except KeyError: pass
+    try: form.sw_xloc.setText(cfg["sw_xloc"])
+    except KeyError: pass
+    try: form.sw_miny.setText(cfg["sw_miny"])
+    except KeyError: pass
+    try: form.sw_maxy.setText(cfg["sw_maxy"])
+    except KeyError: pass
+    try: form.sw_wipeFeedrate.setText(cfg["sw_wiperate"])
+    except KeyError: pass
 
 
     #BB3D
-    form.bb_enable.setChecked(cfg["bb_enable"])
-    form.bb3d_autoadd.setChecked(cfg["bb_enable"])
-    form.bb3d_left.setChecked(cfg["bb_left"])
-    form.bb3d_blobsize.setText(cfg["bb_blobsize"])
-    form.bb3d_coolingtime.setText(cfg["bb_cooling"])
-    form.bb3d_locx.setText(cfg["bb_xloc"])
-    form.bb3d_motorhigh.setText(cfg["bb_motormax"])
-    form.bb3d_motorlow.setText(cfg["bb_motormin"] )
-    form.bb3d_fanoffdelay.setText(cfg["bb_fandelay"])
-    form.bb3d_primingblobs.setText(cfg["bb_priming"])
-    form.bb3d_whacks.setText(cfg["bb_whacks"])
+    try: form.bb_enable.setChecked(cfg["bb_enable"])
+    except KeyError: pass
+    try: form.bb3d_autoadd.setChecked(cfg["bb_enable"])
+    except KeyError: pass
+    try: form.bb3d_left.setChecked(cfg["bb_left"])
+    except KeyError: pass
+    try: form.bb3d_blobsize.setText(cfg["bb_blobsize"])
+    except KeyError: pass
+    try: form.bb3d_coolingtime.setText(cfg["bb_cooling"])
+    except KeyError: pass
+    try: form.bb3d_locx.setText(cfg["bb_xloc"])
+    except KeyError: pass
+    try: form.bb3d_motorhigh.setText(cfg["bb_motormax"])
+    except KeyError: pass
+    try: form.bb3d_motorlow.setText(cfg["bb_motormin"] )
+    except KeyError: pass
+    try: form.bb3d_fanoffdelay.setText(cfg["bb_fandelay"])
+    except KeyError: pass
+    try: form.bb3d_primingblobs.setText(cfg["bb_priming"])
+    except KeyError: pass
+    try: form.bb3d_whacks.setText(cfg["bb_whacks"])
+    except KeyError: pass
 
     #Towerdelta
-    form.towerdelta.setChecked(cfg["tower_enable"])
-    form.maxdelta.setText(cfg["tower_maxdelta"])
+    try: form.towerdelta.setChecked(cfg["tower_enable"])
+    except KeyError: pass
+    try: form.maxdelta.setText(cfg["tower_maxdelta"])
+    except KeyError: pass
+
 
     #Full Purge
-    form.fullpurge_enable.setChecked(cfg["fp_enable"])
-    form.fp_autoadd.setChecked(cfg["fp_autoadd"])
-    form.fp_wipefeedrate.setText(cfg["fp_wiperate"])
+    try: form.fullpurge_enable.setChecked(cfg["fp_enable"])
+    except KeyError: pass
+    try: form.fp_autoadd.setChecked(cfg["fp_autoadd"])
+    except KeyError: pass
+    try: form.fp_wipefeedrate.setText(cfg["fp_wiperate"])
+    except KeyError: pass
+
 
     #Accessory Mode Palette2
-    form.accmode_p2.setChecked(cfg["accmode_p2"])
+    try: form.accmode_p2.setChecked(cfg["accmode_p2"])
+    except KeyError: pass
 
     #Accessory Mode Palette+
-    form.accmode_p2.setChecked(cfg["accmode_pplus"])
-    form.pplusppm.setText(cfg["accmode_ppm"])
-    form.pplus_loading.setText(cfg["accmode_lo"])
+    try: form.accmode_p2.setChecked(cfg["accmode_pplus"]);
+    except KeyError: pass
+    try:
+        form.pplusppm.setText(cfg["accmode_ppm"])
+    except KeyError: pass
+    try:
+        form.pplus_loading.setText(cfg["accmode_lo"])
+    except KeyError: pass
 
     form.statusBar.showMessage("Retrieved previous confniguration")
 
 
+
+
 def get_config():
+
 
     cfg = {}
 
@@ -122,6 +166,9 @@ def get_config():
     cfg["linearping"] = form.linearping.text()
     if float(cfg["linearping"]) < 350:
         cfg["linearping"] = "350"
+
+    #materials
+    cfg["materials"] = form.materials.toPlainText().replace("\n", "\\n")
 
     #Sidewipe
 
@@ -260,7 +307,8 @@ def on_config():
         ";P2PP PRINTERPROFILE={}".format(cfg["printerprofile"]),
         ";P2PP SPLICEOFFSET={}".format(cfg["spliceoffset"]),
         ";P2PP EXTRAENDFILAMENT={}".format(cfg["extrafilament"]),
-        ";P2PP MATERIAL_DEFAULT=0_0_0",
+        cfg["materials"]
+
     ]
 
     if cfg["linearpingenable"]:
