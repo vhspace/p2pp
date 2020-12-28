@@ -355,7 +355,13 @@ def gcode_parselines():
                         gcode.move_to_comment(g, "--P2PP-- tool unload")
 
                 elif g[gcode.COMMAND].startswith('M'):
-                    if g[gcode.COMMAND] in ["M104", "M109"]:
+                    try:
+                        commandNum = int(g[gcode.COMMAND][1:])
+                    except :
+                        commandNum = 0
+                        pass
+
+                    if commandNum in [104,109]:
                         if v.process_temp:
                             if current_block_class not in [CLS_TOOL_PURGE, CLS_TOOL_START,
                                                            CLS_TOOL_UNLOAD]:
@@ -377,17 +383,21 @@ def gcode_parselines():
                                     gcode.move_to_comment(g,
                                                           "--P2PP-- delayed temp drop until after purge {}-->{}".format(v.current_temp,
                                                                                                                         v.new_temp))
-                    elif g[gcode.COMMAND] == "M107":
+                    elif commandNum == 107:
                         v.saved_fanspeed = 0
 
-                    elif g[gcode.COMMAND] == "M106":
+                    elif commandNum == 106:
                         v.saved_fanspeed = gcode.get_parameter(g, gcode.S, v.saved_fanspeed)
 
-                    elif g[gcode.COMMAND] == "M221":
+                    elif commandNum == 221:
                         v.extrusion_multiplier = float(gcode.get_parameter(g, gcode.S, v.extrusion_multiplier * 100.0)) / 100.0
 
-                    elif g[gcode.COMMAND] == "M220":
+                    elif commandNum == 220:
                         gcode.move_to_comment(g, "--P2PP-- Feed Rate Adjustments are removed")
+
+                    elif commandNum == 572:
+                        for i in range(1, len(v.filament_count)):
+                            g[gcode.OTHER] = g[gcode.OTHER].replace("D{}".format(i), "D0")
 
                     elif not v.generate_M0 and g[gcode.COMMAND] == "M0":
                         gcode.move_to_comment(g, "--P2PP-- remove M0 command")

@@ -7,6 +7,7 @@ __email__ = 'P2PP@pandora.be'
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication
+# following imports are needed to run the program.  DO NOT REMOVE
 import image_rc
 import config.qdroptarget
 import config.qmulticombo
@@ -22,209 +23,260 @@ configs = {"printers": {},
            "prints": {},
            "filaments": {}}
 
+
 def on_click():
     sys.exit(0)
+
 
 def create_logitem(text, color="#000000"):
     word = '<span style=\" color: {}\">  {}</span>'.format(color, text)
     form.log.append(word)
 
+
 def config_file():
     cfile = "lastconf.conf"
 
     if sys.platform != 'darwin':
-        if len(os.path.dirname(sys.argv[0]) )>0 :
+        if len(os.path.dirname(sys.argv[0])) > 0:
             cfile = "{}\\p2ppconf.ui".format(os.path.dirname(sys.argv[0]))
 
     return cfile
 
 
 def set_config():
-    try: cfg = pickle.load(open(config_file(), "rb"))
-    except KeyError: return
+    try:
+        cfg = pickle.load(open(config_file(), "rb"))
+    except KeyError:
+        return
 
-    ## Basic P2PP
-    try: form.printerprofile.setText(cfg["printerprofile"])
-    except KeyError: pass
-    try: form.spliceoffset.setText(cfg["spliceoffset"])
-    except KeyError: pass
-    try: form.extrafilament.setText(cfg["extrafilament"])
-    except KeyError: pass
-    try: form.consolewait.setChecked(cfg["consolewait"] )
-    except KeyError: pass
-    try: form.saveunprocessed.setChecked(cfg["saveunprocessed"])
-    except KeyError: pass
-    try: form.absoluteextruder.setChecked(cfg["absoluteextrusion"])
-    except KeyError: pass
-    try: form.convertfilename.setChecked(cfg["addmcf"])
-    except KeyError: pass
-    try: form.linearping_enable.setChecked(cfg["linearpingenable"])
-    except KeyError: pass
-    try: form.linearping.setText(cfg["linearping"])
-    except KeyError: pass
+    # Basic P2PP
+    try:
+        form.printerprofile.setText(cfg["printerprofile"])
+    except KeyError:
+        pass
+    try:
+        form.spliceoffset.setText(cfg["spliceoffset"])
+    except KeyError:
+        pass
+    try:
+        form.extrafilament.setText(cfg["extrafilament"])
+    except KeyError:
+        pass
+    try:
+        form.consolewait.setChecked(cfg["consolewait"])
+    except KeyError:
+        pass
+    try:
+        form.saveunprocessed.setChecked(cfg["saveunprocessed"])
+    except KeyError:
+        pass
+    try:
+        form.absoluteextruder.setChecked(cfg["absoluteextrusion"])
+    except KeyError:
+        pass
+    try:
+        form.convertfilename.setChecked(cfg["addmcf"])
+    except KeyError:
+        pass
+    try:
+        form.linearping_enable.setChecked(cfg["linearpingenable"])
+    except KeyError:
+        pass
+    try:
+        form.linearping.setText(cfg["linearping"])
+    except KeyError:
+        pass
 
-    #MATERIALS
+    # MATERIALS
 
-    try: form.materials.setText(cfg["materials"].replace("\\n", "\n"))
-    except KeyError: pass
+    try:
+        form.materials.setText(cfg["materials"].replace("\\n", "\n"))
+    except KeyError:
+        pass
 
-    #Sidewipe
-    try: form.sidewipe_enable.setChecked(cfg["sw_enable"])
-    except KeyError: pass
-    try: form.sidewipe_autoadd.setChecked(cfg["sw_autoadd"])
-    except KeyError: pass
-    try: form.sw_xloc.setText(cfg["sw_xloc"])
-    except KeyError: pass
-    try: form.sw_miny.setText(cfg["sw_miny"])
-    except KeyError: pass
-    try: form.sw_maxy.setText(cfg["sw_maxy"])
-    except KeyError: pass
-    try: form.sw_wipeFeedrate.setText(cfg["sw_wiperate"])
-    except KeyError: pass
+    # Sidewipe
+    try:
+        form.sidewipe_enable.setChecked(cfg["sw_enable"])
+    except KeyError:
+        pass
+    try:
+        form.sidewipe_autoadd.setChecked(cfg["sw_autoadd"])
+    except KeyError:
+        pass
+    try:
+        form.sw_xloc.setText(cfg["sw_xloc"])
+    except KeyError:
+        pass
+    try:
+        form.sw_miny.setText(cfg["sw_miny"])
+    except KeyError:
+        pass
+    try:
+        form.sw_maxy.setText(cfg["sw_maxy"])
+    except KeyError:
+        pass
+    try:
+        form.sw_wipeFeedrate.setText(cfg["sw_wiperate"])
+    except KeyError:
+        pass
 
+    # BB3D
+    try:
+        form.bb_enable.setChecked(cfg["bb_enable"])
+    except KeyError:
+        pass
+    try:
+        form.bb3d_autoadd.setChecked(cfg["bb_enable"])
+    except KeyError:
+        pass
+    try:
+        form.bb3d_left.setChecked(cfg["bb_left"])
+    except KeyError:
+        pass
+    try:
+        form.bb3d_blobsize.setText(cfg["bb_blobsize"])
+    except KeyError:
+        pass
+    try:
+        form.bb3d_coolingtime.setText(cfg["bb_cooling"])
+    except KeyError:
+        pass
+    try:
+        form.bb3d_locx.setText(cfg["bb_xloc"])
+    except KeyError:
+        pass
+    try:
+        form.bb3d_motorhigh.setText(cfg["bb_motormax"])
+    except KeyError:
+        pass
+    try:
+        form.bb3d_motorlow.setText(cfg["bb_motormin"])
+    except KeyError:
+        pass
+    try:
+        form.bb3d_fanoffdelay.setText(cfg["bb_fandelay"])
+    except KeyError:
+        pass
+    try:
+        form.bb3d_primingblobs.setText(cfg["bb_priming"])
+    except KeyError:
+        pass
+    try:
+        form.bb3d_whacks.setText(cfg["bb_whacks"])
+    except KeyError:
+        pass
 
-    #BB3D
-    try: form.bb_enable.setChecked(cfg["bb_enable"])
-    except KeyError: pass
-    try: form.bb3d_autoadd.setChecked(cfg["bb_enable"])
-    except KeyError: pass
-    try: form.bb3d_left.setChecked(cfg["bb_left"])
-    except KeyError: pass
-    try: form.bb3d_blobsize.setText(cfg["bb_blobsize"])
-    except KeyError: pass
-    try: form.bb3d_coolingtime.setText(cfg["bb_cooling"])
-    except KeyError: pass
-    try: form.bb3d_locx.setText(cfg["bb_xloc"])
-    except KeyError: pass
-    try: form.bb3d_motorhigh.setText(cfg["bb_motormax"])
-    except KeyError: pass
-    try: form.bb3d_motorlow.setText(cfg["bb_motormin"] )
-    except KeyError: pass
-    try: form.bb3d_fanoffdelay.setText(cfg["bb_fandelay"])
-    except KeyError: pass
-    try: form.bb3d_primingblobs.setText(cfg["bb_priming"])
-    except KeyError: pass
-    try: form.bb3d_whacks.setText(cfg["bb_whacks"])
-    except KeyError: pass
+    # Towerdelta
+    try:
+        form.towerdelta.setChecked(cfg["tower_enable"])
+    except KeyError:
+        pass
+    try:
+        form.maxdelta.setText(cfg["tower_maxdelta"])
+    except KeyError:
+        pass
 
-    #Towerdelta
-    try: form.towerdelta.setChecked(cfg["tower_enable"])
-    except KeyError: pass
-    try: form.maxdelta.setText(cfg["tower_maxdelta"])
-    except KeyError: pass
+    # Full Purge
+    try:
+        form.fullpurge_enable.setChecked(cfg["fp_enable"])
+    except KeyError:
+        pass
+    try:
+        form.fp_autoadd.setChecked(cfg["fp_autoadd"])
+    except KeyError:
+        pass
+    try:
+        form.fp_wipefeedrate.setText(cfg["fp_wiperate"])
+    except KeyError:
+        pass
 
+    # Accessory Mode Palette2
+    try:
+        form.accmode_p2.setChecked(cfg["accmode_p2"])
+    except KeyError:
+        pass
 
-    #Full Purge
-    try: form.fullpurge_enable.setChecked(cfg["fp_enable"])
-    except KeyError: pass
-    try: form.fp_autoadd.setChecked(cfg["fp_autoadd"])
-    except KeyError: pass
-    try: form.fp_wipefeedrate.setText(cfg["fp_wiperate"])
-    except KeyError: pass
-
-
-    #Accessory Mode Palette2
-    try: form.accmode_p2.setChecked(cfg["accmode_p2"])
-    except KeyError: pass
-
-    #Accessory Mode Palette+
-    try: form.accmode_p2.setChecked(cfg["accmode_pplus"]);
-    except KeyError: pass
+    # Accessory Mode Palette+
+    try:
+        form.accmode_p2.setChecked(cfg["accmode_pplus"])
+    except KeyError:
+        pass
     try:
         form.pplusppm.setText(cfg["accmode_ppm"])
-    except KeyError: pass
+    except KeyError:
+        pass
     try:
         form.pplus_loading.setText(cfg["accmode_lo"])
-    except KeyError: pass
+    except KeyError:
+        pass
 
     form.statusBar.showMessage("Retrieved previous confniguration")
 
 
-
-
 def get_config():
 
+    cfg = {"printers": form.printerlist.currentText(),
+           "prints":  form.printlist.currentData(),
+           "filaments": form.filamentlist.currentData(),
+           "printerprofile": form.printerprofile.text(),
+           "spliceoffset": form.spliceoffset.text(),
+           "extrafilament": form.extrafilament.text(),
+           "consolewait": form.consolewait.isChecked(),
+           "saveunprocessed": form.saveunprocessed.isChecked(),
+           "absoluteextrusion": form.absoluteextruder.isChecked(),
+           "addmcf": form.convertfilename.isChecked(),
+           "linearpingenable": form.linearping_enable.isChecked(),
+           "linearping": form.linearping.text(),
+           "materials": form.materials.toPlainText().replace("\n", "\\n"),
+           "sw_enable": form.sidewipe_enable.isChecked(),
+           "sw_autoadd": form.sidewipe_autoadd.isChecked(),
+           "sw_xloc": form.sw_xloc.text(),
+           "sw_miny": form.sw_miny.text(),
+           "sw_maxy": form.sw_maxy.text(),
+           "sw_wiperate": form.sw_wipeFeedrate.text(),
+           "bb_enable": form.bb_enable.isChecked(),
+           "bb_autoadd": form.bb3d_autoadd.isChecked(),
+           "bb_autoadd": form.bb3d_autoadd.isChecked(),
+           "bb_left": form.bb3d_left.isChecked(),
+           "bb_blobsize": form.bb3d_blobsize.text(),
+           "bb_cooling": form.bb3d_coolingtime.text(),
+           "bb_xloc": form.bb3d_locx.text(),
+           "bb_motormin": form.bb3d_motorlow.text(),
+           "bb_motormax": form.bb3d_motorhigh.text(),
+           "bb_fandelay": form.bb3d_fanoffdelay.text(),
+           "bb_priming": form.bb3d_primingblobs.text(),
+           "bb_whacks": form.bb3d_whacks.text(),
+           "tower_enable": form.towerdelta.isChecked(),
+           "tower_maxdelta": form.maxdelta.text(),
+           "fp_enable": form.fullpurge_enable.isChecked(),
+           "fp_autoadd": form.fp_autoadd.isChecked(),
+           "fp_wiperate": form.fp_wipefeedrate.text(),
+           "accmode_p2": form.accmode_p2.isChecked(),
+           "accmode_pplus": form.accmode_p2.isChecked(),
+           "accmode_ppm": form.pplusppm.text(),
+           "accmode_lo": form.pplus_loading.text()
+    }
 
-    cfg = {}
-
-    ### Prusa config items
-
-    cfg["printers"] = form.printerlist.currentText()
     if cfg["printers"] is None or cfg["printers"] == "":
         cfg["printers"] = []
-    else:
-        cfg["printers"] = [ form.printerlist.currentText() ]
-    cfg["prints"] = form.printlist.currentData()
-    if cfg["prints"]  is None:
+
+    if cfg["prints"] is None:
         cfg["prints"] = []
-    cfg["filaments"] = form.filamentlist.currentData()
+
     if cfg["filaments"] is None:
         cfg["filaments"] = []
 
-    ## Basic P2PP
-    cfg["printerprofile"] = form.printerprofile.text()
-    cfg["spliceoffset"] = form.spliceoffset.text()
-    cfg["extrafilament"] = form.extrafilament.text()
-
-    cfg["consolewait"] = form.consolewait.isChecked()
-    cfg["saveunprocessed"] = form.saveunprocessed.isChecked()
-    cfg["absoluteextrusion"] = form.absoluteextruder.isChecked()
-    cfg["addmcf"] = form.convertfilename.isChecked()
-    cfg["linearpingenable"] = form.linearping_enable.isChecked()
-    cfg["linearping"] = form.linearping.text()
     if float(cfg["linearping"]) < 350:
         cfg["linearping"] = "350"
-
-    #materials
-    cfg["materials"] = form.materials.toPlainText().replace("\n", "\\n")
-
-    #Sidewipe
-
-    cfg["sw_enable"] = form.sidewipe_enable.isChecked()
-    cfg["sw_autoadd"] = form.sidewipe_autoadd.isChecked()
-    cfg["sw_xloc"] = form.sw_xloc.text()
-    cfg["sw_miny"] = form.sw_miny.text()
-    cfg["sw_maxy"] = form.sw_maxy.text()
-    cfg["sw_wiperate"] = form.sw_wipeFeedrate.text()
-
-
-    #BB3D
-    cfg["bb_enable"] = form.bb_enable.isChecked()
-    cfg["bb_autoadd"] = form.bb3d_autoadd.isChecked()
-    cfg["bb_left"] = form.bb3d_left.isChecked()
-    cfg["bb_blobsize"] = form.bb3d_blobsize.text()
-    cfg["bb_cooling"] = form.bb3d_coolingtime.text()
-    cfg["bb_xloc"] = form.bb3d_locx.text()
-    cfg["bb_motormin"] = form.bb3d_motorlow.text()
-    cfg["bb_motormax"] = form.bb3d_motorhigh.text()
-    cfg["bb_fandelay"] = form.bb3d_fanoffdelay.text()
-    cfg["bb_priming"] = form.bb3d_primingblobs.text()
-    cfg["bb_whacks"] = form.bb3d_whacks.text()
-
-    #Towerdelta
-    cfg["tower_enable"] = form.towerdelta.isChecked()
-    cfg["tower_maxdelta"] = form.maxdelta.text()
-
-    #Full Purge
-    cfg["fp_enable"] = form.fullpurge_enable.isChecked()
-    cfg["fp_autoadd"] = form.fp_autoadd.isChecked()
-    cfg["fp_wiperate"] = form.fp_wipefeedrate.text()
-
-    #Accessory Mode Palette2
-    cfg["accmode_p2"] = form.accmode_p2.isChecked()
-
-    #Accessory Mode Palette+
-    cfg["accmode_pplus"] = form.accmode_p2.isChecked()
-    cfg["accmode_ppm"] = form.pplusppm.text()
-    cfg["accmode_lo"] = form.pplus_loading.text()
 
     try:
         cfile = config_file()
         pickle.dump(cfg, open(cfile, "wb"))
-    except:
+    except IOError:
         pass
 
     return cfg
+
 
 def remove_p2ppconfig(store):
 
@@ -258,7 +310,7 @@ def remove_p2ppconfig(store):
             if not removed:
                 result.append(line)
             else:
-                create_logitem("Previous config line removed: {}".format(line),"blue")
+                create_logitem("Previous config line removed: {}".format(line), "blue")
         store["startup_gcode"] = "\\n".join(result)
     except KeyError:
         pass
@@ -268,9 +320,7 @@ def on_config():
 
     error = 0
 
-    basicconfig = []
-
-    #form.toolBox.setCurrentIndex(7)
+    # form.toolBox.setCurrentIndex(7)
 
     create_logitem("Processing started...")
     form.statusBar.showMessage("Processing...")
@@ -285,7 +335,7 @@ def on_config():
 
     create_logitem("Checking supplied information...")
 
-    if cfg["printers"]==[] and cfg["prints"]==[] and cfg["filaments"]==[]:
+    if cfg["printers"] == [] and cfg["prints"] == [] and cfg["filaments"] == []:
         create_logitem("  Chose at least a printer,  print or filament profile", "red")
         create_logitem("  Processing ENDED", "red")
         form.statusBar.showMessage("Processing Error occurred - No item selected")
@@ -298,16 +348,14 @@ def on_config():
         form.toolBox.setCurrentIndex(7)
         error += 1
 
-    ### LAYERCONFIG
-    ###############
+    # LAYERCONFIG
 
     layergcode = [
         ";LAYER [layer_num]",
         ";LAYERHEIGHT [layer_z]"
     ]
 
-    ### BASICCONFIG
-    ###############
+    # BASICCONFIG
 
     basiccode = [
         ";P2PP PRINTERPROFILE={}".format(cfg["printerprofile"]),
@@ -330,7 +378,6 @@ def on_config():
         basiccode.append(";P2PP ABSOLUTEEXTRUDER")
 
     # sidewipe code
-    ###############
 
     swcode = [
         ";P2PP SIDEWIPELOC=X{}".format(cfg["sw_xloc"]),
@@ -346,7 +393,6 @@ def on_config():
         swcode.append(";P2PP AUTOADDPURGE")
 
     # big brain 3d code
-    ###################
 
     bbcode = [
         ";P2PP BIGBRAIN3D_BLOBSIZE = {}".format(cfg["bb_blobsize"]),
@@ -357,7 +403,7 @@ def on_config():
         ";P2PP BIGBRAIN3D_FAN_OFF_DELAY = {}".format(cfg["bb_fandelay"]),
         ";P2PP BIGBRAIN3D_ENABLE",
         ";P2PP BIGBRAIN3D_PRIME_BLOBS = {}".format(cfg["bb_priming"]),
-        ";P2PP BIGBRAIN3D_NUMBER_OF_WHACKS = {}".format(cfg["bb_whacks"]) ]
+        ";P2PP BIGBRAIN3D_NUMBER_OF_WHACKS = {}".format(cfg["bb_whacks"])]
 
     if cfg["bb_left"]:
         bbcode.append(";P2PP BIGBRAIN3D_LEFT_SIDE")
@@ -383,7 +429,6 @@ def on_config():
     if cfg["fp_autoadd"]:
         swcode.append(";P2PP AUTOADDPURGE")
 
-
     for i in cfg["printers"]:
         i = i.strip()
         create_logitem("Generating config based on pinrter profile {} ".format(i), "blue")
@@ -399,15 +444,14 @@ def on_config():
         if len(tmp) == 1:
             for item in conf.printer_extend_parameters_comma:
                 try:
-                    store[item] = ",".join([store[item],store[item],store[item],store[item]])
+                    store[item] = ",".join([store[item], store[item], store[item], store[item]])
                 except KeyError:
                     pass
             for item in conf.printer_extend_parameters_semicolon:
                 try:
-                    store[item] = ";".join([store[item],store[item],store[item],store[item]])
+                    store[item] = ";".join([store[item], store[item], store[item], store[item]])
                 except KeyError:
                     pass
-
 
         store["start_gcode"] += "\\n"+"\\n".join(basiccode)
         basic_startcode = store["start_gcode"]
@@ -478,7 +522,7 @@ def on_config():
     for i in cfg["filaments"]:
         i = i.strip()
         create_logitem("Generating config based on  filament profile {}".format(i))
-        store =  copy.deepcopy(configs["filaments"][i])
+        store = copy.deepcopy(configs["filaments"][i])
         store["compatible_printers_condition"] = ""
         store["filament_ramming_parameters"] = "10 10| 0.05 6.6 0.45 6.8 0.95 7.8 1.45 8.3 1.95 9.7 2.45 10 2.95 7.6 3.45 7.6 3.95 7.6 4.45 7.6 4.95 7.6"
         store["filament_minimal_purge_on_wipe_tower"] = 0
@@ -494,13 +538,12 @@ def on_config():
         conf.writeconfig("filament", "P2PP - "+i, store)
 
     if error > 0:
-        create_logitem("Total errors to correct: {}".format(error),"red")
+        create_logitem("Total errors to correct: {}".format(error), "red")
 
     form.statusBar.showMessage("Processing Completed, see log panel for info")
 
 
-
-def populate_dropdowns( ):
+def populate_dropdowns():
     global form, configs
 
     check = form.includeDefault.isChecked()
@@ -513,7 +556,7 @@ def populate_dropdowns( ):
 
     form.printlist.clear()
     for prnt in configs["prints"].keys():
-       if check or not prnt.startswith("(default) -"):
+        if check or not prnt.startswith("(default) -"):
             form.printlist.addItem(prnt)
     form.printlist.setCurrentIndex(-1)
 
@@ -530,7 +573,7 @@ def init_gui():
     ui = "p2ppconf.ui"
 
     if sys.platform != 'darwin':
-        if len(os.path.dirname(sys.argv[0]) )>0 :
+        if len(os.path.dirname(sys.argv[0])) > 0:
             ui = "{}\\p2ppconf.ui".format(os.path.dirname(sys.argv[0]))
 
     Form, Window = uic.loadUiType(ui)
@@ -544,7 +587,7 @@ def init_gui():
         if not p.endswith(".ini"):
             continue
         tmpStore = {}
-        conf.loadconfig("printer", p, tmpStore )
+        conf.loadconfig("printer", p, tmpStore)
         p = p[:-4]
         configs["printers"][p] = tmpStore
         # try:
@@ -554,7 +597,7 @@ def init_gui():
         #     pass
 
     prints = conf.get_configs("print")
-    prints = [p for p in prints if p.endswith(".ini") ]
+    prints = [p for p in prints if p.endswith(".ini")]
     for prt in prints:
         tmpStore = {}
         conf.loadconfig("print", prt, tmpStore)

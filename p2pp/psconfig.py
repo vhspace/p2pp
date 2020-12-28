@@ -265,8 +265,9 @@ def parse_prusaslicer_config():
             parameter_start = gcode_line.find("#")
             if parameter_start != -1:
                 filament_colour = gcode_line.split(";")
-            if len(filament_colour) >= 4:
-                for i in range(len(filament_colour)):
+            v.filament_count = len(filament_colour)
+            if v.filament_count >= 4:
+                for i in range(v.filament_count):
                     if filament_colour[i] == "":
                         filament_colour[i] = v.filament_color_code[i]
                     else:

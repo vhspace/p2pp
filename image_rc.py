@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Resource object code
+# Resource object_ code
 #
 # Created by: The Resource Compiler for PyQt5 (Qt v5.15.2)
 #

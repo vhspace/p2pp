@@ -17,31 +17,32 @@ default_store = {}
 
 
 printer_extend_parameters_comma = ["deretract_speed", "extruder_offset", "max_layer_height",
-                                   "min_layer_height" , "nozzle_diameter", "retract_before_travel",
+                                   "min_layer_height", "nozzle_diameter", "retract_before_travel",
                                    "retract_before_wipe", "retract_layer_change", "retract_length",
                                    "retract_length_toolchange", "retract_lift", "retract_lift_above",
                                    "retract_lift_below", "retract_restart_extra", "retract_restart_extra_toolchange",
                                    "retract_speed", "wipe"]
-printer_extend_parameters_semicolon = ["extruder_colour" ]
+printer_extend_parameters_semicolon = ["extruder_colour"]
 
 
-def addtopath( path , addition):
+def addtopath(path, addition):
     if sys.platform == 'darwin':
         return path+"/"+addition
     else:
         return path + "\\" + addition
 
-def folder(suffix = None):
-    if sys.platform == 'darwin':
-        folder = os.path.expanduser('~/Library/Application Support/PrusaSlicer')
-        if suffix is not None:
-            folder = folder + "/" + suffix
-    else:
-        folder = os.path.expanduser('~\\AppData\\Roaming\\PrusaSlicer')
-        if suffix is not None:
-            folder = folder + "\\" + suffix
 
-    return folder
+def folder(suffix=None):
+    if sys.platform == 'darwin':
+        _folder = os.path.expanduser('~/Library/Application Support/PrusaSlicer')
+        if suffix is not None:
+            _folder = _folder + "/" + suffix
+    else:
+        _folder = os.path.expanduser('~\\AppData\\Roaming\\PrusaSlicer')
+        if suffix is not None:
+            _folder = _folder + "\\" + suffix
+
+    return _folder
 
 
 def scriptname():
@@ -51,25 +52,15 @@ def scriptname():
         return "{}\\p2pp.exe".format(os.path.dirname(sys.argv[0]).replace(" ", "! "))
 
 
-def get_configs(type = None):
-    mypath = folder(type)
+def get_configs(type_=None):
+    mypath = folder(type_)
     return [f for f in os.listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
-
-
-def scriptname():
-    rval = "unknown"
-    if sys.platform == 'darwin':
-        rval = "open -W -a P2PP.app --args"
-    else:
-        rval = "{}\\p2pp.exe".format(os.path.dirname(sys.argv[0]).replace(" ", "! "))
-    return rval
 
 
 def load_default_configs():
     global default_store
 
     def enumerate_section(section):
-        inherits = []
         sect_store = {}
         for name in c.options(section):
             value = c.get(section, name)
@@ -90,7 +81,7 @@ def load_default_configs():
 
     for sect in c.sections():
         pos = sect.find(":")
-        if pos > 0 :
+        if pos > 0:
             prefix = sect[:pos+1]
             if sect[pos+1] == "*" or prefix == "printer_model:":
                 continue
@@ -113,7 +104,7 @@ def add_config(configs):
             configs["filaments"][nme] = ci
 
         elif item.startswith("print:"):
-            if "0.6 "in item:
+            if "0.6" in item:
                 continue
             try:
                 if 0.1 <= float(ci['layer_height']) <= 0.3:
@@ -123,7 +114,7 @@ def add_config(configs):
                 continue
 
         elif item.startswith("printer:"):
-            if "MMU" in item or "0.6 "in item:
+            if "MMU" in item or "0.6" in item:
                 continue
             try:
                 if not ci['printer_technology'].upper() == "FFF":
@@ -145,27 +136,15 @@ def loadconfig(tpe, inifile, store):
 
         for line in config:
             if not line.startswith("#"):
-                fields = line.split("=",1)
+                fields = line.split("=", 1)
                 if len(fields) == 2:
                     store[fields[0].strip()] = fields[1].strip()
 
-    except:
+    except (IOError, IndexError, KeyError):
         pass
 
 
-def processdrop( file ):
-    return
-    config = configparser.ConfigParser()
-    if sys.platform == "darwin":
-        config.read(file+"Contents/Resources/profiles/PrusaResearch.ini")
-        for key in config.__dict__["_sections"].keys():
-            if key.startswith("filament:"):
-                print(key, config.__dict__["_sections"][key])
-                store = config.__dict__["_sections"][key]
-
-
-
-def writeconfig( tpe, inifile, outstore):
+def writeconfig(tpe, inifile, outstore):
 
     if sys.platform == "darwin":
         separator = "\n"
@@ -181,19 +160,18 @@ def writeconfig( tpe, inifile, outstore):
         outputfile = open(file, "wb")
         outputfile.write("# Generated config file [{}]with P2PP Configurator {}".format(inifile, separator).encode('ascii'))
         for entry in sorted(outstore.keys()):
-            outputfile.write("{} = {}{}".format(entry , outstore[entry], separator).encode('ascii'))
+            outputfile.write("{} = {}{}".format(entry, outstore[entry], separator).encode('ascii'))
 
-    except:
-        conf.create_logitem("error writing config file {}".format(inifile),"red")
+    except (IOError, KeyError):
+        conf.create_logitem("error writing config file {}".format(inifile), "red")
 
 
 def omega_inspect(file):
-    lines = []
     try:
         inf = open(file, "r")
         lines = inf.readlines()
         inf.close()
-    except:
+    except IOError:
         return
 
     for item in lines:
@@ -206,13 +184,3 @@ def omega_inspect(file):
 
     conf.create_logitem("Could not retrieve Printer Profile ID supplied file")
     conf.form.statusBar.showMessage("Could not retrieve Printer Profile ID supplied file")
-
-def retrieveconfig(file):
-    pass
-
-
-
-
-
-
-

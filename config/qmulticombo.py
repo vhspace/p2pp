@@ -6,12 +6,10 @@ __maintainer__ = 'Tom Van den Eede'
 __email__ = 'P2PP@pandora.be'
 
 
-from PyQt5.QtWidgets  import QComboBox, QStyledItemDelegate
+from PyQt5.QtWidgets import QComboBox, QStyledItemDelegate
 from PyQt5.QtCore import QEvent
 from PyQt5.QtGui import QStandardItem, QFontMetrics
 from PyQt5.QtCore import Qt
-
-import sys, os
 
 
 class QMultiCombo(QComboBox):
@@ -49,9 +47,9 @@ class QMultiCombo(QComboBox):
         self.updateText()
         super().resizeEvent(event)
 
-    def eventFilter(self, object, event):
+    def eventFilter(self, object_, event):
 
-        if object == self.lineEdit():
+        if object_ == self.lineEdit():
             if event.type() == QEvent.MouseButtonRelease:
                 if self.closeOnLineEditClick:
                     self.hidePopup()
@@ -60,7 +58,7 @@ class QMultiCombo(QComboBox):
                 return True
             return False
 
-        if object == self.view().viewport():
+        if object_ == self.view().viewport():
             if event.type() == QEvent.MouseButtonRelease:
                 index = self.view().indexAt(event.pos())
                 item = self.model().item(index.row())

@@ -307,3 +307,5 @@ generate_M0 = True
 exit_enabled = False
 
 side_wipe_state = 0
+
+filament_count = 4

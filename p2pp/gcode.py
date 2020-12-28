@@ -130,7 +130,6 @@ def get_parameter(gcode_tupple, pv, defaultvalue=0):
         return gcode_tupple[pv]
     return defaultvalue
 
-
 def issue_command(gcode_tupple, speed=0):
 
     if gcode_tupple[MOVEMENT]:
