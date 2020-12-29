@@ -1,8 +1,15 @@
 # p2pp - **Palette2 Post Processing tool for PrusaSlicer/Slic3r PE**
 
-# LATEST RELEASES CAN BE DOWNLOADED [HERE](https://www.dropbox.com/sh/q0vhg6u90a8wbox/AAB2jEGWGZBYlqXnTCLkojCla?dl=0)
+Starting with version 6.0.0 P2PP has undergone significant changes.  The tool is now available as a windows' application ZIP file or, a macOS' DMG file. from the [following location](https://www.dropbox.com/sh/q0vhg6u90a8wbox/AAB2jEGWGZBYlqXnTCLkojCla?dl=0) (under development/macOS of development/Windows folder)
+You have to download the file with the latest version onto your computer and either unzip it to the location of your choice on a Windows machine or open the DMG and move the application ofver to the Applications folder on macOS.
 
-**Tested with version PrusaSlicer 2.2.0/2.1.0**
+The new file comes with a python version, including all required libraries in a single distribution.   This should make P2PP imune for changes to the Python enviromnment on your computer or installation of other versions of the needed libraries
+
+Downside is that the new files have grown quite a bit bigger...
+
+
+
+**Tested with version PrusaSlicer 2.3.0/2.2.0/2.1.0**
 earlier versions may generate different code patterns and may not work correctly
 
 ## Purpose
@@ -48,7 +55,7 @@ settings are properly tuned to work with your 3d Printer hardware.
 
 ## General information
 
-Kurt made a video describing the installation process p2pp on a windows system.  Besides the windows specific part this video also contains the 
+Kurt made a video describing the installation process p2pp on a Windows system.  Besides the windows specific part this video also contains the 
 setup instructions for Slic3r/PrusaSlicer and a full example on how p2pp is used.   The video can be found on YouTube:
 
 [![youtube video](https://img.youtube.com/vi/JuTdq-IlRj4/0.jpg)](https://www.youtube.com/watch?v=JuTdq-IlRj4&t=1s "P2PP Installation and Configuration")
