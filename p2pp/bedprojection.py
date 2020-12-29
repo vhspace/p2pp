@@ -35,6 +35,4 @@ class BedProjection(object):
         self._posy = y
 
     def save_image(self):
-        return
-        # this is not needed for now
         self.data.save('/Users/tomvandeneede/Desktop/print.png', "PNG")

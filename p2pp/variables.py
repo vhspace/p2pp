@@ -313,3 +313,7 @@ filament_count = 4
 # manual swap
 manual_filament_swap = False
 z_maxheight = -1
+
+# bed projection
+bed = None
+bedtrace = False

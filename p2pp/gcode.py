@@ -29,13 +29,6 @@ INTOWER = 256
 # PARAM     A   B   C   D  E  F   G   H   I   J   K   L   M   N   O   P   Q   R  S   T   U  V   W   X  Y  Z
 parmidx = [-1, -1, -1, -1, 3, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 5, -1, -1, -1, -1, 0, 1, 2]
 
-# bed projection currently not used
-# bed = None
-#
-# def init_bed():
-#     global bed
-#     bed = bp.BedProjection(int(v.bed_size_x), int(v.bed_size_y))
-
 
 def create_command(gcode_line, is_comment=False, userclass=0):
 
@@ -79,11 +72,6 @@ def create_command(gcode_line, is_comment=False, userclass=0):
                     else:
                         return_value[UNRETRACT] = (return_value[MOVEMENT] & 7) == 0    # no XYZ
                         return_value[EXTRUDE] = True
-                # BED PROJECTION CURRENTLY NOT USED
-                # if return_value[EXTRUDE]:
-                #     bed.line(return_value[X], return_value[Y])
-                # else:
-                #    bed.position(return_value[X], return_value[Y])
 
     return return_value
 

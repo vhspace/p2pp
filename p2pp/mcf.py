@@ -21,6 +21,7 @@ from p2pp.psconfig import parse_prusaslicer_config
 from p2pp.omega import header_generate_omega
 from p2pp.sidewipe import create_side_wipe
 import p2pp.manualswap as swap
+import p2pp.bedprojection as bp
 
 # GCODE BLOCK CLASSES
 CLS_UNDEFINED = 0
@@ -271,6 +272,14 @@ def parse_gcode():
                 v.wipe_tower_info_miny = min(v.wipe_tower_info_miny, code[gcode.Y] - 4 * 2 * v.extrusion_width)
                 v.wipe_tower_info_maxy = max(v.wipe_tower_info_maxy, code[gcode.Y] + 4 * 2 * v.extrusion_width)
 
+        if v.bed_trace:
+            if (code[gcode.MOVEMENT] & (gcode.X + gcode.Y)) and v.bed is not None:
+                if code[gcode.EXTRUDE]:
+                    v.bed.line(code[gcode.X], code[gcode.Y])
+                else:
+                    v.bed.position(code[gcode.X], code[gcode.Y])
+
+
         # determine block separators by looking at the last full XY positioning move
         if (code[gcode.MOVEMENT] & 3) == 3:
             if (code[gcode.MOVEMENT] & 12) == 0:
@@ -351,9 +360,9 @@ def gcode_parselines():
 
             if g[gcode.COMMAND].startswith('T'):
 
-                if not (v.side_wipe or v.full_purge_reduction or v.tower_delta) and (v.current_tool != -1):
+                if v.manual_filament_swap and not (v.side_wipe or v.full_purge_reduction or v.tower_delta) and (v.current_tool != -1):
                     swap.swap_pause("M25")
-                    swap.unpause()
+                    swap.swap_unpause()
 
                 gcode_process_toolchange(int(g[gcode.COMMAND][1:]))
                 if not v.debug_leaveToolCommands:
@@ -367,7 +376,7 @@ def gcode_parselines():
                 elif g[gcode.COMMAND].startswith('M'):
                     try:
                         commandNum = int(g[gcode.COMMAND][1:])
-                    except :
+                    except (ValueError, KeyError):
                         commandNum = 0
                         pass
 
@@ -658,11 +667,12 @@ def generate(input_file, output_file):
     gui.create_logitem("Analyzing Prusa Slicer Configuration")
     gui.progress_string(2)
     parse_prusaslicer_config()
-
+    v.bed = bp.BedProjection(int(v.bed_size_x), int(v.bed_size_y))
     gui.create_logitem("Analyzing Layers / Functional blocks")
     gui.progress_string(4)
     parse_gcode()
-    # gcode.bed.save_image() -- bed projection currently not used
+    if v.bedtrace:
+        v.bed.save_image()  #-- bed projection currently not used
     v.input_gcode = None
 
     if v.bed_size_x == -9999 or v.bed_size_y == -9999 or v.bed_origin_x == -9999 or v.bed_origin_y == -9999:

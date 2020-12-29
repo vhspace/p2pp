@@ -13,7 +13,6 @@ import re
 import p2pp.gui as gui
 import p2pp.variables as v
 import p2pp.p2ppparams as parameters
-import p2pp.gcode as gcode
 from p2pp.omega import algorithm_process_material_configuration
 
 
@@ -107,8 +106,6 @@ def get_bedshape(line):
 
     if len(coords) != 8:
         v.bed_shape_rect = False
-    # gcode.init_bed()  -- currently not used
-
 
 def parse_prusaslicer_config():
     for idx in range(len(v.input_gcode) - 1, -1, -1):
