@@ -133,7 +133,7 @@ def entertower(layer_hght):
             purgetower.retract(v.current_tool)
 
         if v.manual_filament_swap:
-            swap.pause("M25")
+            swap.swap_pause("M25")
             # unpause z-move is not reauired
 
         gcode.issue_code("G1 X{} Y{} F8640".format(v.current_position_x, v.current_position_y))
@@ -185,6 +185,7 @@ def process_layer(layer, index):
         v.skippable_layer.append((v.layer_emptygrid_counter > 0) and (v.layer_toolchange_counter == 0))
         v.layer_toolchange_counter = 0
         v.layer_emptygrid_counter = 0
+
 
 def parse_gcode():
 
@@ -272,13 +273,12 @@ def parse_gcode():
                 v.wipe_tower_info_miny = min(v.wipe_tower_info_miny, code[gcode.Y] - 4 * 2 * v.extrusion_width)
                 v.wipe_tower_info_maxy = max(v.wipe_tower_info_maxy, code[gcode.Y] + 4 * 2 * v.extrusion_width)
 
-        if v.bed_trace:
+        if v.bedtrace:
             if (code[gcode.MOVEMENT] & (gcode.X + gcode.Y)) and v.bed is not None:
                 if code[gcode.EXTRUDE]:
                     v.bed.line(code[gcode.X], code[gcode.Y])
                 else:
                     v.bed.position(code[gcode.X], code[gcode.Y])
-
 
         # determine block separators by looking at the last full XY positioning move
         if (code[gcode.MOVEMENT] & 3) == 3:
@@ -380,7 +380,7 @@ def gcode_parselines():
                         commandNum = 0
                         pass
 
-                    if commandNum in [104,109]:
+                    if commandNum in [104, 109]:
                         if v.process_temp:
                             if current_block_class not in [CLS_TOOL_PURGE, CLS_TOOL_START,
                                                            CLS_TOOL_UNLOAD]:
@@ -448,8 +448,6 @@ def gcode_parselines():
             gcode.move_to_comment(g, "--P2PP-- tool unload")
             gcode.issue_command(g)
             continue
-
-
 
         # --------------------- TOWER DELTA PROCESSING
         if v.tower_delta:
@@ -637,7 +635,6 @@ def generate(input_file, output_file):
         # python 3.x
         # noinspection PyArgumentList
         opf = open(input_file, encoding='utf-8')
-        file_open = 0
     except TypeError:
         try:
             # python 2.x
@@ -672,7 +669,7 @@ def generate(input_file, output_file):
     gui.progress_string(4)
     parse_gcode()
     if v.bedtrace:
-        v.bed.save_image()  #-- bed projection currently not used
+        v.bed.save_image()
     v.input_gcode = None
 
     if v.bed_size_x == -9999 or v.bed_size_y == -9999 or v.bed_origin_x == -9999 or v.bed_origin_y == -9999:
@@ -752,7 +749,7 @@ def generate(input_file, output_file):
         # write the output file
         ######################
 
-        if output_file == None:
+        if output_file is None:
             output_file = input_file
         gui.create_logitem("Generating GCODE file: " + output_file)
         opf = open(output_file, "w")
@@ -769,7 +766,7 @@ def generate(input_file, output_file):
         for line in v.processed_gcode:
             try:
                 opf.write(line)
-            except:
+            except IOError:
                 gui.log_warning("Line : {} could not be written to output".format(line))
             opf.write("\n")
         opf.close()
