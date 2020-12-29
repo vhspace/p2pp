@@ -309,3 +309,7 @@ exit_enabled = False
 side_wipe_state = 0
 
 filament_count = 4
+
+# manual swap
+manual_filament_swap = False
+z_maxheight = -1

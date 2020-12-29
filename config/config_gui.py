@@ -215,7 +215,7 @@ def set_config():
 
 def get_config():
 
-    cfg = {"printers": form.printerlist.currentText(),
+    cfg = {"printers": [form.printerlist.currentText()],
            "prints":  form.printlist.currentData(),
            "filaments": form.filamentlist.currentData(),
            "printerprofile": form.printerprofile.text(),
@@ -430,9 +430,13 @@ def on_config():
         swcode.append(";P2PP AUTOADDPURGE")
 
     for i in cfg["printers"]:
+
         i = i.strip()
         create_logitem("Generating config based on pinrter profile {} ".format(i), "blue")
+
         store = copy.deepcopy(configs["printers"][i])
+
+
 
         remove_p2ppconfig(store)
 

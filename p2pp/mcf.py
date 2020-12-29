@@ -20,6 +20,7 @@ import p2pp.variables as v
 from p2pp.psconfig import parse_prusaslicer_config
 from p2pp.omega import header_generate_omega
 from p2pp.sidewipe import create_side_wipe
+import p2pp.manualswap as swap
 
 # GCODE BLOCK CLASSES
 CLS_UNDEFINED = 0
@@ -129,6 +130,10 @@ def entertower(layer_hght):
 
         if v.retraction >= 0:
             purgetower.retract(v.current_tool)
+
+        if v.manual_filament_swap:
+            swap.pause("M25")
+            # unpause z-move is not reauired
 
         gcode.issue_code("G1 X{} Y{} F8640".format(v.current_position_x, v.current_position_y))
         gcode.issue_code("G1 Z{:.2f} F10810".format(purgeheight))
@@ -345,6 +350,11 @@ def gcode_parselines():
         elif g[gcode.MOVEMENT] == 0:
 
             if g[gcode.COMMAND].startswith('T'):
+
+                if not (v.side_wipe or v.full_purge_reduction or v.tower_delta) and (v.current_tool != -1):
+                    swap.swap_pause("M25")
+                    swap.unpause()
+
                 gcode_process_toolchange(int(g[gcode.COMMAND][1:]))
                 if not v.debug_leaveToolCommands:
                     gcode.move_to_comment(g, "--P2PP-- Color Change")
@@ -652,7 +662,7 @@ def generate(input_file, output_file):
     gui.create_logitem("Analyzing Layers / Functional blocks")
     gui.progress_string(4)
     parse_gcode()
-
+    # gcode.bed.save_image() -- bed projection currently not used
     v.input_gcode = None
 
     if v.bed_size_x == -9999 or v.bed_size_y == -9999 or v.bed_origin_x == -9999 or v.bed_origin_y == -9999:

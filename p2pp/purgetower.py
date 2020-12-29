@@ -12,6 +12,7 @@ import math
 import p2pp.gcode as gcode
 import p2pp.psconfig as gcodeparser
 import p2pp.variables as v
+import p2pp.manualswap as swap
 
 solidlayer = []
 emptylayer = []
@@ -287,6 +288,11 @@ def purge_generate_sequence():
         if v.retraction == 0:
             retract(v.current_tool)
         gcode.issue_code("G1 X{} Y{} F8640".format(last_posx, last_posy))
+
+        if v.manual_filament_swap:
+            swap.swap_pause("M25")
+            # no need to unpause as the reauired Z-move is part of the remaining sequence
+
     gcode.issue_code("G1 Z{:.2f} F10800".format((v.purgelayer + 1) * v.layer_height))
     unretract(v.current_tool)
     # generate wipe code

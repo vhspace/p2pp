@@ -61,6 +61,7 @@ releaseinfo = {
     "6.1.8":  "configuraton - added basic material support",
     "6.2.0":  "configuraton - basic support for default configs",
     "6.2.1":  "Pressure Advance processing M527 added - tool number gets reset to 0",
+    "6.2.2":  "Bug correction in the processing of the config parameters + added manual swap",
     '--- RELEASE INFORMATION': 'END'
 }
 

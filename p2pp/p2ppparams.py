@@ -84,6 +84,11 @@ def check_config_parameters(keyword, value):
         gui.create_logitem("Extra filament at end of print {:-8.2f}mm".format(v.extra_runout_filament))
         return
 
+    if keyword == "MANUAL_SWAP":
+        v.manual_filament_swap = True
+        gui.create_logitem("Manual filament swap in place.")
+        return
+
     if keyword == "BEFORESIDEWIPEGCODE":
         v.before_sidewipe_gcode.append(value)
         return
