@@ -415,7 +415,7 @@ def gcode_parselines():
                         gcode.move_to_comment(g, "--P2PP-- Feed Rate Adjustments are removed")
 
                     elif commandNum == 572:
-                        for i in range(1, len(v.filament_count)):
+                        for i in range(1, v.filament_count):
                             g[gcode.OTHER] = g[gcode.OTHER].replace("D{}".format(i), "D0")
 
                     elif not v.generate_M0 and g[gcode.COMMAND] == "M0":
