@@ -297,7 +297,7 @@ regex_p2pp = re.compile("^;\s*P2PP\s+([^=]+)=?(.*)$")
 
 absolute_counter = -9999
 layer_end = []
-
+last_layer_processed = -1
 
 layer_toolchange_counter = 0
 layer_emptygrid_counter = 0
@@ -321,3 +321,8 @@ bedtrace = False
 
 #klipper support
 klipper = False
+
+
+# disabke Z-movements during low tower
+
+disable_z = False

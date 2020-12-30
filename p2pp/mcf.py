@@ -126,7 +126,7 @@ def entertower(layer_hght):
         gcode.issue_code(";  P2PP DELTA ENTER", True)
         gcode.issue_code(";  Current printing Z = {:.2f}".format(v.current_position_z), True)
         gcode.issue_code(";  Tower Z = {:.2f}".format(purgeheight), True)
-        gcode.issue_code(";  Ddelta = {:.2f} ".format(v.current_position_z - purgeheight), True)
+        gcode.issue_code(";  Delta = {:.2f} ".format(v.current_position_z - purgeheight), True)
         gcode.issue_code(";------------------------------", True)
 
         if v.retraction >= 0:
@@ -134,7 +134,7 @@ def entertower(layer_hght):
 
         if v.manual_filament_swap:
             swap.swap_pause("M25")
-            # unpause z-move is not reauired
+            # unpause z-move is not required
 
         gcode.issue_code("G1 X{} Y{} F8640".format(v.current_position_x, v.current_position_y))
         gcode.issue_code("G1 Z{:.2f} F10810".format(purgeheight))
@@ -143,6 +143,8 @@ def entertower(layer_hght):
             gcode.issue_code("G1 F{}".format(min(1200, v.wipe_feedrate)))
         else:
             gcode.issue_code("G1 F{}".format(v.wipe_feedrate))
+
+        v.disable_z = True
 
 
 def update_class(line_hash):
@@ -179,12 +181,15 @@ def update_class(line_hash):
 
 
 def process_layer(layer, index):
+    if layer == v.last_parsed_layer:
+        return
     v.last_parsed_layer = layer
     v.layer_end.append(index)
-    if layer > 0:
+    if layer >= 0:
         v.skippable_layer.append((v.layer_emptygrid_counter > 0) and (v.layer_toolchange_counter == 0))
-        v.layer_toolchange_counter = 0
-        v.layer_emptygrid_counter = 0
+
+    v.layer_toolchange_counter = 0
+    v.layer_emptygrid_counter = 0
 
 
 def parse_gcode():
@@ -198,7 +203,7 @@ def parse_gcode():
 
     flh = int(v.first_layer_height * 100)
     olh = int(v.layer_height * 100)
-    use_layer_instead_of_layerheight = v.synced_support or not v.support_material or not (v.tower_delta or v.full_purge_reduction)
+    use_layer_instead_of_layerheight = False
 
     backpass_line = -1
     jndex = 0
@@ -225,18 +230,13 @@ def parse_gcode():
             if line.startswith('; CP'):  # code block assignment
                 update_class(hash(line[5:]))
 
-            elif line.startswith(';LAYER'):  # Layer instructions
+            elif line.startswith(';LAYERHEIGHT'):  # Layer instructions
                 fields = line.split(' ')
-
                 try:
                     lv = float(fields[1])
-                    if use_layer_instead_of_layerheight and len(fields[0]) == 6:
-                        process_layer(int(lv), index)
-                    elif fields[0][6:].startswith('HEIGHT'):
-                        lv = int((lv + 0.001) * 100) - flh
-                        if lv % olh == 0:
-                            process_layer(int(lv / olh), index)
-
+                    lv = int((lv + 0.001) * 100) - flh
+                    if lv % olh == 0:
+                        process_layer(int(lv / olh), index)
                 except (ValueError, IndexError):
                     pass
 
@@ -308,7 +308,7 @@ def gcode_parselines():
     idx = 0
     total_line_count = len(v.parsed_gcode)
     v.retraction = 0
-    v.last_parsed_layer = -1
+    v.last_parsed_layer = 0
     v.previous_block_classification = v.parsed_gcode[0][gcode.CLASS]
 
     for process_line_count in range(total_line_count):
@@ -319,7 +319,10 @@ def gcode_parselines():
                 v.layer_end.pop(0)
                 v.current_layer_is_skippable = v.skippable_layer[v.last_parsed_layer]
                 if v.current_layer_is_skippable:
-                    v.cur_tower_z_delta += v.layer_height
+                    if v.last_parsed_layer == 0:
+                        v.cur_tower_z_delta += v.first_layer_height
+                    else:
+                        v.cur_tower_z_delta += v.layer_height
         except IndexError:
             pass
 
@@ -347,6 +350,9 @@ def gcode_parselines():
         # ---- SECOND SECTION HANDLES COMMENTS AND NONE-MOVEMENT COMMANDS ----
 
         if g[gcode.COMMAND] is None:
+            if v.disable_z and g[gcode.COMMENT].endswith("END"):
+                v.disable_z = False
+
             if v.needpurgetower and g[gcode.COMMENT].endswith("BRIM END"):
                 v.needpurgetower = False
                 purgetower.purge_create_layers(v.wipe_tower_info_minx, v.wipe_tower_info_miny, v.wipe_tower_xsize,
@@ -363,6 +369,12 @@ def gcode_parselines():
                 if v.manual_filament_swap and not (v.side_wipe or v.full_purge_reduction or v.tower_delta) and (v.current_tool != -1):
                     swap.swap_pause("M25")
                     swap.swap_unpause()
+
+                gcode_process_toolchange(int(g[gcode.COMMAND][1:]))
+                if not v.debug_leaveToolCommands:
+                    gcode.move_to_comment(g, "--P2PP-- Color Change")
+                    v.toolchange_processed = (current_block_class != CLS_NORMAL)
+
 
             elif v.klipper and g[gcode.COMMAND] == "ACTIVATE_EXTRUDER":
                 extruder = g[gcode.OTHER]
@@ -382,12 +394,6 @@ def gcode_parselines():
                     if not v.debug_leaveToolCommands:
                         gcode.move_to_comment(g, "--P2PP-- Color Change")
                         v.toolchange_processed = True
-
-
-                gcode_process_toolchange(int(g[gcode.COMMAND][1:]))
-                if not v.debug_leaveToolCommands:
-                    gcode.move_to_comment(g, "--P2PP-- Color Change")
-                    v.toolchange_processed = (current_block_class != CLS_NORMAL)
             else:
                 if current_block_class == CLS_TOOL_UNLOAD:
                     if g[gcode.COMMAND] in ["G4", "M900"]:
@@ -458,7 +464,12 @@ def gcode_parselines():
             v.purge_keep_y = g[gcode.Y]
 
         if g[gcode.MOVEMENT] & 4:
-            v.keep_z = g[gcode.Z]
+            if v.disable_z:
+                gcode.move_to_comment(g, "-- P2PP - invalid move in delta tower")
+                gcode.issue_command(g)
+                continue
+            else:
+                v.keep_z = g[gcode.Z]
 
         if g[gcode.MOVEMENT] & 16:
             v.keep_speed = g[gcode.F]
@@ -481,8 +492,11 @@ def gcode_parselines():
 
                 if current_block_class == CLS_EMPTY and not v.towerskipped:
                     v.towerskipped = (g[gcode.MOVEMENT] & gcode.INTOWER) == gcode.INTOWER and v.current_layer_is_skippable
+
                     if not v.towerskipped:
+                        gcode.issue_command(g)
                         entertower(v.last_parsed_layer * v.layer_height + v.first_layer_height)
+                        continue
 
                 if current_block_class == CLS_NORMAL:
                     if v.towerskipped:
@@ -703,9 +717,6 @@ def generate(input_file, output_file):
     v.bed_max_x = v.bed_origin_x + v.bed_size_x
     v.bed_max_y = v.bed_origin_y + v.bed_size_y
 
-    if v.tower_delta or v.full_purge_reduction and v.variable_layer:
-        gui.log_warning("Variable layers are incompatible with FULLPURGE / TOWER DELTA")
-
     if v.process_temp and v.side_wipe:
         gui.log_warning("TEMPERATURECONTROL and SIDEWIPE / BigBrain3D are incompatible")
 
@@ -717,6 +728,10 @@ def generate(input_file, output_file):
 
     v.side_wipe = not ((v.bed_origin_x <= v.wipetower_posx <= v.bed_max_x) and (v.bed_origin_y <= v.wipetower_posy <= v.bed_max_y))
     v.tower_delta = v.max_tower_z_delta > 0
+
+    if v.tower_delta or v.full_purge_reduction and v.variable_layer :
+        gui.log_warning("Variable layers may cause issues with FULLPURGE / TOWER DELTA")
+        gui.log_warning("This warning could be caused by support that will print on variable layer offsets")
 
     gui.create_logitem("`Analyzing tool loading scheme`")
     m4c.calculate_loadscheme()
