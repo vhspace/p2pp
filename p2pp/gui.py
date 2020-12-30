@@ -144,11 +144,16 @@ def log_warning(text):
 
 
 if sys.platform == 'darwin':
-    ui = "p2pp.ui"
+    if len(os.path.dirname(sys.argv[0])) > 0:
+        ui ="{}/p2pp.ui".format(os.path.dirname(sys.argv[0]))
+    else:
+        ui = "p2pp.ui"
 else:
     ui = "p2pp.ui"
     if len(os.path.dirname(sys.argv[0])) > 0:
         ui = "{}\\p2pp.ui".format(os.path.dirname(sys.argv[0]))
+    else:
+        ui = "p2pp.ui"
 
 Form, Window = uic.loadUiType(ui)
 app = QApplication([])
