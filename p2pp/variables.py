@@ -317,3 +317,7 @@ z_maxheight = -1
 # bed projection
 bed = None
 bedtrace = False
+
+
+#klipper support
+klipper = False

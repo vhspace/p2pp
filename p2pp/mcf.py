@@ -364,6 +364,26 @@ def gcode_parselines():
                     swap.swap_pause("M25")
                     swap.swap_unpause()
 
+            elif v.klipper and g[gcode.COMMAND] == "ACTIVATE_EXTRUDER":
+                extruder = g[gcode.OTHER]
+
+                if extruder.startswith(" EXTRUDER=extruder"):
+
+                    try:
+                        extruder_num = int(extruder[18])
+                    except ValueError:
+                        extruder_num = None
+                    except IndexError:
+                        extruder_num = 0
+
+                    if extruder_num is not None:
+                        gcode_process_toolchange(extruder_num)
+
+                    if not v.debug_leaveToolCommands:
+                        gcode.move_to_comment(g, "--P2PP-- Color Change")
+                        v.toolchange_processed = True
+
+
                 gcode_process_toolchange(int(g[gcode.COMMAND][1:]))
                 if not v.debug_leaveToolCommands:
                     gcode.move_to_comment(g, "--P2PP-- Color Change")

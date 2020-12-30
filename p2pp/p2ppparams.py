@@ -281,6 +281,10 @@ def check_config_parameters(keyword, value):
         v.consolewait = True
         return
 
+    if keyword == "KLIPPER_TOOLCHANGE":
+        v.klipper = True
+        return
+
     if keyword == "IGNOREWARNINGS":
         v.ignore_warnings = True
         return

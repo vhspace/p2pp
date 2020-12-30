@@ -63,6 +63,7 @@ releaseinfo = {
     "6.2.1":  "Pressure Advance processing M527 added - tool number gets reset to 0",
     "6.2.2":  "Bug correction in the processing of the config parameters + added manual swap",
     "6.2.3":  "Initial tower optimizations",
+    "6.2.4":  "Klipper toolchange support",
     '--- RELEASE INFORMATION': 'END'
 }
 
