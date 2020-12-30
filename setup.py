@@ -8,20 +8,21 @@ Usage:
 import sys
 
 
-if sys.platform=="darwin":
+if sys.platform == "darwin":
     from setuptools import setup
 
     APP = ['P2PP.py']
     DATA_FILES = ['p2pp.ui', 'p2ppconf.ui']
     OPTIONS = {'argv_emulation': True,
                "iconfile": "icons/icon.icns",
-               "includes": ['PyQt5._qt'],
+               "includes": ['PyQt5._qt']
                }
 
     setup(
         app=APP,
         data_files=DATA_FILES,
         options={'py2app': OPTIONS},
+        install_requires = ['pillow'],
         setup_requires=['py2app']
     )
 
