@@ -800,7 +800,7 @@ def generate(input_file, output_file):
             gui.log_warning("SPLICE_OFFSET not defined")
         for line in v.processed_gcode:
             try:
-                opf.write(line)
+                opf.write(line.encode('utf8').__str__())
             except IOError:
                 gui.log_warning("Line : {} could not be written to output".format(line))
             opf.write("\n")
