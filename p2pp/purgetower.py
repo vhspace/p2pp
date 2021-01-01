@@ -168,7 +168,7 @@ def _purge_update_sequence_index():
 
     current_purge_index = (current_purge_index + 1) % _purge_number_of_gcodelines()
     if current_purge_index == 0:
-        if (v.purgelayer + 1) * v.layer_height < v.current_position_z - 5:
+        if (v.purgelayer + 1) * v.layer_height < v.keep_z - 5:
             current_purge_form = PURGE_EMPTY
         else:
             current_purge_form = PURGE_SOLID
@@ -181,7 +181,7 @@ def _purge_get_nextcommand_in_sequence():
     if current_purge_form == PURGE_SOLID:
         return copy.deepcopy(solidlayer[current_purge_index])
     else:
-        return copy.depcopy(emptylayer[current_purge_index])
+        return copy.deepcopy(emptylayer[current_purge_index])
 
 
 def _purge_generate_tower_brim(x, y, w, h):
@@ -271,7 +271,7 @@ def purge_generate_sequence():
     gcode.issue_code("; --------------------------------------------------", True)
     gcode.issue_code("; --- P2PP WIPE SEQUENCE START  FOR {:5.2f}mm".format(v.side_wipe_length), True)
     gcode.issue_code(
-        "; --- DELTA = {:.2f}".format(v.current_position_z - (v.purgelayer + 1) * v.layer_height), True)
+        "; --- DELTA = {:.2f}".format(v.keep_z - (v.purgelayer + 1) * v.layer_height), True)
     #
     # if v.previous_tool != -1:
     #     index = v.previous_tool * 4 + v.current_tool
@@ -281,8 +281,8 @@ def purge_generate_sequence():
     #             "; --- CORRECTED PURGE TO TRANSITION LENGTH {:.2f}mm\n".format(v.wiping_info[index]))
     # gcode.issue_code("; --------------------------------------------------\n")
 
-    v.max_tower_delta = max(v.max_tower_delta, v.current_position_z - (v.purgelayer + 1) * v.layer_height)
-    v.min_tower_delta = min(v.min_tower_delta, v.current_position_z - (v.purgelayer + 1) * v.layer_height)
+    v.max_tower_delta = max(v.max_tower_delta, v.keep_z - (v.purgelayer + 1) * v.layer_height)
+    v.min_tower_delta = min(v.min_tower_delta, v.keep_z - (v.purgelayer + 1) * v.layer_height)
 
     if last_posx and last_posy:
         # gcode.issue_code(";retraction {}".format(v.retraction))

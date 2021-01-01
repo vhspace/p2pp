@@ -120,13 +120,13 @@ def entertower(layer_hght):
 
     purgeheight = layer_hght - v.cur_tower_z_delta
 
-    if v.current_position_z != purgeheight:
+    if v.keep_z != purgeheight:
         v.max_tower_delta = max(v.cur_tower_z_delta, v.max_tower_delta)
         gcode.issue_code(";------------------------------", True)
         gcode.issue_code(";  P2PP DELTA ENTER", True)
-        gcode.issue_code(";  Current printing Z = {:.2f}".format(v.current_position_z), True)
+        gcode.issue_code(";  Current printing Z = {:.2f}".format(v.keep_z), True)
         gcode.issue_code(";  Tower Z = {:.2f}".format(purgeheight), True)
-        gcode.issue_code(";  Delta = {:.2f} ".format(v.current_position_z - purgeheight), True)
+        gcode.issue_code(";  Delta = {:.2f} ".format(v.keep_z - purgeheight), True)
         gcode.issue_code(";------------------------------", True)
 
         if v.retraction >= 0:

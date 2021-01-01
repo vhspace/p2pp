@@ -94,7 +94,7 @@ def create_sidewipe_bb3d(length):
     keep_xpos = v.current_position_x
     keep_ypos = v.current_position_y
 
-    if v.current_position_z < 20:
+    if v.keep_z < 20:
         issue_code("\nG1 Z20.000 F8640    ; Increase Z to prevent collission with bed")
 
     if v.bigbrain3d_y_position is not None:
@@ -113,13 +113,13 @@ def create_sidewipe_bb3d(length):
     for i in range(purgeblobs):
         generate_blob(v.bigbrain3d_blob_size, i)
 
-    if v.current_position_z < 20:
+    if v.keep_z < 20:
 
         if v.retraction != 0:
             purgetower.retract(v.current_tool)
 
         issue_code("\nG1 X{:.3f} Y{:.3f} F8640".format(keep_xpos, keep_ypos))
-        issue_code("\nG1 Z{:.4f} F8640    ; Reset correct Z height to continue print".format(v.current_position_z))
+        issue_code("\nG1 Z{:.4f} F8640    ; Reset correct Z height to continue print".format(v.keep_z))
 
     resetfanspeed()
     issue_code("\nM907 X{}           ; reset motor power".format(v.bigbrain3d_motorpower_normal))
