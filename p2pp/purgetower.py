@@ -13,6 +13,7 @@ import p2pp.gcode as gcode
 import p2pp.psconfig as gcodeparser
 import p2pp.variables as v
 import p2pp.manualswap as swap
+import copy
 
 solidlayer = []
 emptylayer = []
@@ -178,9 +179,9 @@ def _purge_update_sequence_index():
 
 def _purge_get_nextcommand_in_sequence():
     if current_purge_form == PURGE_SOLID:
-        return solidlayer[current_purge_index]
+        return copy.deepcopy(solidlayer[current_purge_index])
     else:
-        return emptylayer[current_purge_index]
+        return copy.depcopy(emptylayer[current_purge_index])
 
 
 def _purge_generate_tower_brim(x, y, w, h):

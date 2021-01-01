@@ -558,7 +558,7 @@ def gcode_parselines():
             if not v.towerskipped and current_block_class == CLS_EMPTY and v.current_layer_is_skippable:
                 v.towerskipped = (g[gcode.MOVEMENT] & gcode.INTOWER) == gcode.INTOWER
 
-            if v.towerskipped or current_block_class in [CLS_BRIM, CLS_ENDGRID]:
+            if v.towerskipped or current_block_class in [CLS_BRIM, CLS_ENDGRID, CLS_EMPTY]:
                 gcode.move_to_comment(g, "--P2PP-- full purge skipped")
                 gcode.issue_command(g)
                 continue
@@ -566,7 +566,7 @@ def gcode_parselines():
             if current_block_class in [CLS_TOOL_PURGE, CLS_ENDPURGE, CLS_EMPTY]:
                 if g[gcode.EXTRUDE]:
                     v.side_wipe_length += g[gcode.E]
-                gcode.move_to_comment(g, "--P2PP-- full purge skipped")
+                gcode.move_to_comment(g, "--P2PP-- full purge skipped ")
                 gcode.issue_command(g)
                 continue
 
