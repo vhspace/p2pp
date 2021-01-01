@@ -702,7 +702,7 @@ def generate(input_file, output_file):
     # added for issue Error: float division by zero (#87)
     if v.extrusion_width == 0:
         gui.create_logitem("Extrusionwidth set to 0, defaulted back to 0.45")
-        v.extrusionwidth = 0.45
+        v.extrusion_width = 0.45
 
     v.bed = bp.BedProjection(int(v.bed_size_x), int(v.bed_size_y))
     gui.create_logitem("Analyzing Layers / Functional blocks")
