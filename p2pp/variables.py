@@ -32,6 +32,7 @@ retract_lift = [0.6, 0.6, 0.6, 0.6]
 retract_length = [0.8, 0.8, 0.8, 0.8]
 filament_diameter = [1.75, 1.75, 1.75, 1.75]
 filament_ids = []
+nozzle_diameter = 0.4
 
 wiping_info = []
 accessory_mode = False  # type Bool

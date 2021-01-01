@@ -199,7 +199,14 @@ def parse_prusaslicer_config():
         if gcode_line.startswith("; extrusion_width"):
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
-                v.extrusion_width = float(gcode_line[parameter_start + 1:].strip())
+                parm = gcode_line[parameter_start + 1:].strip()
+                if parm[-1] == "%":
+                    parm = parm.replace("%", "").strip()
+                    tmpval = float(parm)
+                    v.extrusion_width = v.nozzle_diameter * tmpval / 100.0
+                else:
+                    v.extrusion_width = float(gcode_line[parameter_start + 1:].strip())
+
                 v.tx_offset = 2 + 4 * v.extrusion_width
                 v.yy_offset = 2 + 8 * v.extrusion_width
             continue
@@ -234,7 +241,13 @@ def parse_prusaslicer_config():
             if parameter_start != -1:
                 tmp = float(gcode_line[parameter_start + 1:].strip())
                 v.support_material = tmp == 1
+            continue
 
+        if gcode_line.startswith("; nozzle_diameter "):
+            parameter_start = gcode_line.find("=")
+            if parameter_start != -1:
+                tmp = float(gcode_line[parameter_start + 1:].strip())
+                v.nozzle_diameter = tmp
             continue
 
         if gcode_line.startswith("; start_filament_gcode "):
