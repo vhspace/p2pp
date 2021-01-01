@@ -313,7 +313,7 @@ def purge_generate_sequence():
         v.expect_retract = True
 
     gcode.issue_code(
-        "G1 Z{:.2f} F10800\n".format(max(v.current_position_z + 0.6, (v.purgelayer + 1) * v.layer_height) + 0.6))
+        "G1 Z{:.2f} F10800\n".format(max(v.keep_z + 0.6, (v.purgelayer + 1) * v.layer_height) + 0.6))
     gcode.issue_code("; -------------------------------------", True)
     gcode.issue_code("; --- P2PP WIPE SEQUENCE END DONE", True)
     gcode.issue_code("; -------------------------------------", True)

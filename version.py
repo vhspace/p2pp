@@ -12,7 +12,7 @@ __status__ = 'BETA'
 # general version info
 MajorVersion = 6
 MinorVersion = 2
-Build = 7
+Build = 8
 
 releaseinfo = {
     '4.16.0': "final release for PrusaSlicer 2.2.0",
@@ -67,6 +67,7 @@ releaseinfo = {
     "6.2.5":  "Fix for the tower delta implementation",
     "6.2.6":  "Fix for warning on TOWERDELTA",
     "6.2.7":  "Fix in full tower purge",
+    "6.2.8":  "v.current_z value incorrrectly used in fullpurgetower reduction",
     '--- RELEASE INFORMATION': 'END'
 }
 
