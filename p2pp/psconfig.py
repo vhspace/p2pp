@@ -246,7 +246,9 @@ def parse_prusaslicer_config():
         if gcode_line.startswith("; nozzle_diameter "):
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
-                tmp = float(gcode_line[parameter_start + 1:].strip())
+                tmp = gcode_line[parameter_start + 1:].strip().split(",")
+                tmp = float(tmp[0])
+
                 v.nozzle_diameter = tmp
             continue
 

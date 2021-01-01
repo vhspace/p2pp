@@ -792,23 +792,24 @@ def generate(input_file, output_file):
         if output_file is None:
             output_file = input_file
         gui.create_logitem("Generating GCODE file: " + output_file)
-        opf = open(output_file, "w")
+        opf = open(output_file, "wb")
         if not v.accessory_mode:
-            opf.writelines(header)
-            opf.write("\n\n;--------- START PROCESSED GCODE ----------\n\n")
+            for line in header:
+                opf.write(line.encode('utf8'))
+            opf.write("\n\n;--------- START PROCESSED GCODE ----------\n\n".encode('utf8'))
         if v.accessory_mode:
             if v.generate_M0:
-                header.append("M0\n")
-            opf.write("T0\n")
+                header.append("M0\n".encode('utf8'))
+            opf.write("T0\n".encode('utf8'))
 
         if v.splice_offset == 0:
-            gui.log_warning("SPLICE_OFFSET not defined")
+            gui.log_warning("SPLICE_OFFSET not defined".encode('utf8'))
         for line in v.processed_gcode:
             try:
-                opf.write(line.encode('utf8').__str__())
+                opf.write(line.encode('utf8'))
             except IOError:
                 gui.log_warning("Line : {} could not be written to output".format(line))
-            opf.write("\n")
+            opf.write("\n".encode('utf8'))
         opf.close()
 
         if v.accessory_mode:
