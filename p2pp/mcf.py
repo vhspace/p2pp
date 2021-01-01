@@ -698,6 +698,12 @@ def generate(input_file, output_file):
     gui.create_logitem("Analyzing Prusa Slicer Configuration")
     gui.progress_string(2)
     parse_prusaslicer_config()
+
+    # added for issue Error: float division by zero (#87)
+    if v.extrusion_width == 0:
+        gui.create_logitem("Extrusionwidth set to 0, defaulted back to 0.45")
+        v.extrusionwidth = 0.45
+
     v.bed = bp.BedProjection(int(v.bed_size_x), int(v.bed_size_y))
     gui.create_logitem("Analyzing Layers / Functional blocks")
     gui.progress_string(4)
@@ -766,14 +772,13 @@ def generate(input_file, output_file):
         gui.close_button_enable()
         sys.exit(-1)
     else:
+        skippable = optimize_tower_skip(int(v.max_tower_z_delta / v.layer_height))
         if v.tower_delta:
             v.skippable_layer[0] = False
-        skippable = optimize_tower_skip(int(v.max_tower_z_delta / v.layer_height))
-
-        if skippable > 0:
-            gui.log_warning("TOWERDELTA in effect for {} Layers or {:.2f}mm".format(skippable, skippable * v.layer_height))
-        else:
-            gui.create_logitem("TOWERDELTA could not be applied to this print")
+            if skippable > 0:
+                gui.log_warning("TOWERDELTA in effect for {} Layers or {:.2f}mm".format(skippable, skippable * v.layer_height))
+            else:
+                gui.create_logitem("TOWERDELTA could not be applied to this print")
 
         gui.create_logitem("Generate processed GCode")
         gcode_parselines()
