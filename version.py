@@ -69,6 +69,7 @@ releaseinfo = {
     "6.2.7":  "Fix in full tower purge",
     "6.2.8":  "v.current_z value incorrrectly used in fullpurgetower reduction",
     "6.2.9":  "bed override",
+    "6.2.10": "BB3D motor power command corrected",
     '--- RELEASE INFORMATION': 'END'
 }
 

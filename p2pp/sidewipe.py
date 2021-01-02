@@ -107,7 +107,7 @@ def create_sidewipe_bb3d(length):
         swap.swap_unpause()
 
     issue_code("G4 S0               ; wait for the print buffer to clear")
-    issue_code("M907 X{}           ; increase motor power".format(v.bigbrain3d_motorpower_high))
+    v.processed_gcode.append("M907 X{}           ; increase motor power".format(v.bigbrain3d_motorpower_high))
     issue_code("; -- P2PP -- Generating {} blobs for {}mm of purge".format(purgeblobs, length), True)
 
     for i in range(purgeblobs):
@@ -122,7 +122,7 @@ def create_sidewipe_bb3d(length):
         issue_code("\nG1 Z{:.4f} F8640    ; Reset correct Z height to continue print".format(v.current_position_z))
 
     resetfanspeed()
-    issue_code("\nM907 X{}           ; reset motor power".format(v.bigbrain3d_motorpower_normal))
+    v.processed_gcode.append("\nM907 X{}           ; reset motor power".format(v.bigbrain3d_motorpower_normal))
     issue_code("\n;-------------------------------\n", True)
 
 

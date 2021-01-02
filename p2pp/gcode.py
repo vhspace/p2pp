@@ -79,12 +79,21 @@ def create_command(gcode_line, is_comment=False, userclass=0):
 def create_commandstring(gcode_tupple):
     if gcode_tupple[COMMAND]:
         p = gcode_tupple[COMMAND]
-        if gcode_tupple[X] is not None:
-            p = p + " X{:0.3f}".format(gcode_tupple[X])
-        if gcode_tupple[Y] is not None:
-            p = p + " Y{:0.3f}".format(gcode_tupple[Y])
-        if gcode_tupple[Z] is not None:
-            p = p + " Z{:0.3f}".format(gcode_tupple[Z])
+        if gcode_tupple[MOVEMENT]:
+            if gcode_tupple[X] is not None:
+                p = p + " X{:0.3f}".format(gcode_tupple[X])
+            if gcode_tupple[Y] is not None:
+                p = p + " Y{:0.3f}".format(gcode_tupple[Y])
+            if gcode_tupple[Z] is not None:
+                p = p + " Z{:0.3f}".format(gcode_tupple[Z])
+        else:
+            if gcode_tupple[X] is not None:
+                p = p + " X{}".format(gcode_tupple[X])
+            if gcode_tupple[Y] is not None:
+                p = p + " Y{}".format(gcode_tupple[Y])
+            if gcode_tupple[Z] is not None:
+                p = p + " Z{}".format(gcode_tupple[Z])
+
         if gcode_tupple[E] is not None:
             p = p + " E{:0.5f}".format(gcode_tupple[E])
         if gcode_tupple[F] is not None:
