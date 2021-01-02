@@ -120,13 +120,13 @@ def entertower(layer_hght):
 
     purgeheight = layer_hght - v.cur_tower_z_delta
 
-    if v.keep_z != purgeheight:
+    if v.current_position_z != purgeheight:
         v.max_tower_delta = max(v.cur_tower_z_delta, v.max_tower_delta)
         gcode.issue_code(";------------------------------", True)
         gcode.issue_code(";  P2PP DELTA ENTER", True)
-        gcode.issue_code(";  Current printing Z = {:.2f}".format(v.keep_z), True)
+        gcode.issue_code(";  Current printing Z = {:.2f}".format(v.current_position_z), True)
         gcode.issue_code(";  Tower Z = {:.2f}".format(purgeheight), True)
-        gcode.issue_code(";  Delta = {:.2f} ".format(v.keep_z - purgeheight), True)
+        gcode.issue_code(";  Delta = {:.2f} ".format(v.current_position_z - purgeheight), True)
         gcode.issue_code(";------------------------------", True)
 
         if v.retraction >= 0:
@@ -469,7 +469,7 @@ def gcode_parselines():
                 gcode.issue_command(g)
                 continue
             else:
-                v.keep_z = g[gcode.Z]
+                v.current_position_z = g[gcode.Z]
 
         if g[gcode.MOVEMENT] & 16:
             v.keep_speed = g[gcode.F]
@@ -500,7 +500,7 @@ def gcode_parselines():
 
                 if current_block_class == CLS_NORMAL:
                     if v.towerskipped:
-                        gcode.issue_code("G1 Z{:.2f} F10810".format(v.keep_z))
+                        gcode.issue_code("G1 Z{:.2f} F10810".format(v.current_position_z))
                         v.towerskipped = False
 
             if current_block_class == CLS_TOOL_PURGE:
@@ -617,7 +617,7 @@ def gcode_parselines():
 
                 gcode.issue_code("G1 F8640 ; correct speed")
                 gcode.issue_command(g)
-                gcode.issue_code("G1 Z{} F10800 ;P2PP correct z-moves".format(v.keep_z))
+                gcode.issue_code("G1 Z{} F10800 ;P2PP correct z-moves".format(v.current_position_z))
 
                 v.toolchange_processed = False
                 continue

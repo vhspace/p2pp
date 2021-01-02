@@ -14,9 +14,9 @@ warning = True
 def swap_pause(command):
     global warning
     if v.z_maxheight > 0:
-        lift = min(v.keep_z + 20, v.z_maxheight )
+        lift = min(v.current_position_z + 20, v.z_maxheight)
     else:
-        lift =v.keep_z + 20
+        lift = v.current_position_z + 20
         if warning:
             gui.log_warning("Manual swap lift of 20 without constraint!!")
 
@@ -25,5 +25,5 @@ def swap_pause(command):
     gc.issue_code(command)
 
 
-def swap_unpause(z = v.keep_z):
-    gc.issue_code("G1 Z{:.2f F10800".format(v.keep_z))
+def swap_unpause(z = v.current_position_z):
+    gc.issue_code("G1 Z{:.2f F10800".format(v.current_position_z))

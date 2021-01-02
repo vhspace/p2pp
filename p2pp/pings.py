@@ -61,7 +61,7 @@ def check_accessorymode_second(e):
             proc = v.acc_ping_left / e
             int_x = interpollate(v.previous_position_x, v.current_position_x, proc)
             int_y = interpollate(v.previous_position_y, v.current_position_y, proc)
-            to_z = v.keep_z
+            to_z = v.current_position_z
             gcode.issue_code("G1 X{:.4f} Y{:.4f} Z{:.4f} E{:.4f}".format(int_x, int_y, to_z, v.acc_ping_left))
             e -= v.acc_ping_left
             v.acc_ping_left = 0
