@@ -156,7 +156,7 @@ def parse_prusaslicer_config():
                 v.variable_layer = int(gcode_line[parameter_start + 1:].strip()) == 1
             continue
 
-        if gcode_line.startswith("; bed_shape"):
+        if gcode_line.startswith("; bed_shape") and not v.bed_shape_warning:
             get_bedshape(gcode_line)
 
         if gcode_line.startswith("; max_print_height"):
