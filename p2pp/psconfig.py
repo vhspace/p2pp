@@ -82,13 +82,13 @@ def filament_volume_to_length(x):
 
 
 def get_bedshape(line):
-    bedshape = re.compile("[-+]?\d*\.\d+|\d+")
+    bedshape = re.compile("([+-]?\d+(\.\d*)?|\.\d+)")
     coords = bedshape.findall(line)
     if len(coords) >= 8:
         x_coords = []
         y_coords = []
 
-        coords = [float(i) for i in coords]
+        coords = [float(i[0]) for i in coords]
         for i in range(len(coords)):
             if i % 2:
                 y_coords.append(coords[i])
@@ -328,8 +328,6 @@ def parse_prusaslicer_config():
             continue
 
         if gcode_line.startswith("; retract_lift = "):
-            if v.filament_list:
-                continue
             lift_error = False
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:

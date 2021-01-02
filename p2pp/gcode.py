@@ -146,11 +146,6 @@ def issue_command(gcode_tupple, speed=0):
                 v.absolute_counter += gcode_tupple[E]
                 gcode_tupple[E] = v.absolute_counter
 
-        if gcode_tupple[MOVEMENT] & 1:
-            v.current_position_x = gcode_tupple[X]
-        if gcode_tupple[MOVEMENT] & 2:
-            v.current_position_y = gcode_tupple[Y]
-
     elif v.absolute_extruder:
         if gcode_tupple[COMMAND] == "M83":
             gcode_tupple[COMMAND] = "M82"

@@ -27,7 +27,6 @@ filament_color_code = ["-"] * 20
 filament_short = [0, 0, 0, 0]
 
 retraction = 0.0
-filament_list = False
 retract_lift = [0.6, 0.6, 0.6, 0.6]
 retract_length = [0.8, 0.8, 0.8, 0.8]
 filament_diameter = [1.75, 1.75, 1.75, 1.75]
@@ -146,7 +145,6 @@ ping_interval = 350  # type: float
 max_ping_interval = 3000  # type: float
 ping_length_multiplier = 1.03  # type: float
 sidewipe_correction = 1.0  # type: float
-volumetric_e = False  # type: bool
 autoaddsplice = False  # type: bool
 autoadded_purge = 0.0  # type: float
 

@@ -15,37 +15,17 @@ layerpurge = []
 _required = []
 
 
-# calculate the required number of purge length per layer
-def calculate_required(base):
-    maxup = 0
 
-    tmp = []
+def _zigurat_model(purgereq):
+    ret = [ ]
+    max_to_come = 0
+    for idx in range(len(purgereq)-1, -1, -1):
+        max_to_come = max(max_to_come, purgereq[idx])
+        ret.insert(0, max_to_come)
+    return ret
 
-    for layer in range(len(base)-1, -1, -1):
-        maxup = max(maxup, base[layer])
-        tmp.append(maxup)
-
-    return tmp
-
-
-def optimize_tower(maxdeltalayers) :
-
-    optimized = []
-
-
-    def avg_purge(layer_, maxdiff):
-        sum = 0
-        count = 0
-        for l in range(max(0, layer_ - maxdiff), layer_+1):
-            sum += layerpurge[l]
-            count += 1
-        return sum/count
-
-    for layer in range(len(layerpurge)):
-        optimized.append(avg_purge(layer,maxdeltalayers))
-
-    return calculate_required(optimized)
-
+def optimize_zigurat():
+    pass
 
 if __name__ == "__main__":
     stop = 50 + random()*50
@@ -56,18 +36,8 @@ if __name__ == "__main__":
             layerpurge.append((int(random() * 4) + 1) * (100 + 20 * random()))
 
     print (sum(layerpurge), layerpurge)
-    _required = calculate_required(layerpurge)
-    _required.reverse()
-    print(sum(_required), _required)
-    _required = optimize_tower(20)
-    _required.reverse()
-    print(sum(_required), _required)
-    _required = optimize_tower(50)
-    _required.reverse()
-    print(sum(_required), _required)
-    _required = optimize_tower(100)
-    _required.reverse()
-    print(sum(_required), _required)
+    zigurat = _zigurat_model(layerpurge)
+    print(sum(zigurat), zigurat)
 
 
 

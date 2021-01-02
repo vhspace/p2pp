@@ -458,10 +458,12 @@ def gcode_parselines():
         if g[gcode.MOVEMENT] & 1:
             v.previous_purge_keep_x = v.purge_keep_x
             v.purge_keep_x = g[gcode.X]
+            v.current_position_x = g[gcode.X]
 
         if g[gcode.MOVEMENT] & 2:
             v.previous_purge_keep_y = v.purge_keep_y
             v.purge_keep_y = g[gcode.Y]
+            v.current_position_y = g[gcode.Y]
 
         if g[gcode.MOVEMENT] & 4:
             if v.disable_z:
@@ -744,8 +746,11 @@ def generate(input_file, output_file):
 
     if v.side_wipe:
 
-        if v.skirts and v.ps_version >= "2.2":
-            gui.log_warning("SIDEWIPE and SKIRTS are NOT compatible in PS2.2 or later")
+        if v.skirts :
+            if v.ps_version >= "2.2":
+                gui.log_warning("SIDEWIPE and SKIRTS are NOT compatible in PS2.2 or later")
+            if v.full_purge_reduction:
+                gui.log_warning("FULLPURGE and SKIRTS are NOT compatible.  Overlaps may occur")
 
         if v.wipe_remove_sparse_layers:
             gui.log_warning("SIDE WIPE mode not compatible with sparse wipe tower in PS")

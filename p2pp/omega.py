@@ -313,7 +313,7 @@ def generatewarnings():
                 ";Generated with P2PP version {}\n".format(v.version),
                 ";Processed file:. {}\n".format(v.filename),
                 ";P2PP Processing time {:-5.2f}s\n".format(v.processtime)]
-
+    gui.create_logitem(("Processing time {:-5.2f}s".format(v.processtime)))
     if len(v.process_warnings) == 0:
         warnings.append(";No warnings\n")
     else:
