@@ -200,7 +200,7 @@ ty_offset = 0
 block_classification = 0
 previous_block_classification = 0
 powerchaos = False
-
+retract_move = False
 max_tower_delta = 0.0
 min_tower_delta = 0.0
 
