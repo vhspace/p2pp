@@ -593,6 +593,8 @@ def gcode_parselines():
                 g[gcode.MOVEMENT] |= 3
                 v.retract_move = False
 
+
+
                 if v.retraction <= - v.retract_length[v.current_tool]:
                     gcode.move_to_comment(g, "--P2PP-- Double Retract")
                 else:

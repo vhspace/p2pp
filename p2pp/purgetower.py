@@ -252,6 +252,7 @@ def purge_generate_brim():
     v.retract_move = True
     v.retract_x = last_brim_x
     v.retract_y = last_brim_y
+    retract(v.current_tool)
     # correct the amount of extrusion for the brim
 
 
