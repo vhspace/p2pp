@@ -105,6 +105,10 @@ def check_config_parameters(keyword, value):
         v.autoaddsplice = True
         return
 
+    if keyword == "POWERCHAOS":
+        v.powerchaos = True
+        return
+
     if keyword == "MINSTARTSPLICE":
         v.min_start_splice_length = floatparameter(value)
         if v.min_start_splice_length < 100:
@@ -200,10 +204,11 @@ def check_config_parameters(keyword, value):
     if keyword == "LINEARPINGLENGTH":
         v.ping_interval = floatparameter(value)
         v.ping_length_multiplier = 1.0
-        if v.ping_interval < 300:
-            v.ping_interval = 300
-            gui.log_warning("Minimal Linear Ping distance is 300mm!  Your config stated: {}".format(value))
-        gui.create_logitem("Linear Ping interval of  {:-6.2f}mm".format(v.ping_interval))
+        if not v.powerchaos:
+            if v.ping_interval < 300:
+                v.ping_interval = 300
+                gui.log_warning("Minimal Linear Ping distance is 300mm!  Your config stated: {}".format(value))
+            gui.create_logitem("Linear Ping interval of  {:-6.2f}mm".format(v.ping_interval))
         return
 
     # SIDE TRANSITIONING

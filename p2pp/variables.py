@@ -199,8 +199,7 @@ tx_offset = 0   #offset for temp wait positions
 ty_offset = 0
 block_classification = 0
 previous_block_classification = 0
-
-retract_move = False
+powerchaos = False
 
 max_tower_delta = 0.0
 min_tower_delta = 0.0
