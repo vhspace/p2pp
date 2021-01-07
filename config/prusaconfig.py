@@ -130,7 +130,7 @@ def loadconfig(tpe, inifile, store):
     try:
         store.clear()
         file = addtopath(folder(tpe), inifile)
-        inputfile = open(file, "r", encoding="utf-8")
+        inputfile = open(file, "r", encoding="utf8")
         config = inputfile.readlines()
         inputfile.close()
 
