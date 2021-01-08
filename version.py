@@ -80,5 +80,6 @@ latest_stable_version = ""
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
+
 if __name__ == "__main__":
     print(Version)

@@ -17,7 +17,7 @@ import os
 import copy
 import pickle
 
-form = None
+form = None #set externally
 
 configs = {"printers": {},
            "prints": {},
