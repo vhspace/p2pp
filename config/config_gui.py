@@ -46,7 +46,7 @@ def config_file():
 def set_config():
     try:
         cfg = pickle.load(open(config_file(), "rb"))
-    except KeyError:
+    except (KeyError, FileNotFoundError, IOError):
         return
 
     # Basic P2PP

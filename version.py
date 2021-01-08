@@ -12,7 +12,7 @@ __status__ = 'BETA'
 # general version info
 MajorVersion = 6
 MinorVersion = 2
-Build = 12
+Build = 13
 
 releaseinfo = {
     '4.16.0': "final release for PrusaSlicer 2.2.0",
@@ -72,6 +72,7 @@ releaseinfo = {
     "6.2.10": "BB3D motor power command corrected",
     "6.2.11": "retraction after generating BRIM in fullpurge mode",
     "6.2.12": "changed code loading in UTF-8",
+    "6.2.13": "IO Error for non-existing lastconf.conf file",
     '--- RELEASE INFORMATION': 'END'
 }
 
