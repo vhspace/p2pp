@@ -158,9 +158,9 @@ def writeconfig(tpe, inifile, outstore):
     try:
         file = addtopath(folder(tpe), inifile + ".ini")
         outputfile = open(file, "wb")
-        outputfile.write("# Generated config file [{}]with P2PP Configurator {}".format(inifile, separator).encode('ascii'))
+        outputfile.write("# Generated config file [{}]with P2PP Configurator {}".format(inifile, separator).encode('utf8'))
         for entry in sorted(outstore.keys()):
-            outputfile.write("{} = {}{}".format(entry, outstore[entry], separator).encode('ascii'))
+            outputfile.write("{} = {}{}".format(entry, outstore[entry], separator).encode('utf8'))
 
     except (IOError, KeyError):
         conf.create_logitem("error writing config file {}".format(inifile), "red")
