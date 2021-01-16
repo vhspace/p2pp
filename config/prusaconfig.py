@@ -172,18 +172,20 @@ def setstatus(str):
 
 def omega_inspect(file):
     try:
-        inf = open(file, "r")
+        inf = open(file, "r", encoding="utf8")
         lines = inf.readlines()
         inf.close()
     except (IOError, UnicodeDecodeError):
-        conf.form.statusBar.showMessage("Could not retrieve Printer Profile ID from {}".format(file))
+        conf.form.statusBar.showMessage("Could not read from {}".format(file))
         return
 
     for item in lines:
-        if item.startswith("O22 D"):
-            conf.form.printerprofile.setText(item[5:21].upper())
-            conf.create_logitem("Retrieved printer profile ID {} from {}".format(item[5:21], file))
-            conf.form.statusBar.showMessage("Retrieved printer profile ID {} from {}".format(item[5:21], file))
+        pos = item.find("O22 D")
+        if pos != -1:
+            printerid = item[pos+5:pos+21].upper()
+            conf.form.printerprofile.setText(printerid)
+            conf.create_logitem("Retrieved printer profile ID {} from {}".format(printerid, file))
+            conf.form.statusBar.showMessage("Retrieved printer profile ID {} from {}".format(printerid, file))
             return
 
     conf.create_logitem("Could not retrieve Printer Profile ID supplied file")
