@@ -180,8 +180,7 @@ def omega_inspect(file):
         return
 
     for item in lines:
-        item.strip()
-        if item.startswith("O22 D") and len(item) == 22:
+        if item.startswith("O22 D"):
             conf.form.printerprofile.setText(item[5:21].upper())
             conf.create_logitem("Retrieved printer profile ID {} from {}".format(item[5:21], file))
             conf.form.statusBar.showMessage("Retrieved printer profile ID {} from {}".format(item[5:21], file))
