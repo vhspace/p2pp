@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2020, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -67,7 +67,7 @@ def algorithm_create_table():
                                          v.used_filament_types.index(v.filament_type[j]) + 1)
                 if algo_key in splice_list:
                     continue
-            except (IndexError, KeyError):
+            except:
                 continue
 
             if not algorithm_transition_used(i, j):
@@ -99,13 +99,6 @@ def header_generate_omega(job_name):
 
     if len(v.splice_extruder_position) == 0:
         gui.log_warning("This does not look like a multi-colour file.\n")
-        if v.gui:
-            if gui.ask_yes_no('Not a Multi-Colour file?',
-                              "This doesn't look like a multi-colour file. Skip processing?"):
-                exit(1)
-        else:
-            if yes_or_no("This does not look like a multi-colour file.. Skip P2PP Processing?\n"):
-                exit(1)
 
     algorithm_create_table()
     if not v.palette_plus:
@@ -320,7 +313,7 @@ def generatewarnings():
                 ";Generated with P2PP version {}\n".format(v.version),
                 ";Processed file:. {}\n".format(v.filename),
                 ";P2PP Processing time {:-5.2f}s\n".format(v.processtime)]
-
+    gui.create_logitem(("Processing time {:-5.2f}s".format(v.processtime)))
     if len(v.process_warnings) == 0:
         warnings.append(";No warnings\n")
     else:

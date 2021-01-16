@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2020, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -10,6 +10,7 @@ __email__ = 'P2PP@pandora.be'
 import p2pp.purgetower as purgetower
 import p2pp.variables as v
 from p2pp.gcode import issue_code
+import p2pp.manualswap as swap
 
 
 #
@@ -100,8 +101,13 @@ def create_sidewipe_bb3d(length):
         issue_code("\nG1 Y{:.3f} F8640    ; change Y position to purge equipment".format(v.bigbrain3d_y_position))
 
     issue_code("G1 X{:.3f} F10800  ; go near edge of bed".format(v.bigbrain3d_x_position - 30))
+
+    if v.manual_filament_swap:
+        swap.swap_pause("M25")
+        swap.swap_unpause()
+
     issue_code("G4 S0               ; wait for the print buffer to clear")
-    issue_code("M907 X{}           ; increase motor power".format(v.bigbrain3d_motorpower_high))
+    v.processed_gcode.append("M907 X{}           ; increase motor power".format(v.bigbrain3d_motorpower_high))
     issue_code("; -- P2PP -- Generating {} blobs for {}mm of purge".format(purgeblobs, length), True)
 
     for i in range(purgeblobs):
@@ -116,7 +122,7 @@ def create_sidewipe_bb3d(length):
         issue_code("\nG1 Z{:.4f} F8640    ; Reset correct Z height to continue print".format(v.current_position_z))
 
     resetfanspeed()
-    issue_code("\nM907 X{}           ; reset motor power".format(v.bigbrain3d_motorpower_normal))
+    v.processed_gcode.append("\nM907 X{}           ; reset motor power".format(v.bigbrain3d_motorpower_normal))
     issue_code("\n;-------------------------------\n", True)
 
 
@@ -144,6 +150,10 @@ def create_side_wipe(length=0):
 
         issue_code("G1 F8640")
         issue_code("G1 {} Y{}".format(v.side_wipe_loc, v.sidewipe_miny))
+
+        if v.manual_filament_swap:
+            swap.swap_pause("M25")
+            swap.swap_unpause()
 
         delta_y = abs(v.sidewipe_maxy - v.sidewipe_miny)
 

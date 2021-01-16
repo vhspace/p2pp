@@ -1,6 +1,6 @@
 
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2020, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -27,11 +27,11 @@ filament_color_code = ["-"] * 20
 filament_short = [0, 0, 0, 0]
 
 retraction = 0.0
-filament_list = False
 retract_lift = [0.6, 0.6, 0.6, 0.6]
 retract_length = [0.8, 0.8, 0.8, 0.8]
 filament_diameter = [1.75, 1.75, 1.75, 1.75]
 filament_ids = []
+nozzle_diameter = 0.4
 
 wiping_info = []
 accessory_mode = False  # type Bool
@@ -145,7 +145,6 @@ ping_interval = 350  # type: float
 max_ping_interval = 3000  # type: float
 ping_length_multiplier = 1.03  # type: float
 sidewipe_correction = 1.0  # type: float
-volumetric_e = False  # type: bool
 autoaddsplice = False  # type: bool
 autoadded_purge = 0.0  # type: float
 
@@ -165,7 +164,6 @@ extra_runout_filament = 150  # type: int  # Provide extra filament at the end of
 min_splice_length = 70  # type: int  # Minimum overall splice length.
 min_start_splice_length = 100  # type: int  # Minimum first splice length.
 
-gui = True  # Enabled/Disabled by --gui switch - enables GUI Mode which requires tkinter.
 consolewait = False
 
 version = "0.0.0"
@@ -201,9 +199,8 @@ tx_offset = 0   #offset for temp wait positions
 ty_offset = 0
 block_classification = 0
 previous_block_classification = 0
-
+powerchaos = False
 retract_move = False
-
 max_tower_delta = 0.0
 min_tower_delta = 0.0
 
@@ -212,8 +209,6 @@ retract_y = None
 
 purge_pos_x = 0
 purge_pos_y = 0
-
-keep_z = 0.0
 
 saved_fanspeed = 0
 ignore_warnings = False
@@ -298,9 +293,32 @@ regex_p2pp = re.compile("^;\s*P2PP\s+([^=]+)=?(.*)$")
 
 absolute_counter = -9999
 layer_end = []
-
+last_layer_processed = -1
 
 layer_toolchange_counter = 0
 layer_emptygrid_counter = 0
 
 generate_M0 = True
+
+exit_enabled = False
+
+side_wipe_state = 0
+
+filament_count = 4
+
+# manual swap
+manual_filament_swap = False
+z_maxheight = -1
+
+# bed projection
+bed = None
+bedtrace = False
+
+
+#klipper support
+klipper = False
+
+
+# disabke Z-movements during low tower
+
+disable_z = False

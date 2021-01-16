@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2020, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -8,6 +8,7 @@ __maintainer__ = 'Tom Van den Eede'
 __email__ = 'P2PP@pandora.be'
 
 import p2pp.variables as v
+import p2pp.bedprojection as bp
 
 X = 0
 Y = 1
@@ -78,12 +79,21 @@ def create_command(gcode_line, is_comment=False, userclass=0):
 def create_commandstring(gcode_tupple):
     if gcode_tupple[COMMAND]:
         p = gcode_tupple[COMMAND]
-        if gcode_tupple[X] is not None:
-            p = p + " X{:0.3f}".format(gcode_tupple[X])
-        if gcode_tupple[Y] is not None:
-            p = p + " Y{:0.3f}".format(gcode_tupple[Y])
-        if gcode_tupple[Z] is not None:
-            p = p + " Z{:0.3f}".format(gcode_tupple[Z])
+        if gcode_tupple[MOVEMENT]:
+            if gcode_tupple[X] is not None:
+                p = p + " X{:0.3f}".format(gcode_tupple[X])
+            if gcode_tupple[Y] is not None:
+                p = p + " Y{:0.3f}".format(gcode_tupple[Y])
+            if gcode_tupple[Z] is not None:
+                p = p + " Z{:0.3f}".format(gcode_tupple[Z])
+        else:
+            if gcode_tupple[X] is not None:
+                p = p + " X{}".format(gcode_tupple[X])
+            if gcode_tupple[Y] is not None:
+                p = p + " Y{}".format(gcode_tupple[Y])
+            if gcode_tupple[Z] is not None:
+                p = p + " Z{}".format(gcode_tupple[Z])
+
         if gcode_tupple[E] is not None:
             p = p + " E{:0.5f}".format(gcode_tupple[E])
         if gcode_tupple[F] is not None:
@@ -95,7 +105,7 @@ def create_commandstring(gcode_tupple):
             p = p + " " + gcode_tupple[COMMENT]
     else:
         p = gcode_tupple[COMMENT]
-
+    #
     # try:
     #     p = p + ";\t{} - ".format(gcode_tupple[CLASS])+v.classes[gcode_tupple[CLASS]]
     # except KeyError:
@@ -130,7 +140,6 @@ def get_parameter(gcode_tupple, pv, defaultvalue=0):
         return gcode_tupple[pv]
     return defaultvalue
 
-
 def issue_command(gcode_tupple, speed=0):
 
     if gcode_tupple[MOVEMENT]:
@@ -145,13 +154,6 @@ def issue_command(gcode_tupple, speed=0):
                     v.absolute_counter = 0
                 v.absolute_counter += gcode_tupple[E]
                 gcode_tupple[E] = v.absolute_counter
-
-        if gcode_tupple[MOVEMENT] & 1:
-            v.current_position_x = gcode_tupple[X]
-        if gcode_tupple[MOVEMENT] & 2:
-            v.current_position_y = gcode_tupple[Y]
-        if gcode_tupple[MOVEMENT] & 4:
-            v.current_position_z = gcode_tupple[Z]
 
     elif v.absolute_extruder:
         if gcode_tupple[COMMAND] == "M83":

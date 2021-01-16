@@ -5,5 +5,4 @@ if [ $# -eq -0 ]
 then
      $DIRECTORY/P2PP.py
 else
-     $DIRECTORY/P2PP.py -i "$1"
-fi
+     $DIRECTORY/P2PP.py "$1"

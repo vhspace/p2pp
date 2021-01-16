@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2020, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -82,13 +82,13 @@ def filament_volume_to_length(x):
 
 
 def get_bedshape(line):
-    bedshape = re.compile("[-+]?\d*\.\d+|\d+")
+    bedshape = re.compile("([+-]?\d+(\.\d*)?|\.\d+)")
     coords = bedshape.findall(line)
     if len(coords) >= 8:
         x_coords = []
         y_coords = []
 
-        coords = [float(i) for i in coords]
+        coords = [float(i[0]) for i in coords]
         for i in range(len(coords)):
             if i % 2:
                 y_coords.append(coords[i])
@@ -106,7 +106,6 @@ def get_bedshape(line):
 
     if len(coords) != 8:
         v.bed_shape_rect = False
-
 
 def parse_prusaslicer_config():
     for idx in range(len(v.input_gcode) - 1, -1, -1):
@@ -126,7 +125,7 @@ def parse_prusaslicer_config():
                 v.ps_version = s2[-1]
                 gui.create_logitem("File was created with PS version:{}".format(v.ps_version))
                 if v.ps_version < "2.2":
-                    gui.log_warning("This version of P2PP is optimized to work with PS2.2 and higher!")
+                    gui.create_logitem("<b>This version of P2PP is optimized to work with PS2.2 and higher!<b>")
             except [ValueError, IndexError]:
                 pass
             continue
@@ -141,6 +140,7 @@ def parse_prusaslicer_config():
                 except [ValueError, IndexError]:
                     pass
             continue
+
         if gcode_line.startswith("; wipe_tower_no_sparse_layers"):
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
@@ -156,8 +156,15 @@ def parse_prusaslicer_config():
                 v.variable_layer = int(gcode_line[parameter_start + 1:].strip()) == 1
             continue
 
-        if gcode_line.startswith("; bed_shape"):
+        if gcode_line.startswith("; bed_shape") and not v.bed_shape_warning:
             get_bedshape(gcode_line)
+
+        if gcode_line.startswith("; max_print_height"):
+
+            parameter_start = gcode_line.find("=")
+            if parameter_start != -1:
+                v.z_maxheight = float(gcode_line[parameter_start + 1:].strip())
+            continue
 
         if gcode_line.startswith("; wipe_tower_x"):
             parameter_start = gcode_line.find("=")
@@ -192,7 +199,14 @@ def parse_prusaslicer_config():
         if gcode_line.startswith("; extrusion_width"):
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
-                v.extrusion_width = float(gcode_line[parameter_start + 1:].strip())
+                parm = gcode_line[parameter_start + 1:].strip()
+                if parm[-1] == "%":
+                    parm = parm.replace("%", "").strip()
+                    tmpval = float(parm)
+                    v.extrusion_width = v.nozzle_diameter * tmpval / 100.0
+                else:
+                    v.extrusion_width = float(gcode_line[parameter_start + 1:].strip())
+
                 v.tx_offset = 2 + 4 * v.extrusion_width
                 v.yy_offset = 2 + 8 * v.extrusion_width
             continue
@@ -227,7 +241,15 @@ def parse_prusaslicer_config():
             if parameter_start != -1:
                 tmp = float(gcode_line[parameter_start + 1:].strip())
                 v.support_material = tmp == 1
+            continue
 
+        if gcode_line.startswith("; nozzle_diameter "):
+            parameter_start = gcode_line.find("=")
+            if parameter_start != -1:
+                tmp = gcode_line[parameter_start + 1:].strip().split(",")
+                tmp = float(tmp[0])
+
+                v.nozzle_diameter = tmp
             continue
 
         if gcode_line.startswith("; start_filament_gcode "):
@@ -264,8 +286,9 @@ def parse_prusaslicer_config():
             parameter_start = gcode_line.find("#")
             if parameter_start != -1:
                 filament_colour = gcode_line.split(";")
-            if len(filament_colour) >= 4:
-                for i in range(len(filament_colour)):
+            v.filament_count = len(filament_colour)
+            if v.filament_count >= 4:
+                for i in range(v.filament_count):
                     if filament_colour[i] == "":
                         filament_colour[i] = v.filament_color_code[i]
                     else:
@@ -305,8 +328,6 @@ def parse_prusaslicer_config():
             continue
 
         if gcode_line.startswith("; retract_lift = "):
-            if v.filament_list:
-                continue
             lift_error = False
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
@@ -357,8 +378,8 @@ def parse_prusaslicer_config():
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
                 gcode_line = gcode_line[parameter_start + 1:].replace(";", "")
-                if not  "1" in gcode_line:
-                    gui.log_warning("P2PP reauires input file with RELATIVE extrusion")
+                if not "1" in gcode_line:
+                    gui.log_warning("P2PP requires input file with RELATIVE extrusion")
             continue
 
         # TVDE: needs to be expanded to be able to support more than 4 colors
@@ -379,5 +400,5 @@ def parse_prusaslicer_config():
             v.max_wipe = max(wiping_info)
             v.wiping_info = wiping_info
             if _warning:
-                gui.log_warning("All purge lenghts 70/70 OR 140.  Purge lenghts may not have been set correctly.")
+                gui.create_logitem("<b>All purge lenghts 70/70 OR 140.  Purge lenghts may not have been set correctly.</b>")
             continue

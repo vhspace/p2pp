@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2020, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -12,6 +12,8 @@ import math
 import p2pp.gcode as gcode
 import p2pp.psconfig as gcodeparser
 import p2pp.variables as v
+import p2pp.manualswap as swap
+import copy
 
 solidlayer = []
 emptylayer = []
@@ -177,9 +179,9 @@ def _purge_update_sequence_index():
 
 def _purge_get_nextcommand_in_sequence():
     if current_purge_form == PURGE_SOLID:
-        return solidlayer[current_purge_index]
+        return copy.deepcopy(solidlayer[current_purge_index])
     else:
-        return emptylayer[current_purge_index]
+        return copy.deepcopy(emptylayer[current_purge_index])
 
 
 def _purge_generate_tower_brim(x, y, w, h):
@@ -250,6 +252,7 @@ def purge_generate_brim():
     v.retract_move = True
     v.retract_x = last_brim_x
     v.retract_y = last_brim_y
+    retract(v.current_tool)
     # correct the amount of extrusion for the brim
 
 
@@ -287,6 +290,11 @@ def purge_generate_sequence():
         if v.retraction == 0:
             retract(v.current_tool)
         gcode.issue_code("G1 X{} Y{} F8640".format(last_posx, last_posy))
+
+        if v.manual_filament_swap:
+            swap.swap_pause("M25")
+            # no need to unpause as the reauired Z-move is part of the remaining sequence
+
     gcode.issue_code("G1 Z{:.2f} F10800".format((v.purgelayer + 1) * v.layer_height))
     unretract(v.current_tool)
     # generate wipe code

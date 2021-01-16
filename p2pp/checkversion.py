@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2020, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -14,7 +14,7 @@ import platform
 version = "https://github.com/tomvandeneede/p2pp/raw/{}/version.py"
 
 MASTER = version.format('master')
-DEV = version.format('dev')
+DEV = version.format('dev_Qt')
 
 _p = platform.python_version().strip()
 python_version = _p[0]

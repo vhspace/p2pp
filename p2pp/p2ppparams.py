@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2020, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -49,7 +49,6 @@ def check_config_parameters(keyword, value):
 
         if len(value) == 16:
             v.printer_profile_string = value
-            gui.set_printer_id(v.printer_profile_string)
         return
 
     if keyword == "ACCESSORYMODE_MAF":
@@ -85,6 +84,11 @@ def check_config_parameters(keyword, value):
         gui.create_logitem("Extra filament at end of print {:-8.2f}mm".format(v.extra_runout_filament))
         return
 
+    if keyword == "MANUAL_SWAP":
+        v.manual_filament_swap = True
+        gui.create_logitem("Manual filament swap in place.")
+        return
+
     if keyword == "BEFORESIDEWIPEGCODE":
         v.before_sidewipe_gcode.append(value)
         return
@@ -99,6 +103,10 @@ def check_config_parameters(keyword, value):
 
     if keyword == "AUTOADDPURGE":
         v.autoaddsplice = True
+        return
+
+    if keyword == "POWERCHAOS":
+        v.powerchaos = True
         return
 
     if keyword == "MINSTARTSPLICE":
@@ -175,9 +183,9 @@ def check_config_parameters(keyword, value):
     if keyword == "BIGBRAIN3D_ENABLE":
         if not v.wipe_remove_sparse_layers:
             v.bigbrain3d_purge_enabled = True
-            gui.log_warning("BIGBRAIN3D Will only work with installed hardware on a Prusa Printer")
+            gui.create_logitem("<b>BIGBRAIN3D Will only work with installed hardware on a Prusa Printer</b>")
         else:
-            gui.log_warning("BIGBRAIN3D mode not compatible with sparse wipe tower in PS")
+            gui.log_warning("<b>BIGBRAIN3D mode not compatible with sparse wipe tower in PS</b>")
         return
 
     if keyword == "BIGBRAIN3D_SMARTFAN":
@@ -196,10 +204,11 @@ def check_config_parameters(keyword, value):
     if keyword == "LINEARPINGLENGTH":
         v.ping_interval = floatparameter(value)
         v.ping_length_multiplier = 1.0
-        if v.ping_interval < 300:
-            v.ping_interval = 300
-            gui.log_warning("Minimal Linear Ping distance is 300mm!  Your config stated: {}".format(value))
-        gui.create_logitem("Linear Ping interval of  {:-6.2f}mm".format(v.ping_interval))
+        if not v.powerchaos:
+            if v.ping_interval < 300:
+                v.ping_interval = 300
+                gui.log_warning("Minimal Linear Ping distance is 300mm!  Your config stated: {}".format(value))
+            gui.create_logitem("Linear Ping interval of  {:-6.2f}mm".format(v.ping_interval))
         return
 
     # SIDE TRANSITIONING
@@ -255,26 +264,30 @@ def check_config_parameters(keyword, value):
         import p2pp.checkversion as cv
         import version
         latest = cv.get_version(cv.MASTER)
-        if latest > version.Version:
-            gui.create_logitem("New development version of P2PP available ({})".format(latest), "red", False, "2.0")
+        if latest:
+            if latest > version.Version:
+                gui.create_logitem("New development version of P2PP available ({})".format(latest), "red", False, "2.0")
+            else:
+                if latest < version.Version:
+                    latest = cv.get_version(cv.DEV)
+                    if latest > version.Version:
+                        gui.create_logitem("New development version of P2PP available ({})".format(latest), "red", False,
+                                           "2.0")
         else:
-            if latest < version.Version:
-                latest = cv.get_version(cv.DEV)
-                if latest > version.Version:
-                    gui.create_logitem("New development version of P2PP available ({})".format(latest), "red", False,
-                                       "2.0")
-
-    # Program parameters
-    if keyword == "NOGUI":
-        v.gui = False
-        return
+            gui.create_logitem("Could not check for latest online version")
 
     if keyword == "DO_NOT_GENERATE_M0":
+        return
+        # this command has been obsoleted as harmful to the print
         v.generate_M0 = False
         return
 
     if keyword == "CONSOLEWAIT":
         v.consolewait = True
+        return
+
+    if keyword == "KLIPPER_TOOLCHANGE":
+        v.klipper = True
         return
 
     if keyword == "IGNOREWARNINGS":

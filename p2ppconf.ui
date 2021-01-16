@@ -1,0 +1,1775 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>Tom Van den Eede</author>
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1095</width>
+    <height>895</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>P2PP - Prusa Slicer 2.3.0 configurator</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="image.qrc">
+    <normaloff>:/newPrefix/icons/icon.png</normaloff>:/newPrefix/icons/icon.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="h" stretch="0,1">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMinAndMaxSize</enum>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="maximumSize">
+         <size>
+          <width>80</width>
+          <height>80</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="image.qrc">:/newPrefix/icons/icon.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>111</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Arial Black</family>
+          <pointsize>20</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>P2PP Configurator for PrusaSlicer 2.3+</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QToolBox" name="toolBox">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <property name="tabSpacing">
+       <number>4</number>
+      </property>
+      <widget class="QWidget" name="page_6">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1077</width>
+         <height>496</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Prusa Configurations</string>
+       </attribute>
+       <widget class="QLabel" name="label_3">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>5</y>
+          <width>1056</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>The following configurable items have been identified</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="printerlist">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>75</y>
+          <width>341</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Printer Profiles - Describe the hardware part of your printer
+
+If your printer does not show up here you migth be using a 
+standard Prusa Printer config which cannot be changed.  
+Save your printer profile under a new name and it should 
+show up here</string>
+        </property>
+        <property name="currentText">
+         <string/>
+        </property>
+        <property name="insertPolicy">
+         <enum>QComboBox::InsertAlphabetically</enum>
+        </property>
+        <property name="modelColumn">
+         <number>0</number>
+        </property>
+       </widget>
+       <widget class="QLabel" name="selPrtr">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>45</y>
+          <width>331</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Select Printer</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QMultiCombo" name="printlist">
+        <property name="geometry">
+         <rect>
+          <x>360</x>
+          <y>75</y>
+          <width>341</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Print Profiles - Describe the print settings (like layer height, infile, ...) 
+part of your settings
+
+If your print does not show up here you migth be using a 
+standard Prusa Print config which cannot be changed.  
+Save your print profile under a new name and it should 
+show up here</string>
+        </property>
+        <property name="currentText">
+         <string/>
+        </property>
+        <property name="insertPolicy">
+         <enum>QComboBox::InsertAlphabetically</enum>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+        </property>
+        <property name="minimumContentsLength">
+         <number>400</number>
+        </property>
+        <property name="modelColumn">
+         <number>0</number>
+        </property>
+       </widget>
+       <widget class="QLabel" name="selPrtr_2">
+        <property name="geometry">
+         <rect>
+          <x>375</x>
+          <y>45</y>
+          <width>311</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Select Print Configuration(s)</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QMultiCombo" name="filamentlist">
+        <property name="geometry">
+         <rect>
+          <x>715</x>
+          <y>75</y>
+          <width>341</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Filament Profiles - Describe the filament specific 
+parameters (temperatures, fan settings, ...)
+
+If your filament does not show up here you migth 
+be using a standard Prusa filament config which 
+cannot be changed.  Save your filament profile 
+under a new name and it should show up here</string>
+        </property>
+        <property name="currentText">
+         <string/>
+        </property>
+        <property name="insertPolicy">
+         <enum>QComboBox::InsertAlphabetically</enum>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+        </property>
+        <property name="minimumContentsLength">
+         <number>400</number>
+        </property>
+        <property name="modelColumn">
+         <number>0</number>
+        </property>
+       </widget>
+       <widget class="QLabel" name="selPrtr_3">
+        <property name="geometry">
+         <rect>
+          <x>725</x>
+          <y>45</y>
+          <width>311</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Filament Configurations</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="backup">
+        <property name="geometry">
+         <rect>
+          <x>270</x>
+          <y>365</y>
+          <width>576</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>I have made a backup of my configurations prior to running this utility</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="applyConfig">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>435</x>
+          <y>410</y>
+          <width>251</width>
+          <height>30</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>APPLY CONFIG</string>
+        </property>
+       </widget>
+       <widget class="QDropTarget" name="droptgt_canvas">
+        <property name="geometry">
+         <rect>
+          <x>740</x>
+          <y>200</y>
+          <width>166</width>
+          <height>111</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Drag a Palette 2 GCODE file over this target to
+ automatically retrieve the Printer Profile ID</string>
+        </property>
+        <property name="text">
+         <string>DRAG WORKING 
+CANVAS GCODE
+HERE</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_26">
+        <property name="geometry">
+         <rect>
+          <x>600</x>
+          <y>125</y>
+          <width>421</width>
+          <height>56</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Use the drop target below to retrieve the Profile ID from the GCODE of a print you performed before (e.g. with Canvas)</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="includeDefault">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>235</y>
+          <width>386</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Add prusa Default items to dropdown</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_3">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1077</width>
+         <height>496</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Basic P2PP Configuration </string>
+       </attribute>
+       <widget class="QLabel" name="PrinterProfile">
+        <property name="geometry">
+         <rect>
+          <x>135</x>
+          <y>15</y>
+          <width>226</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Printer Profile</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="printerprofile">
+        <property name="geometry">
+         <rect>
+          <x>370</x>
+          <y>15</y>
+          <width>341</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>The printer ID should be retrieved fom a GCODE file that 
+was printed with YOUR Palette 2.   You can manually 
+retrieve the Printer Profile from the this or you can 
+drag/drop the file to the Prusa Conifiguration tab  
+drop target to retrieve it automatically</string>
+        </property>
+        <property name="inputMask">
+         <string>HHHHHHHHHHHHHHHH</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="placeholderText">
+         <string>Copy your pinter profile ID here</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="spliceoffset_lbl">
+        <property name="geometry">
+         <rect>
+          <x>135</x>
+          <y>55</y>
+          <width>226</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Splice Offset</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="spliceoffset">
+        <property name="geometry">
+         <rect>
+          <x>370</x>
+          <y>55</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Splicing offset is the amount of extra filament 
+that is generated AFTER the color change.   
+The purpose of this function is to assure the
+ transition to the new color is still with the wipe 
+tower even if the finalemnt consumption was 
+higher.   Downside of this parameter is that this 
+length comes on top of the purge length for each 
+transition.   It is important to well tune your 
+printer so this value can be reduced as much
+ as possible</string>
+        </property>
+        <property name="inputMask">
+         <string>900</string>
+        </property>
+        <property name="text">
+         <string>40</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_5">
+        <property name="geometry">
+         <rect>
+          <x>490</x>
+          <y>55</y>
+          <width>76</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>mm</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_25">
+        <property name="geometry">
+         <rect>
+          <x>135</x>
+          <y>95</y>
+          <width>226</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Extra filament at end of print</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="extrafilament">
+        <property name="geometry">
+         <rect>
+          <x>370</x>
+          <y>95</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Printers have a certain distance between 
+the extruder motor and the hot end.   
+This can be a short distance with a directly 
+driven extruder, but can be fairly long on 
+a bowden setup.   The length specified 
+here should be the length of the distance 
+between the nozzle tip end the extruder 
+motor plus 50-100mm to allow for 
+overconsumption and to make the filament  
+easy to unload</string>
+        </property>
+        <property name="inputMask">
+         <string>9000</string>
+        </property>
+        <property name="text">
+         <string>150</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_6">
+        <property name="geometry">
+         <rect>
+          <x>490</x>
+          <y>95</y>
+          <width>76</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>mm</string>
+        </property>
+       </widget>
+       <widget class="Line" name="line">
+        <property name="geometry">
+         <rect>
+          <x>45</x>
+          <y>140</y>
+          <width>1001</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="consolewait">
+        <property name="geometry">
+         <rect>
+          <x>135</x>
+          <y>170</y>
+          <width>906</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Keeps the window open even if there 
+are no processing warnings</string>
+        </property>
+        <property name="text">
+         <string>Keep window open after successfull termination</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="saveunprocessed">
+        <property name="geometry">
+         <rect>
+          <x>135</x>
+          <y>210</y>
+          <width>861</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Saves the input file with a suffix _unprocessed 
+so it can be used for comparison/debugging 
+purposes later (this file may be asked for if 
+there are issues witht he processed dcode.</string>
+        </property>
+        <property name="text">
+         <string>Keep a copy of the unprocessed file for debugging/support purposes</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="absoluteextruder">
+        <property name="geometry">
+         <rect>
+          <x>135</x>
+          <y>255</y>
+          <width>866</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Convert the gcode file to absolute 
+extrusion when writing the output file
+(input files ALWAYS have to be 
+relative extrusion files)</string>
+        </property>
+        <property name="text">
+         <string>Convert the output file to absolute extrusions</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="convertfilename">
+        <property name="geometry">
+         <rect>
+          <x>135</x>
+          <y>295</y>
+          <width>921</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Palette uses an .mcf. infix in their filename 
+to drive the &quot;PALETTE&quot; flag on the octoprint 
+display.   This setting will add this 
+functionality to your gcode output file</string>
+        </property>
+        <property name="text">
+         <string>add .mcf Palette indicator to output filename</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="linearping_enable">
+        <property name="geometry">
+         <rect>
+          <x>135</x>
+          <y>335</y>
+          <width>441</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>PINGS are a main feature of Palette to keep 
+the filament creeation and the printer synced 
+up.  By default, palette increases the 
+distance between pings by 3 or 4% per ping.   
+This setting keeps the pings constant so 
+they are evensly spaced in the entire print 
+and the level of correction is the same 
+throughout the whole print.  The minimal 
+Ping length is 350mm.</string>
+        </property>
+        <property name="text">
+         <string>Enable Linear Ping feature</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_7">
+        <property name="geometry">
+         <rect>
+          <x>205</x>
+          <y>380</y>
+          <width>241</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Linear ping length (&gt;350mm)</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="linearping">
+        <property name="geometry">
+         <rect>
+          <x>445</x>
+          <y>380</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="inputMask">
+         <string>9990</string>
+        </property>
+        <property name="text">
+         <string>350</string>
+        </property>
+        <property name="maxLength">
+         <number>4</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_8">
+        <property name="geometry">
+         <rect>
+          <x>570</x>
+          <y>385</y>
+          <width>76</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>mm</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_7">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1077</width>
+         <height>496</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Basic Material Definitions</string>
+       </attribute>
+       <widget class="QTextBrowser" name="materials">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>1041</width>
+          <height>471</height>
+         </rect>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+        <property name="html">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;; P2PP -   MATERIAL SPLICING INFORMATION&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;; P2PP -   All lines should be prefiex by ;P2PP MATERIAL_&amp;lt;material_1&amp;gt;_&amp;lt;material_2&amp;gt;_heating_compression_cooling&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;; P2PP -   &amp;lt;material_1&amp;gt; is the OUTGOING material&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;; P2PP -   &amp;lt;material_2&amp;gt; is the INCOMING material&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;; P2PP -   heating cooling and compression are the parameters taken from splice tuning&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;; P2PP -   MATERIAL_DEFAULT specifies the factors in case the conbination of spliced materials is not found&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;;P2PP MATERIAL_DEFAULT_0_0_0&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;;P2PP MATERIAL_PLA_PLA_0_0_0 &lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;;P2PP MATERIAL_PLA_PLA_0_0_0 &lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="acceptRichText">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_4">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1077</width>
+         <height>496</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Sidewipe / BB3D Configuration</string>
+       </attribute>
+       <widget class="QCheckBox" name="sidewipe_enable">
+        <property name="geometry">
+         <rect>
+          <x>65</x>
+          <y>10</y>
+          <width>941</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Create a SIDEWIPE specific setup</string>
+        </property>
+        <property name="text">
+         <string>Add SideWipe setup to the default P2PP configuration</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="sidewipe_x">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>50</y>
+          <width>241</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>SideWipe X-Position</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="sidewipe_x_2">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>80</y>
+          <width>241</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>SideWipe Minimal Y-Position</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="sidewipe_x_3">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>110</y>
+          <width>241</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>SideWipe Maximal Y-Position</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="sw_xloc">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>50</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>X-Location  at which purge will occur</string>
+        </property>
+        <property name="inputMask">
+         <string>#9000.000</string>
+        </property>
+        <property name="text">
+         <string>254.00</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="sw_miny">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>80</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>During side wipe the Y-location will alter between 
+Y-Min and Y-Max whie extruding.  If you don't 
+want the carriage to move, you can make 
+the extrusion STATIC.   Wipe Feedrate will 
+be lowered to 200 when performing static 
+extrusion</string>
+        </property>
+        <property name="inputMask">
+         <string>#9000.000</string>
+        </property>
+        <property name="text">
+         <string>40.00</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="sw_maxy">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>110</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="inputMask">
+         <string>#9000.000</string>
+        </property>
+        <property name="text">
+         <string>190.00</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="bb_enable">
+        <property name="geometry">
+         <rect>
+          <x>60</x>
+          <y>190</y>
+          <width>941</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Create a Big Brain 3D sidewipe SETUP
+You will need additional BigBrain3D hardware in order to use this setting</string>
+        </property>
+        <property name="text">
+         <string>Add BB3D setup to the default P2PP configuration</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="sidewipe_x_4">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>140</y>
+          <width>241</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Wipe Feedrate</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="sw_wipeFeedrate">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>140</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Rate at which side wipe purge/movemnt is handled.   
+When static purge is used (YMIN=YMAX), the value 
+will be reduced to 200.  When the vale is too high, the 
+hot end may no longer be able to melt the filament 
+in time and the print will get out of sync with Palette 2</string>
+        </property>
+        <property name="inputMask">
+         <string>99999</string>
+        </property>
+        <property name="text">
+         <string>3000</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_10">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>235</y>
+          <width>266</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Big Brain 3D BLOB Size (mm)</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_11">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>265</y>
+          <width>266</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Big Brain 3D COOLING time (s)</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_12">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>295</y>
+          <width>266</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Big Brain 3D Purge X Position</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_13">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>325</y>
+          <width>266</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Big Brain 3D Motor HIGH Power</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_14">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>355</y>
+          <width>266</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Big Brain 3D Motor LOW Power</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_15">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>385</y>
+          <width>266</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Big Brain 3D Fan Off Delay (ms)</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_16">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>415</y>
+          <width>266</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Big Brain 3D Priming BLOBS</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="sidewipe_autoadd">
+        <property name="geometry">
+         <rect>
+          <x>585</x>
+          <y>50</y>
+          <width>466</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Automatically add extra purge if short splices are detected</string>
+        </property>
+        <property name="text">
+         <string>Automatically add purge to compensate for short splices</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="bb3d_blobsize">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>235</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>BLOB Size, 40mm is default, not recommended to change</string>
+        </property>
+        <property name="inputMask">
+         <string>90000</string>
+        </property>
+        <property name="text">
+         <string>40</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="bb3d_coolingtime">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>265</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Cooling time after generating a blob </string>
+        </property>
+        <property name="inputMask">
+         <string>90000</string>
+        </property>
+        <property name="text">
+         <string>20</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="bb3d_locx">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>295</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Xlocation for the carriage when crrating the blob.   
+This location is determines through the
+ BB3D calibration process and should be copied 
+from that output</string>
+        </property>
+        <property name="inputMask">
+         <string>#900.00</string>
+        </property>
+        <property name="text">
+         <string>255.1</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="bb3d_motorhigh">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>325</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Holding torque of the motor when producing a blob.</string>
+        </property>
+        <property name="inputMask">
+         <string>900</string>
+        </property>
+        <property name="text">
+         <string>450</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="bb3d_motorlow">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>355</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>HOlding Torque of the motor when resumung the print</string>
+        </property>
+        <property name="inputMask">
+         <string>900</string>
+        </property>
+        <property name="text">
+         <string>300</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="bb3d_fanoffdelay">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>385</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Delay between the fan off and the generation 
+of the blob.   When generating a blod too early,
+ the fan might still be spinning and cooling 
+the extruded filament resulting in a less 
+perfect blob</string>
+        </property>
+        <property name="inputMask">
+         <string>9000</string>
+        </property>
+        <property name="text">
+         <string>2000</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="bb3d_primingblobs">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>415</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Number of blobs generated before the print starts.  
+This can be used to prime the extruder at the 
+start of the print</string>
+        </property>
+        <property name="inputMask">
+         <string>9</string>
+        </property>
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="bb3d_left">
+        <property name="geometry">
+         <rect>
+          <x>585</x>
+          <y>300</y>
+          <width>391</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>BB3D Mechanism on left side </string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="bb3d_autoadd">
+        <property name="geometry">
+         <rect>
+          <x>585</x>
+          <y>235</y>
+          <width>466</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Automatically add extra purge if short splices are detected</string>
+        </property>
+        <property name="text">
+         <string>Automatically add purge to compensate for short splices</string>
+        </property>
+       </widget>
+       <widget class="Line" name="line_2">
+        <property name="geometry">
+         <rect>
+          <x>62</x>
+          <y>170</y>
+          <width>971</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_17">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>445</y>
+          <width>266</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Big Brain 3D Number of WHACKS</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="bb3d_whacks">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>445</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Number of times the head moved back 
+and forth to eject the blob from the 
+BB3D tool.   </string>
+        </property>
+        <property name="inputMask">
+         <string>9</string>
+        </property>
+        <property name="text">
+         <string>2</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_23">
+        <property name="geometry">
+         <rect>
+          <x>520</x>
+          <y>140</y>
+          <width>451</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Set to 200 is STATIC PURGE</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_24">
+        <property name="geometry">
+         <rect>
+          <x>520</x>
+          <y>110</y>
+          <width>496</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>STATIC Purge is MIN/MAX Y position are the same</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="TowerDeltaConfiguration">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1077</width>
+         <height>496</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Tower Delta Configuration</string>
+       </attribute>
+       <widget class="QCheckBox" name="towerdelta">
+        <property name="geometry">
+         <rect>
+          <x>65</x>
+          <y>20</y>
+          <width>941</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Create a tower delta setup
+</string>
+        </property>
+        <property name="text">
+         <string>Add Tower Delta Setup File</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_18">
+        <property name="geometry">
+         <rect>
+          <x>105</x>
+          <y>85</y>
+          <width>306</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Maximum Tower Delta (mm)</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="maxdelta">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>80</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Maximal difference allowed between
+ the tower and the print.    </string>
+        </property>
+        <property name="inputMask">
+         <string>900</string>
+        </property>
+        <property name="text">
+         <string>30</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_19">
+        <property name="geometry">
+         <rect>
+          <x>55</x>
+          <y>195</y>
+          <width>971</width>
+          <height>236</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>NOTES:
+
+Lowering the Z-height below current print height poses a risk of crashing the X-gantry into the print.  Using this feature requires Caution when selection the location and orientation of the purge block in order to avoid collisione
+
+There  is an (experimental) feature in PrusaSlicer called No Sparse Layers under RINT SETTINGS/Multiple Extruders/Wipe Towerthat offers similar functionality but does not offer the option to limit the delta so more chance of a collision.</string>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::PlainText</enum>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_5">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1077</width>
+         <height>496</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Full Purge Configuration</string>
+       </attribute>
+       <widget class="QLabel" name="label_20">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>350</y>
+          <width>971</width>
+          <height>121</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>NOTES:
+
+Lowering the Z-height below current print height poses a risk of crashing the X-gantry into the print.  Using this feature requires Caution when selection the location and orientation of the purge block in order to avoid collisione
+</string>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::PlainText</enum>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="fullpurge_enable">
+        <property name="geometry">
+         <rect>
+          <x>65</x>
+          <y>25</y>
+          <width>926</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Create a full purge reduction setup file</string>
+        </property>
+        <property name="text">
+         <string>Create a FullPurge Configuration</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="fp_autoadd">
+        <property name="geometry">
+         <rect>
+          <x>65</x>
+          <y>55</y>
+          <width>926</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Automatically add extra purge if short splices are detected</string>
+        </property>
+        <property name="text">
+         <string>Automatically add purge to compensate for short splices</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_9">
+        <property name="geometry">
+         <rect>
+          <x>65</x>
+          <y>90</y>
+          <width>206</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Wipe Feed Rate</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="fp_wipefeedrate">
+        <property name="geometry">
+         <rect>
+          <x>270</x>
+          <y>90</y>
+          <width>113</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Wipe rate at which theourge tower will be printed.  
+First layer will always happen at 1200mm/min 
+to assure proper bed adhesion</string>
+        </property>
+        <property name="inputMask">
+         <string>99999</string>
+        </property>
+        <property name="text">
+         <string>3000</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_8">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1077</width>
+         <height>496</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Accessory Mode Configuration</string>
+       </attribute>
+       <widget class="QCheckBox" name="accmode_p2">
+        <property name="geometry">
+         <rect>
+          <x>75</x>
+          <y>25</y>
+          <width>631</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Generate MAF files for Palette 2 Accessory mode print</string>
+        </property>
+        <property name="text">
+         <string>Palette 2 Accessory Mode (MAF file  GCode)</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="accmode_pplus">
+        <property name="geometry">
+         <rect>
+          <x>75</x>
+          <y>125</y>
+          <width>631</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Generate MSF file for Palette Plus Accessory mode print</string>
+        </property>
+        <property name="text">
+         <string>Palette+ Accessory Mode (MSF file  GCode)</string>
+        </property>
+       </widget>
+       <widget class="Line" name="line_3">
+        <property name="geometry">
+         <rect>
+          <x>55</x>
+          <y>80</y>
+          <width>986</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_21">
+        <property name="geometry">
+         <rect>
+          <x>125</x>
+          <y>185</y>
+          <width>321</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Palette+ PPM Value</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="pplusppm">
+        <property name="geometry">
+         <rect>
+          <x>460</x>
+          <y>185</y>
+          <width>261</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Palette Plus PPM value 
+(retrieve from P+ hardware)</string>
+        </property>
+        <property name="inputMask">
+         <string>#9999999</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="placeholderText">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_22">
+        <property name="geometry">
+         <rect>
+          <x>125</x>
+          <y>220</y>
+          <width>321</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Palette+ Loading Offset</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="pplus_loading">
+        <property name="geometry">
+         <rect>
+          <x>460</x>
+          <y>215</y>
+          <width>261</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Palette Plus Loading Offset 
+(retrieve fom P+ Hardware)</string>
+        </property>
+        <property name="inputMask">
+         <string>#9999999.000</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="placeholderText">
+         <string notr="true" extracomment="Enter P+ Loading Offset here"/>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_9">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1077</width>
+         <height>496</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Processing Log</string>
+       </attribute>
+       <widget class="QTextBrowser" name="log">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>0</y>
+          <width>1061</width>
+          <height>471</height>
+         </rect>
+        </property>
+        <property name="palette">
+         <palette>
+          <active>
+           <colorrole role="Light">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>241</red>
+              <green>242</green>
+              <blue>202</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="BrightText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>234</red>
+              <green>230</green>
+              <blue>158</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="Base">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>242</red>
+              <green>240</green>
+              <blue>203</blue>
+             </color>
+            </brush>
+           </colorrole>
+          </active>
+          <inactive>
+           <colorrole role="Light">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>241</red>
+              <green>242</green>
+              <blue>202</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="BrightText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>234</red>
+              <green>230</green>
+              <blue>158</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="Base">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>242</red>
+              <green>240</green>
+              <blue>203</blue>
+             </color>
+            </brush>
+           </colorrole>
+          </inactive>
+          <disabled>
+           <colorrole role="Light">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>241</red>
+              <green>242</green>
+              <blue>202</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="BrightText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>234</red>
+              <green>230</green>
+              <blue>158</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="Base">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>212</red>
+              <green>208</green>
+              <blue>200</blue>
+             </color>
+            </brush>
+           </colorrole>
+          </disabled>
+         </palette>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="exitButton">
+      <property name="text">
+       <string>Exit PrusaSlicer Config</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QMultiCombo</class>
+   <extends>QComboBox</extends>
+   <header location="global">config.qmulticombo.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QDropTarget</class>
+   <extends>QPushButton</extends>
+   <header>config.qdroptarget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="image.qrc"/>
+  <include location="../../../../image.qrc"/>
+  <include location="../../.designer/backup/image.qrc"/>
+ </resources>
+ <connections/>
+</ui>
