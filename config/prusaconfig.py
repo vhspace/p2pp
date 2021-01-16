@@ -166,12 +166,16 @@ def writeconfig(tpe, inifile, outstore):
         conf.create_logitem("error writing config file {}".format(inifile), "red")
 
 
+def setstatus(str):
+    conf.form.statusBar.showMessage(str)
+
+
 def omega_inspect(file):
     try:
         inf = open(file, "r")
         lines = inf.readlines()
         inf.close()
-    except IOError:
+    except (IOError, UnicodeDecodeError):
         return
 
     for item in lines:

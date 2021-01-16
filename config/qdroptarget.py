@@ -31,11 +31,10 @@ class QDropTarget(QPushButton):
     def dropEvent(self, event):
         data = event.mimeData()
         urls = data.urls()
+        prusaconfig.setstatus("{} - {} ".format(urls[0].scheme(),str(urls[0].path())))
         if urls and urls[0].scheme() == 'file':
             filepath = str(urls[0].path())
             pp = prusaconfig.omega_inspect(filepath)
-
-
             event.acceptProposedAction()
 
 
