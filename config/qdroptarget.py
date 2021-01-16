@@ -33,11 +33,8 @@ class QDropTarget(QPushButton):
         urls = data.urls()
         if urls and urls[0].scheme() == 'file':
             filepath = str(urls[0].path())
+            pp = prusaconfig.omega_inspect(filepath)
 
-            if self.objectName() == "droptgt_canvas" :
-                pp = prusaconfig.omega_inspect(filepath)
-            elif self.objectName() == "droptgt_p2pp":
-                prusaconfig.retrieveconfig(filepath)
 
             event.acceptProposedAction()
 
