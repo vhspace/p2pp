@@ -8,6 +8,7 @@ __email__ = 'P2PP@pandora.be'
 from PyQt5.QtWidgets import QPushButton
 from PyQt5 import QtCore
 import config.prusaconfig as prusaconfig
+import sys
 
 
 class QDropTarget(QPushButton):
@@ -31,9 +32,10 @@ class QDropTarget(QPushButton):
     def dropEvent(self, event):
         data = event.mimeData()
         urls = data.urls()
-        prusaconfig.setstatus("{} - {} ".format(urls[0].scheme(),str(urls[0].path())))
         if urls and urls[0].scheme() == 'file':
             filepath = str(urls[0].path())
+            if sys.platform != 'darwin':
+                filepath = filepath[1:]
             pp = prusaconfig.omega_inspect(filepath)
             event.acceptProposedAction()
 

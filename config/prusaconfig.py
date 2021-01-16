@@ -176,6 +176,7 @@ def omega_inspect(file):
         lines = inf.readlines()
         inf.close()
     except (IOError, UnicodeDecodeError):
+        conf.form.statusBar.showMessage("Could not retrieve Printer Profile ID from {}".format(file))
         return
 
     for item in lines:
