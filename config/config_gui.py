@@ -16,6 +16,7 @@ import sys
 import os
 import copy
 import pickle
+import traceback
 
 form = None
 
@@ -320,231 +321,251 @@ def on_config():
 
     error = 0
 
+    updated_prints = 0
+    updated_printers = 0
+    updated_filaments = 0
+
     # form.toolBox.setCurrentIndex(7)
+    try:
+        create_logitem("Processing started...")
+        form.statusBar.showMessage("Processing...")
+        if not form.backup.isChecked():
+            create_logitem("  Make a backup of your current setup before starting", "red")
+            create_logitem("  Processing ENDED", "red")
+            form.statusBar.showMessage("Processing Error occurred - Backup not confirmed")
+            form.toolBox.setCurrentIndex(7)
+            return
 
-    create_logitem("Processing started...")
-    form.statusBar.showMessage("Processing...")
-    if not form.backup.isChecked():
-        create_logitem("  Make a backup of your current setup before starting", "red")
-        create_logitem("  Processing ENDED", "red")
-        form.statusBar.showMessage("Processing Error occurred - Backup not confirmed")
-        form.toolBox.setCurrentIndex(7)
-        return
+        cfg = get_config()
 
-    cfg = get_config()
+        create_logitem("Checking supplied information...")
 
-    create_logitem("Checking supplied information...")
+        if cfg["printers"] == [] and cfg["prints"] == [] and cfg["filaments"] == []:
+            create_logitem("  Chose at least a printer,  print or filament profile", "red")
+            create_logitem("  Processing ENDED", "red")
+            form.statusBar.showMessage("Processing Error occurred - No item selected")
+            form.toolBox.setCurrentIndex(7)
+            return
 
-    if cfg["printers"] == [] and cfg["prints"] == [] and cfg["filaments"] == []:
-        create_logitem("  Chose at least a printer,  print or filament profile", "red")
-        create_logitem("  Processing ENDED", "red")
-        form.statusBar.showMessage("Processing Error occurred - No item selected")
-        form.toolBox.setCurrentIndex(7)
-        return
+        if len(cfg["printerprofile"]) != 16:
+            create_logitem("  Invalid printer profile ID", "red")
+            form.statusBar.showMessage("Processing Error occurred - Invalid printer profile ID")
+            form.toolBox.setCurrentIndex(7)
+            error += 1
 
-    if len(cfg["printerprofile"]) != 16:
-        create_logitem("  Invalid printer profile ID", "red")
-        form.statusBar.showMessage("Processing Error occurred - Invalid printer profile ID")
-        form.toolBox.setCurrentIndex(7)
-        error += 1
+        # LAYERCONFIG
 
-    # LAYERCONFIG
+        layergcode = [
+            ";LAYER [layer_num]",
+            ";LAYERHEIGHT [layer_z]"
+        ]
 
-    layergcode = [
-        ";LAYER [layer_num]",
-        ";LAYERHEIGHT [layer_z]"
-    ]
+        # BASICCONFIG
 
-    # BASICCONFIG
+        basiccode = [
+            ";P2PP PRINTERPROFILE={}".format(cfg["printerprofile"]),
+            ";P2PP SPLICEOFFSET={}".format(cfg["spliceoffset"]),
+            ";P2PP EXTRAENDFILAMENT={}".format(cfg["extrafilament"]),
+            cfg["materials"]
 
-    basiccode = [
-        ";P2PP PRINTERPROFILE={}".format(cfg["printerprofile"]),
-        ";P2PP SPLICEOFFSET={}".format(cfg["spliceoffset"]),
-        ";P2PP EXTRAENDFILAMENT={}".format(cfg["extrafilament"]),
-        cfg["materials"]
+        ]
 
-    ]
+        if cfg["linearpingenable"]:
+            basiccode.append(";P2PP LINEARPINGLENGTHT={}".format(cfg["linearping"]))
 
-    if cfg["linearpingenable"]:
-        basiccode.append(";P2PP LINEARPINGLENGTHT={}".format(cfg["linearping"]))
+        if cfg["consolewait"]:
+            basiccode.append(";P2PP CONSOLEWAIT")
 
-    if cfg["consolewait"]:
-        basiccode.append(";P2PP CONSOLEWAIT")
+        if cfg["saveunprocessed"]:
+            basiccode.append(";P2PP SAVEUNPROCESSED")
 
-    if cfg["saveunprocessed"]:
-        basiccode.append(";P2PP SAVEUNPROCESSED")
+        if cfg["absoluteextrusion"]:
+            basiccode.append(";P2PP ABSOLUTEEXTRUDER")
 
-    if cfg["absoluteextrusion"]:
-        basiccode.append(";P2PP ABSOLUTEEXTRUDER")
+        # sidewipe code
 
-    # sidewipe code
+        swcode = [
+            ";P2PP SIDEWIPELOC=X{}".format(cfg["sw_xloc"]),
+            ";P2PP SIDEWIPEMINY={}".format(cfg["sw_miny"]),
+            ";P2PP SIDEWIPEMAXY={}".format(cfg["sw_maxy"]),
+            ";P2PP WIPEFEEDRATE={}".format(cfg["sw_wiperate"])
+        ]
 
-    swcode = [
-        ";P2PP SIDEWIPELOC=X{}".format(cfg["sw_xloc"]),
-        ";P2PP SIDEWIPEMINY={}".format(cfg["sw_miny"]),
-        ";P2PP SIDEWIPEMAXY={}".format(cfg["sw_maxy"]),
-        ";P2PP WIPEFEEDRATE={}".format(cfg["sw_wiperate"])
-    ]
+        if cfg["sw_maxy"] == cfg["sw_miny"]:
+            cfg["sw_wiperate"] = "200"
 
-    if cfg["sw_maxy"] == cfg["sw_miny"]:
-        cfg["sw_wiperate"] = "200"
+        if cfg["sw_autoadd"]:
+            swcode.append(";P2PP AUTOADDPURGE")
 
-    if cfg["sw_autoadd"]:
-        swcode.append(";P2PP AUTOADDPURGE")
+        # big brain 3d code
 
-    # big brain 3d code
+        bbcode = [
+            ";P2PP BIGBRAIN3D_BLOBSIZE = {}".format(cfg["bb_blobsize"]),
+            ";P2PP BIGBRAIN3D_COOLINGTIME = {}".format(cfg["bb_cooling"]),
+            ";P2PP BIGBRAIN3D_PURGEPOSITION = {}".format(cfg["bb_xloc"]),
+            ";P2PP BIGBRAIN3D_MOTORPOWER_HIGH = {}".format(cfg["bb_motormax"]),
+            ";P2PP BIGBRAIN3D_MOTORPOWER_NORMAL = {}".format(cfg["bb_motormin"]),
+            ";P2PP BIGBRAIN3D_FAN_OFF_DELAY = {}".format(cfg["bb_fandelay"]),
+            ";P2PP BIGBRAIN3D_ENABLE",
+            ";P2PP BIGBRAIN3D_PRIME_BLOBS = {}".format(cfg["bb_priming"]),
+            ";P2PP BIGBRAIN3D_NUMBER_OF_WHACKS = {}".format(cfg["bb_whacks"])]
 
-    bbcode = [
-        ";P2PP BIGBRAIN3D_BLOBSIZE = {}".format(cfg["bb_blobsize"]),
-        ";P2PP BIGBRAIN3D_COOLINGTIME = {}".format(cfg["bb_cooling"]),
-        ";P2PP BIGBRAIN3D_PURGEPOSITION = {}".format(cfg["bb_xloc"]),
-        ";P2PP BIGBRAIN3D_MOTORPOWER_HIGH = {}".format(cfg["bb_motormax"]),
-        ";P2PP BIGBRAIN3D_MOTORPOWER_NORMAL = {}".format(cfg["bb_motormin"]),
-        ";P2PP BIGBRAIN3D_FAN_OFF_DELAY = {}".format(cfg["bb_fandelay"]),
-        ";P2PP BIGBRAIN3D_ENABLE",
-        ";P2PP BIGBRAIN3D_PRIME_BLOBS = {}".format(cfg["bb_priming"]),
-        ";P2PP BIGBRAIN3D_NUMBER_OF_WHACKS = {}".format(cfg["bb_whacks"])]
+        if cfg["bb_left"]:
+            bbcode.append(";P2PP BIGBRAIN3D_LEFT_SIDE")
 
-    if cfg["bb_left"]:
-        bbcode.append(";P2PP BIGBRAIN3D_LEFT_SIDE")
+        if cfg["bb_autoadd"]:
+            bbcode.append(";P2PP AUTOADDPURGE")
 
-    if cfg["bb_autoadd"]:
-        bbcode.append(";P2PP AUTOADDPURGE")
+        # tower delta
+        #############
 
-    # tower delta
-    #############
+        twcode = [
+            ";P2PP PURGETOWERDELTA={}".format(cfg["tower_maxdelta"])
+        ]
 
-    twcode = [
-        ";P2PP PURGETOWERDELTA={}".format(cfg["tower_maxdelta"])
-    ]
+        # full purge
+        #############
 
-    # full purge
-    #############
+        fpcode = [
+            ";P2PP FULLPURGEREDUCTION" 
+            ";P2PP WIPEFEEDRATE={}".format(cfg["fp_wiperate"])
+        ]
 
-    fpcode = [
-        ";P2PP FULLPURGEREDUCTION" 
-        ";P2PP WIPEFEEDRATE={}".format(cfg["fp_wiperate"])
-    ]
+        if cfg["fp_autoadd"]:
+            swcode.append(";P2PP AUTOADDPURGE")
 
-    if cfg["fp_autoadd"]:
-        swcode.append(";P2PP AUTOADDPURGE")
+        for i in cfg["printers"]:
 
-    for i in cfg["printers"]:
+            i = i.strip()
+            if len(i) > 0:
+                updated_printers += 1
+                create_logitem("Generating config based on pinrter profile {} ".format(i), "blue")
 
-        i = i.strip()
-        create_logitem("Generating config based on pinrter profile {} ".format(i), "blue")
-
-        store = copy.deepcopy(configs["printers"][i])
+                store = copy.deepcopy(configs["printers"][i])
 
 
+                remove_p2ppconfig(store)
 
-        remove_p2ppconfig(store)
+                store["layer_gcode"] = "\\n".join(layergcode)
 
-        store["layer_gcode"] = "\\n".join(layergcode)
+                store["single_extruder_multi_material"] = 1
 
-        store["single_extruder_multi_material"] = 1
+                tmp = store["retract_before_travel"].split(",")
+                if len(tmp) == 1:
+                    for item in conf.printer_extend_parameters_comma:
+                        try:
+                            store[item] = ",".join([store[item], store[item], store[item], store[item]])
+                        except KeyError:
+                            pass
+                    for item in conf.printer_extend_parameters_semicolon:
+                        try:
+                            store[item] = ";".join([store[item], store[item], store[item], store[item]])
+                        except KeyError:
+                            pass
 
-        tmp = store["retract_before_travel"].split(",")
-        if len(tmp) == 1:
-            for item in conf.printer_extend_parameters_comma:
-                try:
-                    store[item] = ",".join([store[item], store[item], store[item], store[item]])
-                except KeyError:
-                    pass
-            for item in conf.printer_extend_parameters_semicolon:
-                try:
-                    store[item] = ";".join([store[item], store[item], store[item], store[item]])
-                except KeyError:
-                    pass
+                store["start_gcode"] += "\\n"+"\\n".join(basiccode)
+                basic_startcode = store["start_gcode"]
 
-        store["start_gcode"] += "\\n"+"\\n".join(basiccode)
-        basic_startcode = store["start_gcode"]
+                create_logitem("--> BASIC CONFIG")
 
-        create_logitem("--> BASIC CONFIG")
+                if i.startswith("P2PP"):
+                    i = i.replace("P2PP - Basic -", "")
+                    i = i.replace("P2PP - SideWipe -", "")
+                    i = i.replace("P2PP - BB3D -", "")
+                    i = i.replace("P2PP - TowerDelta -", "")
+                    i = i.replace("P2PP - FullPurge -", "")
+                    i = i.replace("P2PP - P2 AccMode -", "")
+                    i = i.replace("P2PP - PPlus AccMode -", "")
 
-        if i.startswith("P2PP"):
-            i = i.replace("P2PP - Basic -", "")
-            i = i.replace("P2PP - SideWipe -", "")
-            i = i.replace("P2PP - BB3D -", "")
-            i = i.replace("P2PP - TowerDelta -", "")
-            i = i.replace("P2PP - FullPurge -", "")
-            i = i.replace("P2PP - P2 AccMode -", "")
-            i = i.replace("P2PP - PPlus AccMode -", "")
+                conf.writeconfig("printer", "P2PP - Basic -" + i, store)
 
-        conf.writeconfig("printer", "P2PP - Basic -" + i, store)
+                if cfg["sw_enable"]:
+                    create_logitem("--> SideWipe CONFIG")
+                    store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(swcode)
+                    conf.writeconfig("printer", "P2PP - SideWipe -" + i, store)
 
-        if cfg["sw_enable"]:
-            create_logitem("--> SideWipe CONFIG")
-            store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(swcode)
-            conf.writeconfig("printer", "P2PP - SideWipe -" + i, store)
+                if cfg["bb_enable"]:
+                    create_logitem("--> BigBrain 3D CONFIG")
+                    store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(bbcode)
+                    conf.writeconfig("printer", "P2PP - BB3D -" + i, store)
 
-        if cfg["bb_enable"]:
-            create_logitem("--> BigBrain 3D CONFIG")
-            store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(bbcode)
-            conf.writeconfig("printer", "P2PP - BB3D -" + i, store)
+                if cfg["tower_enable"]:
+                    create_logitem("--> Tower Delta CONFIG")
+                    store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(twcode)
+                    conf.writeconfig("printer", "P2PP - TowerDelta -" + i, store)
 
-        if cfg["tower_enable"]:
-            create_logitem("--> Tower Delta CONFIG")
-            store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(twcode)
-            conf.writeconfig("printer", "P2PP - TowerDelta -" + i, store)
+                if cfg["fp_enable"]:
+                    create_logitem("--> Full Purge Reduction CONFIG")
+                    store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(fpcode)
+                    conf.writeconfig("printer", "P2PP - FullPurge -" + i, store)
 
-        if cfg["fp_enable"]:
-            create_logitem("--> Full Purge Reduction CONFIG")
-            store["start_gcode"] = basic_startcode + "\\n" + "\\n".join(fpcode)
-            conf.writeconfig("printer", "P2PP - FullPurge -" + i, store)
+                if cfg["accmode_p2"]:
+                    create_logitem("--> P2PP Accessory Mode Config")
+                    store["start_gcode"] = basic_startcode + "\\n; ;P2PP ACCESSORYMODE_MAF"
+                    conf.writeconfig("printer", "P2PP - P2 AccMode -" + i, store)
 
-        if cfg["accmode_p2"]:
-            create_logitem("--> P2PP Accessory Mode Config")
-            store["start_gcode"] = basic_startcode + "\\n; ;P2PP ACCESSORYMODE_MAF"
-            conf.writeconfig("printer", "P2PP - P2 AccMode -" + i, store)
+                if cfg["accmode_pplus"]:
+                    create_logitem("--> P2PP Accessory Mode Config")
+                    basic_startcode = basic_startcode + "\\n;P2PP ACCESSORYMODE_MSF"
+                    basic_startcode = basic_startcode + "\\n;P2PP P+PPM={}".format(cfg["accmode_ppm"])
+                    basic_startcode = basic_startcode + "\\n;P2PP P+LOADINGOFFSET={}".format(cfg["accmode_lo"])
+                    store["start_gcode"] = basic_startcode
 
-        if cfg["accmode_pplus"]:
-            create_logitem("--> P2PP Accessory Mode Config")
-            basic_startcode = basic_startcode + "\\n;P2PP ACCESSORYMODE_MSF"
-            basic_startcode = basic_startcode + "\\n;P2PP P+PPM={}".format(cfg["accmode_ppm"])
-            basic_startcode = basic_startcode + "\\n;P2PP P+LOADINGOFFSET={}".format(cfg["accmode_lo"])
-            store["start_gcode"] = basic_startcode
+                    conf.writeconfig("printer", "P2PP - PPlus AccMode -" + i, store)
 
-            conf.writeconfig("printer", "P2PP - PPlus AccMode -" + i, store)
+        for i in cfg["prints"]:
+            i = i.strip()
+            updated_prints += 1
+            create_logitem("Generating config based on print profile {}".format(i))
+            store_prt = copy.deepcopy(configs["prints"][i])
 
-    for i in cfg["prints"]:
-        i = i.strip()
-        create_logitem("Generating config based on print profile {}".format(i))
-        store_prt = copy.deepcopy(configs["prints"][i])
+            if cfg["addmcf"]:
+                name = store_prt["output_filename_format"]
+                if ".mcf." not in name:
+                    store_prt["output_filename_format"] = store_prt["output_filename_format"].replace(".gcode", ".mcf.gcode")
+            store_prt["post process"] = conf.scriptname()
+            store_prt["single_extruder_multi_material_priming"] = "0"
+            store_prt["min_skirt_length"] = "0"
+            store_prt["skirts"] = "0"
+            store_prt["compatible_printers_condition"] = ""
+            conf.writeconfig("print", "P2PP - "+i, store_prt)
 
-        if cfg["addmcf"]:
-            name = store_prt["output_filename_format"]
-            if ".mcf." not in name:
-                store_prt["output_filename_format"] = store_prt["output_filename_format"].replace(".gcode", ".mcf.gcode")
-        store_prt["post process"] = conf.scriptname()
-        store_prt["single_extruder_multi_material_priming"] = "0"
-        store_prt["min_skirt_length"] = "0"
-        store_prt["skirts"] = "0"
-        store_prt["compatible_printers_condition"] = ""
-        conf.writeconfig("print", "P2PP - "+i, store_prt)
+        for i in cfg["filaments"]:
+            i = i.strip()
+            updated_filaments += 1
+            create_logitem("Generating config based on  filament profile {}".format(i))
+            store = copy.deepcopy(configs["filaments"][i])
+            store["compatible_printers_condition"] = ""
+            store["filament_ramming_parameters"] = "10 10| 0.05 6.6 0.45 6.8 0.95 7.8 1.45 8.3 1.95 9.7 2.45 10 2.95 7.6 3.45 7.6 3.95 7.6 4.45 7.6 4.95 7.6"
+            store["filament_minimal_purge_on_wipe_tower"] = 0
+            store["filament_cooling_final_speed"] = 0
+            store["filament_cooling_initial_speed"] = 0
+            store["filament_cooling_moves"] = 0
+            store["filament_toolchange_delay"] = 0
+            store["filament_unload_time"] = 0
+            store["filament_unloading_speed"] = 0
+            store["filament_unloading_speed_start"] = 0
+            store["filament_loading_speed"] = 0
+            store["filament_loading_speed_start"] = 0
+            conf.writeconfig("filament", "P2PP - "+i, store)
 
-    for i in cfg["filaments"]:
-        i = i.strip()
-        create_logitem("Generating config based on  filament profile {}".format(i))
-        store = copy.deepcopy(configs["filaments"][i])
-        store["compatible_printers_condition"] = ""
-        store["filament_ramming_parameters"] = "10 10| 0.05 6.6 0.45 6.8 0.95 7.8 1.45 8.3 1.95 9.7 2.45 10 2.95 7.6 3.45 7.6 3.95 7.6 4.45 7.6 4.95 7.6"
-        store["filament_minimal_purge_on_wipe_tower"] = 0
-        store["filament_cooling_final_speed"] = 0
-        store["filament_cooling_initial_speed"] = 0
-        store["filament_cooling_moves"] = 0
-        store["filament_toolchange_delay"] = 0
-        store["filament_unload_time"] = 0
-        store["filament_unloading_speed"] = 0
-        store["filament_unloading_speed_start"] = 0
-        store["filament_loading_speed"] = 0
-        store["filament_loading_speed_start"] = 0
-        conf.writeconfig("filament", "P2PP - "+i, store)
+        if error > 0:
+            create_logitem("Total errors to correct: {}".format(error), "red")
 
-    if error > 0:
-        create_logitem("Total errors to correct: {}".format(error), "red")
+        create_logitem("Updated {} printer, {} print and {} filament profiles".format(updated_printers, updated_prints, updated_filaments))
 
-    form.statusBar.showMessage("Processing Completed, see log panel for info")
+        form.statusBar.showMessage("Processing Completed, see log panel for info")
+
+    except Exception as e:
+        create_logitem("We're sorry but an unexpected error occurred while processing your file", "red")
+        create_logitem("Please sumbit an issue report on https://github.com/tomvandeneede/p2pp","red")
+        create_logitem(" ")
+        create_logitem("<b>Error:</b> {}".format(e))
+        tb = traceback.format_tb(e.__traceback__)
+        create_logitem(" ")
+        create_logitem("<b>Traceback Info:</b>")
+        for line in tb:
+            create_logitem("{}".format(line))
 
 
 def populate_dropdowns():

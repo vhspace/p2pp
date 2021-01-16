@@ -12,7 +12,7 @@ __status__ = 'BETA'
 # general version info
 MajorVersion = 6
 MinorVersion = 2
-Build = 13
+Build = 14
 
 releaseinfo = {
     '4.16.0': "final release for PrusaSlicer 2.2.0",
@@ -73,6 +73,7 @@ releaseinfo = {
     "6.2.11": "retraction after generating BRIM in fullpurge mode",
     "6.2.12": "changed code loading in UTF-8",
     "6.2.13": "IO Error for non-existing lastconf.conf file",
+    "6.2.14": "Added extra check on empty printer profile on config",
     '--- RELEASE INFORMATION': 'END'
 }
 
