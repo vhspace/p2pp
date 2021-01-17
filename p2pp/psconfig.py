@@ -223,10 +223,16 @@ def parse_prusaslicer_config():
                 v.layer_height = float(gcode_line[parameter_start + 1:].strip())
             continue
 
+        # this next function assumes that the parameters are stored in alphabetical order
+        # so layer_height is defined BEFORE first layer height when parsing back to front
         if gcode_line.startswith("; first_layer_height"):
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
-                v.first_layer_height = float(gcode_line[parameter_start + 1:].strip())
+                value = gcode_line[parameter_start + 1:].strip()
+                if value[-1] == "%":
+                    v.first_layer_height = float(value[:-1]) / 100.0 * v.layer_height
+                else:
+                    v.first_layer_height = float(value)
             continue
 
         if gcode_line.startswith("; support_material_synchronize_layers"):
