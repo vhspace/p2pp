@@ -203,7 +203,7 @@ def parse_gcode():
 
     flh = int(v.first_layer_height * 100)
     olh = int(v.layer_height * 100)
-    use_layer_instead_of_layerheight = False
+    purge = False
 
     backpass_line = -1
     jndex = 0
@@ -556,6 +556,10 @@ def gcode_parselines():
 
                 if current_block_class == CLS_NORMAL:
                     v.towerskipped = False
+                    purge = False
+
+                if current_block_class == CLS_TOOL_PURGE:
+                    purge = True
 
             if not v.towerskipped and current_block_class == CLS_EMPTY and v.current_layer_is_skippable:
                 v.towerskipped = (g[gcode.MOVEMENT] & gcode.INTOWER) == gcode.INTOWER
@@ -566,9 +570,10 @@ def gcode_parselines():
                 continue
 
             if current_block_class in [CLS_TOOL_PURGE, CLS_ENDPURGE, CLS_EMPTY]:
-                if g[gcode.EXTRUDE]:
-                    v.side_wipe_length += g[gcode.E]
-                gcode.move_to_comment(g, "--P2PP-- full purge skipped ")
+                if purge == True:
+                    if g[gcode.EXTRUDE]:
+                        v.side_wipe_length += g[gcode.E]
+                    gcode.move_to_comment(g, "--P2PP-- full purge skipped ")
                 gcode.issue_command(g)
                 continue
 
