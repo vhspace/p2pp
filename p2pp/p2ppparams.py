@@ -36,6 +36,7 @@ def check_config_parameters(keyword, value):
     if keyword == "SAVEUNPROCESSED":
         v.save_unprocessed = True
 
+
     if keyword == "PRINTERPROFILE":
 
         if len(value) != 16:

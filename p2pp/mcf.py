@@ -694,6 +694,12 @@ def generate(input_file, output_file):
     v.input_gcode = opf.readlines()
     opf.close()
 
+    v.input_gcode = [item.strip() for item in v.input_gcode]
+
+    gui.create_logitem("Analyzing Prusa Slicer Configuration")
+    gui.progress_string(2)
+    parse_prusaslicer_config()
+
     if v.save_unprocessed:
         pre, ext = os.path.splitext(input_file)
         of = pre + "_unprocessed" + ext
@@ -701,12 +707,6 @@ def generate(input_file, output_file):
         opf = open(of, "w")
         opf.writelines(v.input_gcode)
         opf.close()
-
-    v.input_gcode = [item.strip() for item in v.input_gcode]
-
-    gui.create_logitem("Analyzing Prusa Slicer Configuration")
-    gui.progress_string(2)
-    parse_prusaslicer_config()
 
     # added for issue Error: float division by zero (#87)
     if v.extrusion_width == 0:
