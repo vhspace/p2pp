@@ -427,7 +427,7 @@ def on_config():
         #############
 
         fpcode = [
-            ";P2PP FULLPURGEREDUCTION" 
+            ";P2PP FULLPURGEREDUCTION",
             ";P2PP WIPEFEEDRATE={}".format(cfg["fp_wiperate"])
         ]
 
