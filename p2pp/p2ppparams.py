@@ -26,7 +26,8 @@ def intparameter(s):
 
 
 def check_config_parameters(keyword, value):
-    keyword = keyword.upper()
+    keyword = keyword.upper().strip()
+
     if value is None:
         value = ""
 
