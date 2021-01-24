@@ -704,8 +704,10 @@ def generate(input_file, output_file):
         pre, ext = os.path.splitext(input_file)
         of = pre + "_unprocessed" + ext
         gui.create_logitem("Saving unpocessed code to: " + of)
-        opf = open(of, "w")
-        opf.writelines(v.input_gcode)
+        opf = open(of, "wb")
+        for line in v.input_gcode:
+            opf.write(line.encode('utf8'))
+            opf.write("\n".encode('utf8'))
         opf.close()
 
     # added for issue Error: float division by zero (#87)
