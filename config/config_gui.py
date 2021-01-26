@@ -511,6 +511,11 @@ def on_config():
                     basic_startcode = basic_startcode + "\\n;P2PP P+LOADINGOFFSET={}".format(cfg["accmode_lo"])
                     store["start_gcode"] = basic_startcode
 
+                    store["extra_loading_move"] = 0
+                    store["cooling_tube_length"] = 0
+                    store["cooling_tube_retraction"] = 0
+                    store["parking_pos_retraction"] = 0
+
                     conf.writeconfig("printer", "P2PP - PPlus AccMode -" + i, store)
 
         for i in cfg["prints"]:
