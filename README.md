@@ -60,7 +60,7 @@ setup instructions for Slic3r/PrusaSlicer and a full example on how p2pp is used
 
 [![youtube video](https://img.youtube.com/vi/JuTdq-IlRj4/0.jpg)](https://www.youtube.com/watch?v=JuTdq-IlRj4&t=1s "P2PP Installation and Configuration")
 
-Some of the advanced features are not covered in this video so make sure to take the time to read through the [PDF Manual](https://github.com/tomvandeneede/p2pp/blob/dev/P2PP%20user%20manual.pdf) that comes with the distrubution:
+Some of the advanced features are not covered in this video so make sure to take the time to read through the [PDF Manual](https://github.com/tomvandeneede/p2pp/blob/dev/docs/P2PP%20user%20manual.pdf) that comes with the distrubution:
 
 If you ave any questions, please address them to the **P2PP Community Help** group on Facebook
 
