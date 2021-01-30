@@ -203,7 +203,6 @@ def parse_gcode():
 
     flh = int(v.first_layer_height * 100)
     olh = int(v.layer_height * 100)
-    purge = False
 
     backpass_line = -1
     jndex = 0
@@ -306,6 +305,7 @@ def parse_gcode():
 def gcode_parselines():
 
     idx = 0
+    purge = False
     total_line_count = len(v.parsed_gcode)
     v.retraction = 0
     v.last_parsed_layer = 0
@@ -374,7 +374,6 @@ def gcode_parselines():
                 if not v.debug_leaveToolCommands:
                     gcode.move_to_comment(g, "--P2PP-- Color Change")
                     v.toolchange_processed = (current_block_class != CLS_NORMAL)
-
 
             elif v.klipper and g[gcode.COMMAND] == "ACTIVATE_EXTRUDER":
                 extruder = g[gcode.OTHER]
@@ -570,7 +569,7 @@ def gcode_parselines():
                 continue
 
             if current_block_class in [CLS_TOOL_PURGE, CLS_ENDPURGE, CLS_EMPTY]:
-                if purge == True:
+                if purge:
                     if g[gcode.EXTRUDE]:
                         v.side_wipe_length += g[gcode.E]
                     gcode.move_to_comment(g, "--P2PP-- full purge skipped ")
@@ -597,8 +596,6 @@ def gcode_parselines():
                 g[gcode.Y] = v.retract_y
                 g[gcode.MOVEMENT] |= 3
                 v.retract_move = False
-
-
 
                 if v.retraction <= - v.retract_length[v.current_tool]:
                     gcode.move_to_comment(g, "--P2PP-- Double Retract")
@@ -746,7 +743,7 @@ def generate(input_file, output_file):
     v.side_wipe = not ((v.bed_origin_x <= v.wipetower_posx <= v.bed_max_x) and (v.bed_origin_y <= v.wipetower_posy <= v.bed_max_y))
     v.tower_delta = v.max_tower_z_delta > 0
 
-    if v.tower_delta or v.full_purge_reduction and v.variable_layer :
+    if (v.tower_delta or v.full_purge_reduction) and v.variable_layer:
         gui.log_warning("Variable layers may cause issues with FULLPURGE / TOWER DELTA")
         gui.log_warning("This warning could be caused by support that will print on variable layer offsets")
 
@@ -755,7 +752,7 @@ def generate(input_file, output_file):
 
     if v.side_wipe:
 
-        if v.skirts :
+        if v.skirts:
             if v.ps_version >= "2.2":
                 gui.log_warning("SIDEWIPE and SKIRTS are NOT compatible in PS2.2 or later")
             if v.full_purge_reduction:
