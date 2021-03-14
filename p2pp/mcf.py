@@ -192,6 +192,12 @@ def process_layer(layer, index):
     v.layer_emptygrid_counter = 0
 
 
+def speed_limiter ( g_code ):
+    if g_code[gcode.F] is not None and g_code[gcode.EXTRUDE] and g_code[gcode.F] > v.wipe_feedrate:
+        g_code[gcode.COMMENT] = ";-- SLOW DOWN {} --> {}--;".format(g_code[gcode.F], v.wipe_feedrate)
+        g_code[gcode.F] = v.wipe_feedrate
+
+
 def parse_gcode():
 
     v.layer_toolchange_counter = 0
@@ -505,6 +511,9 @@ def gcode_parselines():
                         v.towerskipped = False
 
             if current_block_class == CLS_TOOL_PURGE:
+                speed_limiter(g)
+
+            if current_block_class == CLS_TOOL_PURGE:
                 if g[gcode.F] is not None and g[gcode.F] > v.purgetopspeed and g[gcode.E]:
                     g[gcode.F] = v.purgetopspeed
                     g[gcode.COMMENT] += " prugespeed topped"
@@ -611,6 +620,10 @@ def gcode_parselines():
                     if v.acc_ping_left <= 0:
                         pings.check_accessorymode_first()
                     v.enterpurge = True
+
+            # TOEE - Added to limit the speed of the extrusions during purge to defined WIPEFEEDRATE
+            if current_block_class == CLS_TOOL_PURGE:
+                speed_limiter(g)
 
             if v.toolchange_processed:
 
