@@ -182,6 +182,10 @@ def check_config_parameters(keyword, value):
         v.bigbrain3d_left = -1
         return
 
+    if keyword == "BIGBRAIN3D_CLEARANCE_MM":
+        v.bigbrain3d_minimalclearenceheight = floatparameter(value)
+        return
+
     if keyword == "BIGBRAIN3D_ENABLE":
         if not v.wipe_remove_sparse_layers:
             v.bigbrain3d_purge_enabled = True

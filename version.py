@@ -85,6 +85,7 @@ releaseinfo = {
     "6.2.23": "corrected processing for variable layer",
     "6.2.24": "applied wipe feed rate restriction to main tower as well",
     "6.2.25": "removed more than 4 color processing/ pplus correction",
+    "6.2.26": "BB3D Minimal clearence height",
     '--- RELEASE INFORMATION': 'END'
 }
 

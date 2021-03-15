@@ -94,8 +94,8 @@ def create_sidewipe_bb3d(length):
     keep_xpos = v.current_position_x
     keep_ypos = v.current_position_y
 
-    if v.current_position_z < 20:
-        issue_code("\nG1 Z20.000 F8640    ; Increase Z to prevent collission with bed")
+    if v.current_position_z < v.bigbrain3d_minimalclearenceheight:
+        issue_code("\nG1 Z{:.3f} F8640    ; Increase Z to prevent collission with bed".format(v.bigbrain3d_minimalclearenceheight))
 
     if v.bigbrain3d_y_position is not None:
         issue_code("\nG1 Y{:.3f} F8640    ; change Y position to purge equipment".format(v.bigbrain3d_y_position))
@@ -113,7 +113,7 @@ def create_sidewipe_bb3d(length):
     for i in range(purgeblobs):
         generate_blob(v.bigbrain3d_blob_size, i)
 
-    if v.current_position_z < 20:
+    if v.current_position_z < v.bigbrain3d_minimalclearenceheight:
 
         if v.retraction != 0:
             purgetower.retract(v.current_tool)
