@@ -8,7 +8,6 @@ __maintainer__ = 'Tom Van den Eede'
 __email__ = 'P2PP@pandora.be'
 
 import p2pp.gui as gui
-import p2pp.p2_m4c as m4c
 import p2pp.variables as v
 from p2pp.colornames import find_nearest_colour
 from p2pp.formatnumbers import hexify_short, hexify_float, hexify_long, hexify_byte
@@ -143,8 +142,8 @@ def header_generate_omega_paletteplus():
         header.append("{}\n"
                       .format(v.splice_algorithm_table[i]))
 
-    summary = generatesummary()
-    warnings = generatewarnings()
+    summary = []
+    warnings = []
 
     return {'header': header, 'summary': summary, 'warnings': warnings}
 
@@ -167,17 +166,10 @@ def header_generate_omega_palette2(job_name):
 
     omega_str = "O25"
 
-    initools = v.m4c_loadedinputs[0]
-
-    if len(initools) < 4:
-        if v.m4c_numberoffilaments == 4:
-            initools = [0, 1, 2, 3]
-            for i in range(4):
-                if not v.palette_inputs_used[i]:
-                    initools[i] = -1
-        else:
-            while len(initools) < 4:
-                initools.append(-1)
+    initools = [0, 1, 2, 3]
+    for i in range(4):
+        if not v.palette_inputs_used[i]:
+            initools[i] = -1
 
     for i in initools:
         if i != -1:
@@ -221,11 +213,6 @@ def header_generate_omega_palette2(job_name):
         header.append("O32 {}\n"
                       .format(v.splice_algorithm_table[i]))
 
-    if v.m4c_numberoffilaments > 4:
-        v.m4c_headerinfo = m4c.generate_warninglist()
-        for i in v.m4c_headerinfo:
-            header.append(i + "\n")
-
     if v.autoloadingoffset > 0:
         header.append("O40 D{}".format(v.autoloadingoffset))
     else:
@@ -250,21 +237,7 @@ def header_generate_omega_palette2(job_name):
 
 
 def generatesummary():
-    summary = [";---------------------\n", "; - COLORS DEFINED   -\n", ";---------------------\n",
-               ";Number of extruders defined in PrusaSlicer: {}\n".format(v.m4c_numberoffilaments),
-               ";Number of color swaps in this print: {}\n".format(len(v.m4c_late_warning)),
-               ";Filament defined for this print:\n"]
-
-    for i in range(v.m4c_numberoffilaments):
-        try:
-            fil_id = v.filament_ids[i]
-        except IndexError:
-            fil_id = ""
-        summary.append(";.   Filament {} - Color Code {} - {:20}  {}\n".format(i + 1, v.filament_color_code[i],
-                                                                               find_nearest_colour(
-                                                                                   v.filament_color_code[i].strip(
-                                                                                       "\n")), fil_id))
-    summary.append("\n")
+    summary = []
 
     summary.append(";---------------------\n")
     summary.append("; - SPLICE INFORMATION-\n")
@@ -322,15 +295,3 @@ def generatewarnings():
 
     return warnings
 
-
-def yes_or_no(question):
-    answer = raw_input(question + "([Y]es/[N]o): ").lower().strip()
-    print("")
-    while not (answer == "y" or answer == "yes" or answer == "n" or answer == "no"):
-        print("Input yes or no")
-        answer = raw_input(question + "([Y]es/[N]o):").lower().strip()
-        print("")
-    if answer[0] == "y":
-        return True
-    else:
-        return False

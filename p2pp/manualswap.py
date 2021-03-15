@@ -5,11 +5,14 @@ __license__ = 'GPLv3'
 __maintainer__ = 'Tom Van den Eede'
 __email__ = 'P2PP@pandora.be'
 
+## Added functionality for manual swap - Manmeet Singh
+
 import p2pp.variables as v
 import p2pp.gui as gui
 import p2pp.gcode as gc
 
 warning = True
+
 
 def swap_pause(command):
     global warning
@@ -25,5 +28,5 @@ def swap_pause(command):
     gc.issue_code(command)
 
 
-def swap_unpause(z = v.current_position_z):
-    gc.issue_code("G1 Z{:.2f F10800".format(v.current_position_z))
+def swap_unpause(z=v.current_position_z):
+    gc.issue_code("G1 Z{:.2f F10800".format(z))

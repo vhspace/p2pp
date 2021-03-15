@@ -13,7 +13,6 @@ import sys
 
 import p2pp.gcode as gcode
 import p2pp.gui as gui
-import p2pp.p2_m4c as m4c
 import p2pp.pings as pings
 import p2pp.purgetower as purgetower
 import p2pp.variables as v
@@ -255,8 +254,6 @@ def parse_gcode():
                         v.block_classification = CLS_TOOL_PURGE
                     cur_tool = int(line[1])
                     v.set_tool = cur_tool
-                    v.m4c_toolchanges.append(cur_tool)
-                    v.m4c_toolchange_source_positions.append(len(v.parsed_gcode))
             except (TypeError, IndexError, ValueError):
                 pass
 
@@ -725,12 +722,12 @@ def generate(input_file, output_file):
         gui.create_logitem("Extrusionwidth set to 0, defaulted back to 0.45")
         v.extrusion_width = 0.45
 
-    v.bed = bp.BedProjection(int(v.bed_size_x), int(v.bed_size_y))
+    # v.bed = bp.BedProjection(int(v.bed_size_x), int(v.bed_size_y))
     gui.create_logitem("Analyzing Layers / Functional blocks")
     gui.progress_string(4)
     parse_gcode()
-    if v.bedtrace:
-        v.bed.save_image()
+    # if v.bedtrace:
+    #     v.bed.save_image()
     v.input_gcode = None
 
     if v.bed_size_x == -9999 or v.bed_size_y == -9999 or v.bed_origin_x == -9999 or v.bed_origin_y == -9999:
@@ -759,9 +756,6 @@ def generate(input_file, output_file):
     if (v.tower_delta or v.full_purge_reduction) and v.variable_layer:
         gui.log_warning("Variable layers may cause issues with FULLPURGE / TOWER DELTA")
         gui.log_warning("This warning could be caused by support that will print on variable layer offsets")
-
-    gui.create_logitem("`Analyzing tool loading scheme`")
-    m4c.calculate_loadscheme()
 
     if v.side_wipe:
 
@@ -821,13 +815,12 @@ def generate(input_file, output_file):
             for line in header:
                 opf.write(line.encode('utf8'))
             opf.write("\n\n;--------- START PROCESSED GCODE ----------\n\n".encode('utf8'))
-        if v.accessory_mode:
             if v.generate_M0:
-                header.append("M0\n".encode('utf8'))
+                header.append("M0\n")
             opf.write("T0\n".encode('utf8'))
 
         if v.splice_offset == 0:
-            gui.log_warning("SPLICE_OFFSET not defined".encode('utf8'))
+            gui.log_warning("SPLICE_OFFSET not defined")
         for line in v.processed_gcode:
             try:
                 opf.write(line.encode('utf8'))
@@ -848,7 +841,7 @@ def generate(input_file, output_file):
             maf = open(maffile, 'wb')
 
             for h in header:
-                h = h.strip("\r\n")
+                h = str(h).strip("\r\n")
                 maf.write(h.encode('ascii'))
                 maf.write("\r\n".encode('ascii'))
 

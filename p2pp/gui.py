@@ -34,29 +34,14 @@ def print_summary(summary):
         create_logitem("Tower Delta Range  {:.2f}mm -  {:.2f}mm".format(v.min_tower_delta, v.max_tower_delta))
     create_emptyline()
 
-    if v.m4c_numberoffilaments <= 4:
-        create_logitem("-" * 22, "blue")
-        create_logitem("Inputs/Materials used:", "blue")
-        create_logitem("-" * 22, "blue")
+    create_logitem("-" * 22, "blue")
+    create_logitem("Inputs/Materials used:", "blue")
+    create_logitem("-" * 22, "blue")
 
-        for i in range(len(v.palette_inputs_used)):
-            if v.palette_inputs_used[i]:
-                create_colordefinition(0, i + 1, v.filament_type[i], v.filament_color_code[i],
-                                       v.material_extruded_per_color[i])
-
-    else:
-        create_logitem("-" * 14, "blue")
-        create_logitem("Materials used:")
-        create_logitem("-" * 14, "blue")
-        for i in range(v.m4c_numberoffilaments):
-            create_colordefinition(1, i + 1, v.filament_type[0], v.filament_color_code[i], 0)
-
-        create_emptyline()
-        create_logitem("-" * 27, "blue")
-        create_logitem("Required Toolchanges: {}".format(len(v.m4c_headerinfo)))
-        create_logitem("-" * 27, "blue")
-        for i in v.m4c_headerinfo:
-            create_logitem("      " + i)
+    for i in range(len(v.palette_inputs_used)):
+        if v.palette_inputs_used[i]:
+            create_colordefinition(0, i + 1, v.filament_type[i], v.filament_color_code[i],
+                                   v.material_extruded_per_color[i])
 
     create_emptyline()
     for line in summary:

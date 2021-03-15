@@ -262,15 +262,14 @@ def parse_prusaslicer_config():
             parameter_start = gcode_line.find("=")
             gcode_value = gcode_line[parameter_start + 2:].strip()
             fields = split_csv_strings(gcode_value)
-            if len(fields) >= 4:
-                for i in range(len(fields)):
-                    lines = fields[0].split("\\n")
-                    for line in lines:
-                        if line.startswith(";P2PP PROFILETYPEOVERRIDE="):
-                            value = line[26:]
-                            v.filament_type[i] = value
-                            v.used_filament_types.append(v.filament_type[i])
-                            v.used_filament_types = list(dict.fromkeys(v.used_filament_types))
+            for i in range(len(fields)):
+                lines = fields[0].split("\\n")
+                for line in lines:
+                    if line.startswith(";P2PP PROFILETYPEOVERRIDE="):
+                        value = line[26:]
+                        v.filament_type[i] = value
+                        v.used_filament_types.append(v.filament_type[i])
+                        v.used_filament_types = list(dict.fromkeys(v.used_filament_types))
             continue
 
         if gcode_line.startswith("; start_gcode "):
@@ -293,13 +292,7 @@ def parse_prusaslicer_config():
             if parameter_start != -1:
                 filament_colour = gcode_line.split(";")
             v.filament_count = len(filament_colour)
-            if v.filament_count >= 4:
-                for i in range(v.filament_count):
-                    if filament_colour[i] == "":
-                        filament_colour[i] = v.filament_color_code[i]
-                    else:
-                        v.filament_color_code[i] = filament_colour[i][1:]
-            continue
+            v.filament_color_code[i] = filament_colour[i][1:]
 
         if gcode_line.startswith("; filament_diameter"):
             parameter_start = gcode_line.find("=")
@@ -317,20 +310,8 @@ def parse_prusaslicer_config():
                 for i in range(len(filament_string)):
                     if v.filament_type[i] != "":
                         filament_string[i] = v.filament_type[i]
-                v.m4c_numberoffilaments = len(filament_string)
-                if v.m4c_numberoffilaments == 4:
-                    v.filament_type = filament_string
-                    v.used_filament_types = list(set(filament_string))
-                elif v.m4c_numberoffilaments >= 4:
-                    v.used_filament_types = list(set(filament_string))
-                    if len(v.used_filament_types) > 1:
-                        gui.log_warning("Prints with more than 4 colors should be of one filament type only!")
-                    v.filament_type = filament_string
-
-            if v.m4c_numberoffilaments > 4:
-                gui.log_warning(
-                    "Number of inputs defined in print: {}.  Swaps may be required!!!".format(v.m4c_numberoffilaments))
-
+                v.filament_type = filament_string
+                v.used_filament_types = list(set(filament_string))
             continue
 
         if gcode_line.startswith("; retract_lift = "):

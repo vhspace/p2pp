@@ -271,22 +271,6 @@ classes = {
 
 }
 
-
-# more than 4 color prints
-
-m4c_enabled = False
-m4c_toolchanges = []
-m4c_toolchange_source_positions = []
-m4c_loadedinputs = []
-m4c_early_tool = []
-m4c_early_warning = []
-m4c_late_warning = []
-m4c_color_table = []
-m4c_numberoffilaments = 4
-
-
-m4c_headerinfo = []
-
 regex_p2pp = re.compile("^;\s*P2PP\s+([^=]+)=?(.*)$")
 
 # conversion to absolute extruder:

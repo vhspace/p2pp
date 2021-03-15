@@ -107,7 +107,7 @@ def check_config_parameters(keyword, value):
         v.autoaddsplice = True
         return
 
-    if keyword == "POWERCHAOS":
+    if keyword == "POWERCHAOS":   #Special feature request to allow sub 300mm pings
         v.powerchaos = True
         return
 
