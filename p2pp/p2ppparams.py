@@ -65,11 +65,11 @@ def check_config_parameters(keyword, value):
         return
 
     if keyword == "P+LOADINGOFFSET":
-        v.palette_plus_loading_offset = int(value)
+        v.palette_plus_loading_offset = int(float(value))
         return
 
     if keyword == "P+PPM":
-        v.palette_plus_ppm = intparameter(value)
+        v.palette_plus_ppm = floatparameter(value)
         return
 
     if keyword == "SPLICEOFFSET":
