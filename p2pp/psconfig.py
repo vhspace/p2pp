@@ -292,7 +292,8 @@ def parse_prusaslicer_config():
             if parameter_start != -1:
                 filament_colour = gcode_line.split(";")
             v.filament_count = len(filament_colour)
-            v.filament_color_code[i] = filament_colour[i][1:]
+            for i in range(v.filament_count):
+                v.filament_color_code[i] = filament_colour[i][1:]
 
         if gcode_line.startswith("; filament_diameter"):
             parameter_start = gcode_line.find("=")

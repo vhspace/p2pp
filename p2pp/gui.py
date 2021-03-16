@@ -93,7 +93,7 @@ def create_colordefinition(reporttype, p2_input, filament_type, color_code, fila
 
     word = ''
     if reporttype == 0:
-        word = "  \t{}  {} {:-8.2f}mm - {} <span style=\" color: #{};\">[######]]</span>   \t{:15} {} ".format(name, p2_input, filamentused, filament_type, color_code, colornames.find_nearest_colour(color_code), filament_id )
+        word = "  \t{}  {} {:-8.2f}mm - {} <span style=\" color: #{};\">[######]</span>   \t{:15} {} ".format(name, p2_input, filamentused, filament_type, color_code, colornames.find_nearest_colour(color_code), filament_id )
 
     if reporttype == 1:
         word = "  \t{}  {}  - {} <span style=\" color: #{};\">[######]]</span>   \t{:15} {}".format(name, p2_input, filament_type, color_code, colornames.find_nearest_colour(color_code), filament_id)
