@@ -160,7 +160,8 @@ def issue_command(gcode_tupple, speed=0):
         if gcode_tupple[COMMAND] == "M83":
             gcode_tupple[COMMAND] = "M82"
         if gcode_tupple[COMMAND] == "G92":
-            v.absolute_counter = gcode_tupple[E]
+            if gcode_tupple[E] is not None:
+                v.absolute_counter = gcode_tupple[E]
 
     s = create_commandstring(gcode_tupple)
     if speed:

@@ -12,7 +12,7 @@ __status__ = 'BETA'
 # general version info
 MajorVersion = 6
 MinorVersion = 2
-Build = 28
+Build = 29
 
 releaseinfo = {
     '4.16.0': "final release for PrusaSlicer 2.2.0",
@@ -88,6 +88,7 @@ releaseinfo = {
     "6.2.26": "BB3D Minimal clearence height",
     "6.2.27": "Fix P+ loading offset and PPM procressing˚",
     "6.2.28": "fixed color names˚",
+    "6.2.29": "bug fix absolute extrusion˚",
     '--- RELEASE INFORMATION': 'END'
 }
 
