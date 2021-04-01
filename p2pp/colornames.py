@@ -61,13 +61,16 @@ def hex2int(hexnum):
 
 
 def color2rgb(c):
-    if c[0] == "#":
-        c = c[1:]
-    c = ("000000" + c)[-6:]
-    r = hex2int(c[0:1])
-    g = hex2int(c[2:4])
-    b = hex2int(c[4:6])
-    return {'r': r, 'g': g, 'b': b}
+    try:
+        if c[0] == "#":
+            c = c[1:]
+        c = ("000000" + c)[-6:]
+        r = hex2int(c[0:1])
+        g = hex2int(c[2:4])
+        b = hex2int(c[4:6])
+        return {'r': r, 'g': g, 'b': b}
+    except IndexError:
+        return {'r': 0, 'g': 0, 'b': 0}
 
 
 def find_nearest_colour(user_colour):

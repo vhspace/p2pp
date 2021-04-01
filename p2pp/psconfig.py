@@ -112,7 +112,13 @@ def parse_prusaslicer_config():
 
         gcode_line = v.input_gcode[idx]
 
-        if gcode_line.startswith("; avoid"):
+        if gcode_line.startswith("; estimated printing time"):
+            try:
+                fields = gcode_line.split(" ")
+                if len(fields) == 10 and fields[-4] == "=":
+                    v.printing_time = int(fields[-3][:-1])*3600 + int(fields[-2][:-1])*60+int(fields[-1][:-1])
+            except (ValueError, IndexError):
+                pass
             return
 
         if gcode_line.startswith("; filament_settings_id"):
@@ -320,7 +326,7 @@ def parse_prusaslicer_config():
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
                 retracts = gcode_line[parameter_start + 1:].strip(" ").split(",")
-                v.retract_lift = [0.6] * max(len(retracts), 4)
+                v.retract_lift = [0.6] * max(len(retracts), v.colors)
                 for i in range(len(retracts)):
                     v.retract_lift[i] = float(retracts[i])
                     if v.retract_lift[i] == 0:
@@ -331,20 +337,18 @@ def parse_prusaslicer_config():
                     gui.log_warning("Generated file might not print correctly")
             continue
 
-        # TVDE: needs to be expanded to be able to support more than 4 colors
-        # if more than 4, just retain the first four (check is done at other level, but for not all settings should be the same)
         if gcode_line.startswith("; retract_length = "):
             retract_error = False
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
                 retracts = gcode_line[parameter_start + 1:].strip(" ").split(",")
-                v.retract_length = [0.8] * max(len(retracts), 4)
+                v.retract_length = [0.8] * max(len(retracts), v.colors)
                 for i in range(len(retracts)):
                     v.retract_length[i] = float(retracts[i])-0.02
                     if v.retract_length[i] < 0.0:
                         retract_error = True
                         gui.log_warning(
-                            "[Printer Settings]->[Extruders 1 -> {} 4]->[Retraction Length] should not be set to zero.".format(i))
+                            "[Printer Settings]->[Extruders 1 -> {}]->[Retraction Length] should not be set to zero.".format(i))
                     if retract_error:
                         gui.log_warning("Generated file might not print correctly")
             continue
@@ -370,9 +374,6 @@ def parse_prusaslicer_config():
                     gui.log_warning("P2PP requires input file with RELATIVE extrusion")
             continue
 
-        # TVDE: needs to be expanded to be able to support more than 4 colors
-        # this should be expanded to nxn filaments where n = the number of filaments used.
-        # needs to be a perfect square, calculate from there.
         if gcode_line.startswith("; wiping_volumes_matrix"):
             wiping_info = []
             _warning = False

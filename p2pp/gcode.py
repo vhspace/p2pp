@@ -72,6 +72,7 @@ def create_command(gcode_line, is_comment=False, userclass=0):
                     else:
                         return_value[UNRETRACT] = (return_value[MOVEMENT] & 7) == 0    # no XYZ
                         return_value[EXTRUDE] = True
+                        v.thumbnail_end = True
 
     return return_value
 
@@ -82,10 +83,16 @@ def create_commandstring(gcode_tupple):
         if gcode_tupple[MOVEMENT]:
             if gcode_tupple[X] is not None:
                 p = p + " X{:0.3f}".format(gcode_tupple[X])
+                v.bb_minx = min(gcode_tupple[X], v.bb_minx)
+                v.bb_maxx = max(gcode_tupple[X], v.bb_maxx)
             if gcode_tupple[Y] is not None:
                 p = p + " Y{:0.3f}".format(gcode_tupple[Y])
+                v.bb_miny = min(gcode_tupple[Y], v.bb_miny)
+                v.bb_maxy = max(gcode_tupple[Y], v.bb_maxy)
             if gcode_tupple[Z] is not None:
                 p = p + " Z{:0.3f}".format(gcode_tupple[Z])
+                v.bb_minz = min(gcode_tupple[Z], v.bb_minz)
+                v.bb_maxz = max(gcode_tupple[Z], v.bb_maxz)
         else:
             if gcode_tupple[X] is not None:
                 p = p + " X{}".format(gcode_tupple[X])

@@ -51,16 +51,28 @@ def check_config_parameters(keyword, value):
 
         if len(value) == 16:
             v.printer_profile_string = value
+            return
+
+    if keyword == "PALETTE3":
+        v.palette3 = True
+        v.colors = 4
+        return
+
+    if keyword == "PALETTE3_PRO":
+        v.palette3 = True
+        v.colors = 8
         return
 
     if keyword == "ACCESSORYMODE_MAF":
         v.accessory_mode = True
+        v.colors = 4
         gui.create_logitem("Config: Palette2 Accessory Mode Selected")
         return
 
     if keyword == "ACCESSORYMODE_MSF":
         v.accessory_mode = True
         v.palette_plus = True
+        v.colors = 4
         gui.create_logitem("Config: Palette+ Accessory Mode Selected")
         return
 

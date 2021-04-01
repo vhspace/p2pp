@@ -11,6 +11,9 @@ import p2pp.gui as gui
 import p2pp.variables as v
 from p2pp.colornames import find_nearest_colour
 from p2pp.formatnumbers import hexify_short, hexify_float, hexify_long, hexify_byte
+import json
+import math
+import p2pp.purgetower as purgetower
 
 
 # ################################################################
@@ -24,6 +27,9 @@ def algorithm_create_process_string(heating, compression, cooling):
                                  hexify_float(float(compression))[1:].zfill(8),
                                  cooling
                                  )
+    elif v.palette3:
+        return int(heating), int(compression), int(cooling)
+
     else:
         return "{} {} {}".format(hexify_short(int(heating)),
                                  hexify_short(int(compression)),
@@ -80,11 +86,15 @@ def algorithm_create_table():
                 gui.log_warning("WARNING: No Algorithm defined for transitioning" +
                                 " {} to {}. Using Default".format(v.filament_type[i],
                                                                   v.filament_type[j]))
-                algo = v.default_splice_algorithm
+                if v.default_splice_algorithm is None:
+                    algo = "D0000 D0000 D0000"
+                else:
+                    algo = v.default_splice_algorithm
             if v.palette_plus:
                 v.splice_algorithm_table.append("({},{})".format(algo_key, algo).replace("-", ""))
             else:
                 v.splice_algorithm_table.append("D{} {}".format(algo_key, algo))
+
 
 
 ############################################################################
@@ -146,6 +156,7 @@ def header_generate_omega_paletteplus():
     warnings = []
 
     return {'header': header, 'summary': summary, 'warnings': warnings}
+
 
 
 def header_generate_omega_palette2(job_name):
@@ -277,6 +288,124 @@ def generatesummary():
 
     return summary
 
+
+
+
+def generate_meta():
+
+    fila = []
+    lena = {}
+    vola = {}
+    inputsused = 0
+    for i in range(v.colors):
+        if v.palette_inputs_used[i]:
+            inputsused += 1
+            fila.append({"materialId": v.used_filament_types.index(v.filament_type[i]) + 1,
+                         "filamentId": i,
+                         "type": v.filament_type[i],
+                         "name": find_nearest_colour(v.filament_color_code[i]),
+                         "color": "#" + v.filament_color_code[i].strip("\n")
+            })
+            try:
+                if i == v.splice_used_tool[0]:
+                    add = v.splice_offset
+                else:
+                    add = 0
+            except IndexError:
+                add = 0
+
+            lena[str(i+1)] = int(v.material_extruded_per_color[i] + add)
+            vola[str(i+1)] = int(purgetower.volfromlength(v.material_extruded_per_color[i] + add))
+
+    bounding_box = {"min": [v.bb_minx, v.bb_miny, v.bb_minz], "max": [v.bb_maxx, v.bb_maxy, v.bb_maxz]}
+
+    metafile = {"version" : "3.0",
+                "setupId": v.printer_profile_string,
+                "time": v.printing_time,
+                "length": lena,
+                "totallength": int(v.total_material_extruded + 0.5 + v.autoloadingoffset),
+                "volume": vola,
+                "totalVolume": int(purgetower.volfromlength(v.total_material_extruded + 0.5 + v.autoloadingoffset)),
+                "inputsUsed": inputsused,
+                "splices": len(v.splice_extruder_position),
+                "pings": len(v.ping_extruder_position),
+                "boundingbox": bounding_box,
+                "filaments": fila
+               }
+
+
+    return json.JSONEncoder().encode(metafile)
+
+
+def generate_palette():
+    palette = {"version": "3.0",
+               "drives": [],
+               "splices": [],
+               "pingCount": len(v.ping_extruder_position),
+               "algorithm": []
+              }
+
+    algo = set([])
+    prevtool = -1
+
+    for i in range(len(v.splice_extruder_position)):
+        palette["splices"].append({"id": v.splice_used_tool[i]+1, "length": round(v.splice_extruder_position[i] + v.autoloadingoffset,4)})
+        palette["drives"].append(v.splice_used_tool[i]+1)
+
+
+    splice_list = []
+
+    for i in range(v.colors):
+        for j in range(v.colors):
+
+            if i == j:
+                continue
+            try:
+                algo_key = "{}{}".format(v.used_filament_types.index(v.filament_type[i]) + 1,
+                                         v.used_filament_types.index(v.filament_type[j]) + 1)
+                if algo_key in splice_list:
+                    continue
+            except:
+                continue
+
+            if not algorithm_transition_used(i, j):
+                continue
+
+            splice_list.append(algo_key)
+
+            try:
+                algo = v.splice_algorithm_dictionary["{}{}".format(v.filament_type[i], v.filament_type[j])]
+            except (IndexError, KeyError):
+                gui.log_warning("WARNING: No Algorithm defined for transitioning" +
+                                " {} to {}. Using Default".format(v.filament_type[i],
+                                                                  v.filament_type[j]))
+
+                if v.default_splice_algorithm is None:
+                    algo = [0,0,0]
+                else:
+                    algo = v.default_splice_algorithm
+
+            algo = v.default_splice_algorithm
+            palette["algorithm"].append({
+                "ingoingId": algo_key[0],
+                "outgoingId": algo_key[1],
+                "heat": algo[0],
+                "compression": algo[1],
+                "cooling": algo[2]
+            })
+
+    palette["drives"] = list(set(palette["drives"]))
+    palette["drives"].sort()
+
+    return json.JSONEncoder().encode(palette)
+
+
+def header_generate_omega_palette3(job_name):
+    return generate_meta() , generate_palette()
+
+
+def palette3_generate_thumbnail():
+    pass
 
 def generatewarnings():
     warnings = ["\n",

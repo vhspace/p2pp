@@ -14,8 +14,13 @@ import re
 # Variable default values
 #########################################
 
+
 # Filament Transition Table
 palette_inputs_used = [False,
+                       False,
+                       False,
+                       False,
+                       False,
                        False,
                        False,
                        False]
@@ -24,12 +29,12 @@ filament_type = [""] * 20
 
 filament_color_code = ["-"] * 20
 
-filament_short = [0, 0, 0, 0]
+filament_short = [0, 0, 0, 0,0,0,0,0]
 
 retraction = 0.0
-retract_lift = [0.6, 0.6, 0.6, 0.6]
-retract_length = [0.8, 0.8, 0.8, 0.8]
-filament_diameter = [1.75, 1.75, 1.75, 1.75]
+retract_lift = [0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6]
+retract_length = [0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8]
+filament_diameter = [1.75, 1.75, 1.75, 1.75, 1.75, 1.75, 1.75, 1.75]
 filament_ids = []
 nozzle_diameter = 0.4
 
@@ -45,7 +50,7 @@ skippable_layer = []  # type array of bool
 
 used_filament_types = []  # type array of string
 
-default_splice_algorithm = "D000 D000 D000"  # type string
+default_splice_algorithm = None  # type string
 process_warnings = []  # type array of string
 splice_algorithm_table = []  # type array of string
 splice_algorithm_dictionary = {}  # type dictionary Str->Str
@@ -139,7 +144,7 @@ hotswap_count = 0  # type: int
 # TotalExtrusion keeps track of the total extrusion in mm for the print taking into account the Extruder Multiplier set
 # in the GCode settings...
 total_material_extruded = 0  # type: float
-material_extruded_per_color = [0, 0, 0, 0]
+material_extruded_per_color = [0, 0, 0, 0, 0, 0, 0, 0]
 last_ping_extruder_position = 0
 ping_interval = 350  # type: float
 max_ping_interval = 3000  # type: float
@@ -299,11 +304,26 @@ z_maxheight = -1
 bed = None
 bedtrace = False
 
-
 #klipper support
 klipper = False
 
-
 # disabke Z-movements during low tower
-
 disable_z = False
+
+#Palette 3 support
+
+thumbnail = False
+thumbnail_data = ""
+
+colors = 4
+palette3 = False
+thumbnail_end = False
+
+printing_time = 0.0
+
+bb_minx = 100000
+bb_miny = 100000
+bb_minz = 100000
+bb_maxx = -100000
+bb_maxy = -100000
+bb_maxz = -100000

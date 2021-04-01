@@ -17,10 +17,13 @@ import p2pp.pings as pings
 import p2pp.purgetower as purgetower
 import p2pp.variables as v
 from p2pp.psconfig import parse_prusaslicer_config
-from p2pp.omega import header_generate_omega
+from p2pp.omega import header_generate_omega, header_generate_omega_palette3
 from p2pp.sidewipe import create_side_wipe
 import p2pp.manualswap as swap
 import p2pp.bedprojection as bp
+import base64
+import version
+import zipfile
 
 # GCODE BLOCK CLASSES
 CLS_UNDEFINED = 0
@@ -46,6 +49,7 @@ hash_TOOLCHANGE_UNLOAD = hash("TOOLCHANGE UNLOAD")
 hash_TOOLCHANGE_WIPE = hash("TOOLCHANGE WIPE")
 hash_TOOLCHANGE_END = hash("TOOLCHANGE END")
 
+
 #  delta tower strategy: try to delay the delta as long as possible to minimize the extra print time
 
 
@@ -61,6 +65,7 @@ def optimize_tower_skip(max_layers):
         idx += 1
 
     return skippable
+
 
 
 def gcode_process_toolchange(new_tool):
@@ -230,6 +235,22 @@ def parse_gcode():
         if line.startswith(';'):
 
             is_comment = True
+
+            # following lines should only be tested at the beginning og the file before the first layer is executed
+            if not v.thumbnail_end:
+
+                if line.startswith("; thumbnail end"):
+                    v.thumbnail = False
+                    v.thumbnail_end = True
+                    v.thumbnail_data = v.thumbnail_data.replace("; ","")
+
+                if v.thumbnail:
+                    v.thumbnail_data += line
+
+
+                if line.startswith("; thumbnail begin"):
+                    v.thumbnail = True
+
 
             if line.startswith('; CP'):  # code block assignment
                 update_class(hash(line[5:]))
@@ -807,17 +828,27 @@ def generate(input_file, output_file):
         # write the output file
         ######################
 
-        if output_file is None:
-            output_file = input_file
+        path, _ = os.path.split(output_file)
+
+        if v.palette3:
+            output_file = os.path.join(path, "print.gcode")
+            pre, ext = os.path.splitext(input_file)
+            mcfx = pre + ".mcfx"
+        else:
+            if output_file is None:
+                output_file = input_file
         gui.create_logitem("Generating GCODE file: " + output_file)
         opf = open(output_file, "wb")
-        if not v.accessory_mode:
+        if not v.accessory_mode and not v.palette3:
             for line in header:
                 opf.write(line.encode('utf8'))
-            opf.write("\n\n;--------- START PROCESSED GCODE ----------\n\n".encode('utf8'))
+            opf.write(("\n\n;--------- THIS CODE HAS BEEN PROCESSED BY P2PP v{} --- \n\n".format(version.Version)).encode('utf8'))
             if v.generate_M0:
                 header.append("M0\n")
             opf.write("T0\n".encode('utf8'))
+        else:
+            opf.write(("\n\n;--------- THIS CODE HAS BEEN PROCESSED BY P2PP v{} --- \n\n".format(version.Version)).encode('utf8'))
+
 
         if v.splice_offset == 0:
             gui.log_warning("SPLICE_OFFSET not defined")
@@ -828,6 +859,45 @@ def generate(input_file, output_file):
                 gui.log_warning("Line : {} could not be written to output".format(line))
             opf.write("\n".encode('utf8'))
         opf.close()
+
+        if v.palette3:
+
+            # generate meta.json
+            # generate palette.json
+            # generate thumbnail
+            # generate zip
+            meta, palette = header_generate_omega_palette3(None)
+
+            meta_file = os.path.join(path , "meta.json")
+            palette_file = os.path.join(path , "palette.json")
+            im_file = os.path.join(path, "thumbnail.png")
+
+            gui.create_logitem("Generating Palette 3 output files")
+            mf = open(meta_file, 'wb')
+            mf.write(meta.__str__().encode('ascii'))
+            mf.close()
+
+            pa = open(palette_file, 'wb')
+            pa.write(palette.__str__().encode('ascii'))
+            pa.close()
+
+            im = open(im_file, "wb")
+            im.write(base64.b64decode(v.thumbnail_data))
+            im.close()
+
+            zipf = zipfile.ZipFile(mcfx, 'w', zipfile.ZIP_DEFLATED)
+            zipf.write(meta_file , "meta.json")
+            zipf.write(palette_file, "palette.json")
+            zipf.write(output_file, "print.gcode")
+            zipf.write(im_file, "thumbnail.png")
+
+            os.remove(meta_file)
+            os.remove(palette_file)
+            os.remove(output_file)
+            os.remove(im_file)
+            zipf.close()
+
+
 
         if v.accessory_mode:
 

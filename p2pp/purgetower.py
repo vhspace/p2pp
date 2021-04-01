@@ -220,7 +220,7 @@ def retract(tool, speed=-1):
 
 def largeretract():
     gcode.issue_code("G1 E-{:.2f}".format(3))
-    v.retraction -= 3
+    v.retraction += 3
 
 
 def unretract(tool, speed=-1, comment=""):
@@ -228,6 +228,7 @@ def unretract(tool, speed=-1, comment=""):
     if v.retraction == 0:
         return
     length = min(-v.retraction, v.retract_length[tool])
+
     if speed > 0:
         gcode.issue_code("G1 E{:.2f} F{:.0f} {}".format(length, speed, comment))
     else:
