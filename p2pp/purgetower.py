@@ -219,9 +219,13 @@ def retract(tool, speed=-1):
 
 
 def largeretract():
-    gcode.issue_code("G1 E-{:.2f}".format(3))
+    gcode.issue_code("G1 E-3.000 F1200")
     v.retraction += 3
 
+def largeunretract(comment=""):
+    if v.retraction != 0:
+        gcode.issue_code("G1 E{:.2f} F1200 {}".format(-v.retraction))
+        v.retraction = 0
 
 def unretract(tool, speed=-1, comment=""):
 
