@@ -828,15 +828,16 @@ def generate(input_file, output_file):
         # write the output file
         ######################
 
+        if output_file is None:
+            output_file = input_file
+
         path, _ = os.path.split(output_file)
 
         if v.palette3:
             output_file = os.path.join(path, "print.gcode")
             pre, ext = os.path.splitext(input_file)
             mcfx = pre + ".mcfx"
-        else:
-            if output_file is None:
-                output_file = input_file
+
         gui.create_logitem("Generating GCODE file: " + output_file)
         opf = open(output_file, "wb")
         if not v.accessory_mode and not v.palette3:
