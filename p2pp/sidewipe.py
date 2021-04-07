@@ -116,10 +116,8 @@ def create_sidewipe_bb3d(length):
     for i in range(purgeblobs):
         generate_blob(v.bigbrain3d_blob_size, i)
 
+    purgetower.retract(v.current_tool)
     if v.current_position_z < v.bigbrain3d_minimalclearenceheight:
-
-        if v.retraction != 0:
-            purgetower.retract(v.current_tool)
 
         issue_code("\nG1 X{:.3f} Y{:.3f} F8640".format(keep_xpos, keep_ypos))
         issue_code("\nG1 Z{:.4f} F8640    ; Reset correct Z height to continue print".format(v.current_position_z))
