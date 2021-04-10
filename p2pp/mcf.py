@@ -674,13 +674,17 @@ def gcode_parselines():
         elif (g[gcode.MOVEMENT] & 3) and g[gcode.EXTRUDE] and v.retraction < -0.01:
             purgetower.unretract(v.current_tool, -1, ";--- P2PP --- fixup retracts")
 
-        gcode.issue_command(g)
+
+
+
 
         # --------------------- PING PROCESSING
 
         if v.accessory_mode and g[gcode.EXTRUDE]:
-            pings.check_accessorymode_second(g[gcode.E])
+            if not pings.check_accessorymode_second(g[gcode.E]):
+                gcode.issue_command(g)
         else:
+            gcode.issue_command(g)
             if g[gcode.EXTRUDE] and v.side_wipe_length == 0:
                 pings.check_connected_ping()
 

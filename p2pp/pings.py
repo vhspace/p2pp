@@ -50,11 +50,12 @@ def interpollate(_from, _to, _part):
     if _part == 0:
         return _from
     else:
-        return _from + (_to - _from) / _part
+        return _from + (_to - _from) * _part
 
 
 def check_accessorymode_second(e):
     nextline = None
+    rval = False
     if v.accessory_mode and (v.acc_ping_left > 0):
 
         if v.acc_ping_left >= e:
@@ -64,12 +65,11 @@ def check_accessorymode_second(e):
             proc = v.acc_ping_left / e
             int_x = interpollate(v.previous_position_x, v.current_position_x, proc)
             int_y = interpollate(v.previous_position_y, v.current_position_y, proc)
-            to_z = v.current_position_z
-            gcode.issue_code("G1 X{:.4f} Y{:.4f} Z{:.4f} E{:.4f}".format(int_x, int_y, to_z, v.acc_ping_left))
+            gcode.issue_code("G1 X{:.4f} Y{:.4f} E{:.4f}".format(int_x, int_y, v.acc_ping_left))
             e -= v.acc_ping_left
             v.acc_ping_left = 0
             nextline = "G1 X{:.4f} Y{:.4f} E{:.4f}".format(v.current_position_x, v.current_position_y, e)
-
+            rval = True
         if v.acc_ping_left <= 0.1:
             gcode.issue_code("; -------------------------------------", True)
             gcode.issue_code("; --- P2PP - ACCESSORY MODE PING PART 2", True)
@@ -84,3 +84,5 @@ def check_accessorymode_second(e):
 
             if nextline:
                 gcode.issue_code(nextline)
+
+    return rval
