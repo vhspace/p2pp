@@ -12,7 +12,6 @@ import p2pp.variables as v
 from p2pp.colornames import find_nearest_colour
 from p2pp.formatnumbers import hexify_short, hexify_float, hexify_long, hexify_byte
 import json
-import math
 import p2pp.purgetower as purgetower
 
 
