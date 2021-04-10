@@ -87,7 +87,10 @@ def algorithm_create_table():
                                 " {} to {}. Using Default".format(v.filament_type[i],
                                                                   v.filament_type[j]))
                 if v.default_splice_algorithm is None:
-                    algo = "D0000 D0000 D0000"
+                    if v.palette_plus:
+                        algo = "0,0,0"
+                    else:
+                        algo = "D0000 D0000 D0000"
                 else:
                     algo = v.default_splice_algorithm
             if v.palette_plus:
@@ -96,6 +99,22 @@ def algorithm_create_table():
                 v.splice_algorithm_table.append("D{} {}".format(algo_key, algo))
 
 
+def generatewarnings():
+    warnings = ["\n",
+                ";------------------------:\n",
+                "; - PROCESS INFO/WARNINGS:\n",
+                ";------------------------:\n",
+                ";Generated with P2PP version {}\n".format(v.version),
+                ";Processed file:. {}\n".format(v.filename),
+                ";P2PP Processing time {:-5.2f}s\n".format(v.processtime)]
+    gui.create_logitem(("Processing time {:-5.2f}s".format(v.processtime)))
+    if len(v.process_warnings) == 0:
+        warnings.append(";No warnings\n")
+    else:
+        for i in range(len(v.process_warnings)):
+            warnings.append("{}\n".format(v.process_warnings[i]))
+
+    return warnings
 
 ############################################################################
 # Generate the Omega - Header that drives the Palette to generate filament
@@ -289,7 +308,7 @@ def generatesummary():
     return summary
 
 
-
+# PALETTE 3
 
 def generate_meta():
 
@@ -407,20 +426,5 @@ def header_generate_omega_palette3(job_name):
 def palette3_generate_thumbnail():
     pass
 
-def generatewarnings():
-    warnings = ["\n",
-                ";------------------------:\n",
-                "; - PROCESS INFO/WARNINGS:\n",
-                ";------------------------:\n",
-                ";Generated with P2PP version {}\n".format(v.version),
-                ";Processed file:. {}\n".format(v.filename),
-                ";P2PP Processing time {:-5.2f}s\n".format(v.processtime)]
-    gui.create_logitem(("Processing time {:-5.2f}s".format(v.processtime)))
-    if len(v.process_warnings) == 0:
-        warnings.append(";No warnings\n")
-    else:
-        for i in range(len(v.process_warnings)):
-            warnings.append("{}\n".format(v.process_warnings[i]))
 
-    return warnings
 
