@@ -25,6 +25,11 @@ def intparameter(s):
         return 0
 
 
+def check_splice_table():
+    if len(v.splice_algorithm_table) > 0 or v.default_splice_algorithm is not None:
+        gui.log_warning("Algorithm definitions should appear AFTER Palette Model selection (PALETTE3/PALETTE3_PRO/ACCESSORYMODE_MAF/ACCESSORYMODE_MSF)")
+
+
 def check_config_parameters(keyword, value):
     keyword = keyword.upper().strip()
 
@@ -56,17 +61,20 @@ def check_config_parameters(keyword, value):
     if keyword == "PALETTE3":
         v.palette3 = True
         v.colors = 4
+        check_splice_table()
         return
 
     if keyword == "PALETTE3_PRO":
         v.palette3 = True
         v.colors = 8
+        check_splice_table()
         return
 
     if keyword == "ACCESSORYMODE_MAF":
         v.accessory_mode = True
         v.colors = 4
         gui.create_logitem("Config: Palette2 Accessory Mode Selected")
+        check_splice_table()
         return
 
     if keyword == "ACCESSORYMODE_MSF":
@@ -74,6 +82,7 @@ def check_config_parameters(keyword, value):
         v.palette_plus = True
         v.colors = 4
         gui.create_logitem("Config: Palette+ Accessory Mode Selected")
+        check_splice_table()
         return
 
     if keyword == "P+LOADINGOFFSET":
