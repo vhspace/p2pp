@@ -94,6 +94,7 @@ releaseinfo = {
 "7.0.05": "Fix bug in palette+ invalid interpollation calculation",
 "7.0.06": "Added warning to place palette model specifier BEFORE algorithm info",
 "7.0.07": "Do not generate T0 if in Klipper mode",
+"7.0.08": "Handle TOOLCHANGE LOAD",
     '--- RELEASE INFORMATION': 'END'
 }
 
@@ -101,7 +102,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 7
 MinorVersion = 0
-Build = 7
+Build = 8
 
 latest_stable_version = ""
 

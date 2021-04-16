@@ -46,6 +46,7 @@ hash_EMPTY_GRID_START = hash("EMPTY GRID START")
 hash_EMPTY_GRID_END = hash("EMPTY GRID END")
 hash_TOOLCHANGE_START = hash("TOOLCHANGE START")
 hash_TOOLCHANGE_UNLOAD = hash("TOOLCHANGE UNLOAD")
+hash_TOOLCHANGE_LOAD = hash("TOOLCHANGE LOAD")
 hash_TOOLCHANGE_WIPE = hash("TOOLCHANGE WIPE")
 hash_TOOLCHANGE_END = hash("TOOLCHANGE END")
 
@@ -165,6 +166,9 @@ def update_class(line_hash):
         v.layer_toolchange_counter += 1
 
     elif line_hash == hash_TOOLCHANGE_UNLOAD:
+        v.block_classification = CLS_TOOL_UNLOAD
+
+    elif line_hash == hash_TOOLCHANGE_LOAD:
         v.block_classification = CLS_TOOL_UNLOAD
 
     elif line_hash == hash_TOOLCHANGE_WIPE:
