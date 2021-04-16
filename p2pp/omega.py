@@ -258,7 +258,9 @@ def header_generate_omega_palette2(job_name):
 
         if v.generate_M0:
             header.append("M0\n")
-        header.append("T0\n")
+        if not v.klipper:
+            header.append("T0\n")
+
         summary = generatesummary()
         warnings = generatewarnings()
 
