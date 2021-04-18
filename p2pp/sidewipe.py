@@ -113,8 +113,11 @@ def create_sidewipe_bb3d(length):
     v.processed_gcode.append("M907 X{}           ; increase motor power".format(v.bigbrain3d_motorpower_high))
     issue_code("; -- P2PP -- Generating {} blobs for {}mm of purge".format(purgeblobs, length), True)
 
-    for i in range(purgeblobs):
-        generate_blob(v.bigbrain3d_blob_size, i)
+    if v.single_blob:
+        generate_blob(length, 1)
+    else:
+        for i in range(purgeblobs):
+            generate_blob(v.bigbrain3d_blob_size, i)
 
     purgetower.retract(v.current_tool)
     if v.current_position_z < v.bigbrain3d_minimalclearenceheight:

@@ -95,6 +95,7 @@ releaseinfo = {
 "7.0.06": "Added warning to place palette model specifier BEFORE algorithm info",
 "7.0.07": "Do not generate T0 if in Klipper mode",
 "7.0.08": "Handle TOOLCHANGE LOAD",
+"7.0.09": "Added BIGBRAIN3D_SINGLEBLOB",
     '--- RELEASE INFORMATION': 'END'
 }
 
@@ -102,7 +103,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 7
 MinorVersion = 0
-Build = 8
+Build = 9
 
 latest_stable_version = ""
 

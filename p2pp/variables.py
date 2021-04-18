@@ -239,6 +239,7 @@ bigbrain3d_fanoffdelay = 0
 bigbrain3d_left = 1
 bigbrain3d_prime = 0
 bigbrain3d_minimalclearenceheight = 20
+single_blob = False
 
 tower_measure = False
 expect_retract = False
