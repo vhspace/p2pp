@@ -55,7 +55,6 @@ def generate_blob(length, count):
     else:
         issue_code("G1 E{:6.3f} F{}     ; UNRETRACT/PURGE/RETRACT ".format(length, v.bigbrain3d_blob_speed))
 
-    purgetower.largeretract()
     setfanspeed(255)
     issue_code(
         "G4 S{0:.0f}              ; blob {0}s cooling time".format(v.bigbrain3d_blob_cooling_time))
@@ -69,7 +68,7 @@ def generate_blob(length, count):
             v.bigbrain3d_x_position))  # takes 2.5 seconds
         issue_code("G1 X{:.3f} F10800  ; WHACKAAAAA!!!!".format(v.bigbrain3d_x_position - v.bigbrain3d_left * 20))
 
-    purgetower.largeunretract()
+    purgetower.largeretract()
 
 def create_sidewipe_bb3d(length):
 
@@ -114,12 +113,14 @@ def create_sidewipe_bb3d(length):
     issue_code("; -- P2PP -- Generating {} blobs for {}mm of purge".format(purgeblobs, length), True)
 
     if v.single_blob:
-        generate_blob(length, 1)
+        generate_blob(length, 0)
     else:
         for i in range(purgeblobs):
             generate_blob(v.bigbrain3d_blob_size, i)
 
-    purgetower.retract(v.current_tool)
+    if not v.retraction < 0:
+        purgetower.retract(v.current_tool)
+
     if v.current_position_z < v.bigbrain3d_minimalclearenceheight:
 
         issue_code("\nG1 X{:.3f} Y{:.3f} F8640".format(keep_xpos, keep_ypos))
