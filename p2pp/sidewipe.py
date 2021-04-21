@@ -42,7 +42,7 @@ def generate_blob(length, count):
         "G1 X{:.3f} F1000   ; go to the actual wiping position".format(v.bigbrain3d_x_position))  # takes 2.5 seconds
 
     if v.retraction < 0:
-        purgetower.largeunretract(v.current_tool)
+        purgetower.largeunretract()
 
     if v.bigbrain3d_smartfan:
         issue_code("G1 E{:6.3f} F{}     ; Purge FAN OFF ".format(length / 4, v.bigbrain3d_blob_speed))
@@ -81,8 +81,12 @@ def create_sidewipe_bb3d(length):
 
     correction = v.bigbrain3d_blob_size * purgeblobs - length
 
+    if v.single_blob:
+        purgeblobs = 1
+        correction = 0
+
     issue_code(";-------------------------------", True)
-    issue_code("; P2PP BB3DBLOBS: {:.0f} BLOBS".format(purgeblobs), True)
+    issue_code("; P2PP BB3DBLOBS: {:.0f} BLOB(S)".format(purgeblobs), True)
     issue_code(";-------------------------------", True)
 
     issue_code(

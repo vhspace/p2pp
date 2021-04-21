@@ -97,6 +97,7 @@ releaseinfo = {
 "7.0.08": "Handle TOOLCHANGE LOAD",
 "7.0.09": "Added BIGBRAIN3D_SINGLEBLOB",
 "7.1.00": "Fixup large retruact on blobs",
+"7.1.01": "Error in largeunretract routine",
     '--- RELEASE INFORMATION': 'END'
 }
 
