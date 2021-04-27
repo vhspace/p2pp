@@ -426,7 +426,7 @@ def gcode_parselines():
                     if g[gcode.COMMAND] in ["G4", "M900"]:
                         gcode.move_to_comment(g, "--P2PP-- tool unload")
 
-                elif g[gcode.COMMAND].startswith('M'):
+                if g[gcode.COMMAND] is not None and g[gcode.COMMAND].startswith('M'):
                     try:
                         commandNum = int(g[gcode.COMMAND][1:])
                     except (ValueError, KeyError):

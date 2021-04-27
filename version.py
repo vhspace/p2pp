@@ -97,7 +97,8 @@ releaseinfo = {
 "7.0.08": "Handle TOOLCHANGE LOAD",
 "7.0.09": "Added BIGBRAIN3D_SINGLEBLOB",
 "7.1.00": "Fixup large retruact on blobs",
-"7.1.01": "Error in largeunretract routine",
+"7.1.10": "Error in largeunretract routine",
+"7.1.11": "BUG Fix M220 processing",
     '--- RELEASE INFORMATION': 'END'
 }
 
@@ -105,7 +106,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 7
 MinorVersion = 1
-Build = 10
+Build = 11
 
 latest_stable_version = ""
 
