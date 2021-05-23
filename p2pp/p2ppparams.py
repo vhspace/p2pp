@@ -44,7 +44,7 @@ def check_config_parameters(keyword, value):
 
 
     if keyword == "PRINTERPROFILE":
-
+        value = value.strip(" ")
         if len(value) != 16:
             gui.log_warning("Invalid Printer profile!  - Has invalid length (expect 16) - [{}]"
                             .format(value))

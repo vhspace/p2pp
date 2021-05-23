@@ -99,6 +99,7 @@ releaseinfo = {
 "7.1.00": "Fixup large retruact on blobs",
 "7.1.10": "Error in largeunretract routine",
 "7.1.11": "BUG Fix M220 processing",
+"7.1.12": "BUG Fix Added strip after PROFILE ID value",
     '--- RELEASE INFORMATION': 'END'
 }
 
@@ -106,7 +107,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 7
 MinorVersion = 1
-Build = 11
+Build = 12
 
 latest_stable_version = ""
 
