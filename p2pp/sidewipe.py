@@ -214,10 +214,6 @@ def create_side_wipe(length=0):
 
         purgetower.retract(v.current_tool)
 
-        # restore Z height is Sidewipe Z-hop was applied
-        if v.addzop>0.0:
-            issue_code("G1 Z{} ;P2PP ZHOP SIDEWIPE RESTORE".format(v.current_position_z))
-
         issue_code("G1 F8640")
         issue_code(";---------------------------", True)
 
