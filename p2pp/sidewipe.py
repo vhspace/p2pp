@@ -151,6 +151,10 @@ def create_side_wipe(length=0):
         issue_code(";---------------------------", True)
         issue_code(";  P2PP SIDE WIPE: {:7.3f}mm".format(v.side_wipe_length), True)
 
+        # check if the sidewipe has an additional z-hop defined, if so increase z-height with that amount
+        if v.addzop>0.0:
+            issue_code("G1 Z{} ;P2PP ZHOP SIDEWIPE".format(v.current_position_z+1.0))
+
         for line in v.before_sidewipe_gcode:
             issue_code(line)
 
@@ -209,6 +213,11 @@ def create_side_wipe(length=0):
             issue_code(line)
 
         purgetower.retract(v.current_tool)
+
+        # restore Z height is Sidewipe Z-hop was applied
+        if v.addzop>0.0:
+            issue_code("G1 Z{} ;P2PP ZHOP SIDEWIPE RESTORE".format(v.current_position_z))
+
         issue_code("G1 F8640")
         issue_code(";---------------------------", True)
 

@@ -247,6 +247,9 @@ def check_config_parameters(keyword, value):
         v.side_wipe_loc = value
         return
 
+    if keyword == "SIDEWIPEZHOP":
+        v.addzop = floatparameter(value)
+
     if keyword == "PURGETOPSPEED":
         v.purgetopspeed = int(floatparameter(value))
         gui.create_logitem("Purge Max speed set to {:.0f}mm/min ({}mm/s)".format(v.purgetopspeed, v.purgetopspeed / 60))

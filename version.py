@@ -100,6 +100,7 @@ releaseinfo = {
 "7.1.10": "Error in largeunretract routine",
 "7.1.11": "BUG Fix M220 processing",
 "7.1.12": "BUG Fix Added strip after PROFILE ID value, unretract speed set",
+"7.1.13": "Added SIDEWIPEZHOP parameter",
     '--- RELEASE INFORMATION': 'END'
 }
 
@@ -107,7 +108,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 7
 MinorVersion = 1
-Build = 12
+Build = 13
 
 latest_stable_version = ""
 

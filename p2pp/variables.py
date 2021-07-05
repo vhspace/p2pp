@@ -328,3 +328,5 @@ bb_minz = 100000
 bb_maxx = -100000
 bb_maxy = -100000
 bb_maxz = -100000
+
+addzop = 0.0
