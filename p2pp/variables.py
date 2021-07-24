@@ -85,6 +85,7 @@ side_wipe_length = 0  # type: float
 sidewipe_miny = 25  # type: float
 sidewipe_maxy = 175  # type: float
 wipe_feedrate = 5000  # type: int
+sidewipe_delay_zreturn = False  # type: bool
 toolchange_start = False
 toolchange_processed = False
 enterpurge = False

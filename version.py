@@ -101,6 +101,7 @@ releaseinfo = {
 "7.1.11": "BUG Fix M220 processing",
 "7.1.12": "BUG Fix Added strip after PROFILE ID value, unretract speed set",
 "7.1.13": "Added SIDEWIPEZHOP parameter",
+"7.1.14": "Added SIDEWIPEZHOP_SKIPRETURN parameter",
     '--- RELEASE INFORMATION': 'END'
 }
 

@@ -128,7 +128,10 @@ def create_sidewipe_bb3d(length):
     if v.current_position_z < v.bigbrain3d_minimalclearenceheight:
 
         issue_code("\nG1 X{:.3f} Y{:.3f} F8640".format(keep_xpos, keep_ypos))
-        issue_code("\nG1 Z{:.4f} F8640    ; Reset correct Z height to continue print".format(v.current_position_z))
+        if not v.sidewipe_delay_zreturn:
+            issue_code("\nG1 Z{:.4f} F8640    ; P2PP - ZHOP - return to oroginal height".format(v.current_position_z))
+        else:
+            issue_code("\n; G1 Z{:.4f} F8640  ; P2PP - Deferred return to Z_height".format(v.current_position_z))
 
     resetfanspeed()
     v.processed_gcode.append("\nM907 X{}           ; reset motor power".format(v.bigbrain3d_motorpower_normal))
@@ -152,7 +155,7 @@ def create_side_wipe(length=0):
         issue_code(";  P2PP SIDE WIPE: {:7.3f}mm".format(v.side_wipe_length), True)
 
         # check if the sidewipe has an additional z-hop defined, if so increase z-height with that amount
-        if v.addzop>0.0:
+        if v.addzop > 0.0:
             issue_code("G1 Z{} ;P2PP ZHOP SIDEWIPE".format(v.current_position_z+1.0))
 
         for line in v.before_sidewipe_gcode:

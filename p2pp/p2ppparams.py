@@ -249,6 +249,10 @@ def check_config_parameters(keyword, value):
 
     if keyword == "SIDEWIPEZHOP":
         v.addzop = floatparameter(value)
+        gui.create_logitem("Side Wipe ZHOP of {:3.2f}mm".format(v.addzop))
+
+    if keyword == "SIDEWIPEZHOP_SKIPRETURN":
+        v.sidewipe_delay_zreturn = True
 
     if keyword == "PURGETOPSPEED":
         v.purgetopspeed = int(floatparameter(value))
