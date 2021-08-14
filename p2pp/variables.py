@@ -45,6 +45,7 @@ accessory_mode = False  # type Bool
 palette_plus = False
 palette_plus_loading_offset = -9
 palette_plus_ppm = -9
+printername = "Pruse Slicer - P3PP Output"
 
 skippable_layer = []  # type array of bool
 

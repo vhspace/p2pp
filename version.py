@@ -102,14 +102,15 @@ releaseinfo = {
 "7.1.12": "BUG Fix Added strip after PROFILE ID value, unretract speed set",
 "7.1.13": "Added SIDEWIPEZHOP parameter",
 "7.1.14": "Added SIDEWIPEZHOP_SKIPRETURN parameter",
+"7.2.00": "Fixup for Palette 3 Meta and Palette file changes",
     '--- RELEASE INFORMATION': 'END'
 }
 
 
 # general version info
 MajorVersion = 7
-MinorVersion = 1
-Build = 14
+MinorVersion = 2
+Build = 00
 
 latest_stable_version = ""
 

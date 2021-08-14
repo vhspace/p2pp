@@ -321,7 +321,7 @@ def generate_meta():
         if v.palette_inputs_used[i]:
             inputsused += 1
             fila.append({"materialId": v.used_filament_types.index(v.filament_type[i]) + 1,
-                         "filamentId": i,
+                         "filamentId": i+1,
                          "type": v.filament_type[i],
                          "name": find_nearest_colour(v.filament_color_code[i]),
                          "color": "#" + v.filament_color_code[i].strip("\n")
@@ -339,22 +339,26 @@ def generate_meta():
 
     bounding_box = {"min": [v.bb_minx, v.bb_miny, v.bb_minz], "max": [v.bb_maxx, v.bb_maxy, v.bb_maxz]}
 
-    metafile = {"version" : "3.0",
-                "setupId": v.printer_profile_string,
+    metafile = {"version" : "3.1",
+                "setupId": "null",
+                "printerProfile": {
+                    "id" : v.printer_profile_string,
+                    "name": v.printername
+                },
                 "time": v.printing_time,
                 "length": lena,
-                "totallength": int(v.total_material_extruded + 0.5 + v.autoloadingoffset),
+                "totalLength": int(v.total_material_extruded + 0.5 + v.autoloadingoffset),
                 "volume": vola,
                 "totalVolume": int(purgetower.volfromlength(v.total_material_extruded + 0.5 + v.autoloadingoffset)),
                 "inputsUsed": inputsused,
                 "splices": len(v.splice_extruder_position),
                 "pings": len(v.ping_extruder_position),
-                "boundingbox": bounding_box,
+                "boundingBox": bounding_box,
                 "filaments": fila
                }
 
 
-    return json.JSONEncoder().encode(metafile)
+    return json.dumps(metafile, indent=2)
 
 
 def generate_palette():
@@ -368,14 +372,22 @@ def generate_palette():
     algo = set([])
     prevtool = -1
 
-    for i in range(len(v.splice_extruder_position)):
-        palette["splices"].append({"id": v.splice_used_tool[i]+1, "length": round(v.splice_extruder_position[i] + v.autoloadingoffset,4)})
-        palette["drives"].append(v.splice_used_tool[i]+1)
 
+
+    for i in range(len(v.splice_extruder_position)):
+        palette["splices"].append({"id": v.splice_used_tool[i]+1, "length": round(v.splice_extruder_position[i] + v.autoloadingoffset, 4)})
 
     splice_list = []
+    palette["drives"] = []
 
     for i in range(v.colors):
+
+        try:
+            fIdx = v.used_filament_types.index(v.filament_type[i]) + 1
+        except:
+            fIdx = 0
+        palette["drives"].append(fIdx)
+
         for j in range(v.colors):
 
             if i == j:
@@ -414,10 +426,7 @@ def generate_palette():
                 "cooling": algo[2]
             })
 
-    palette["drives"] = list(set(palette["drives"]))
-    palette["drives"].sort()
-
-    return json.JSONEncoder().encode(palette)
+    return json.dumps(palette, indent=2)
 
 
 def header_generate_omega_palette3(job_name):
