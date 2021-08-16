@@ -389,5 +389,5 @@ def parse_prusaslicer_config():
             v.max_wipe = max(wiping_info)
             v.wiping_info = wiping_info
             if _warning:
-                gui.create_logitem("<b>All purge lenghts 70/70 OR 140.  Purge lenghts may not have been set correctly.</b>")
+                gui.create_logitem("<b>All purge lenghths 70/70 OR 140.  Purge lengths may not have been set correctly.</b>")
             continue

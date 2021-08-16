@@ -765,7 +765,7 @@ def generate(input_file, output_file):
         if v.bed_shape_rect and v.bed_shape_warning:
             gui.create_logitem("Manual bed size override, PrusaSlicer Bedshape configuration ignored.")
         gui.create_logitem("Bed origin ({:3.1f}mm, {:3.1f}mm)".format(v.bed_origin_x, v.bed_origin_y))
-        gui.create_logitem("Bed zise   ({:3.1f}mm, {:3.1f}mm)".format(v.bed_size_x, v.bed_size_y))
+        gui.create_logitem("Bed size   ({:3.1f}mm, {:3.1f}mm)".format(v.bed_size_x, v.bed_size_y))
 
     v.bed_max_x = v.bed_origin_x + v.bed_size_x
     v.bed_max_y = v.bed_origin_y + v.bed_size_y
