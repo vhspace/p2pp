@@ -387,7 +387,7 @@ def generate_palette():
     for i in range(v.colors):
 
         fIdx = 0
-        if v.palette_inputs_used:
+        if v.palette_inputs_used[i]:
             try:
                 fIdx = v.used_filament_types.index(v.filament_type[i]) + 1
             except:
