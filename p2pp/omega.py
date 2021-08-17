@@ -370,7 +370,7 @@ def generate_meta():
         try:
             first_filament = v.splice_used_tool[0]
             metafile["preheatTemperature"]["nozzle"] = [v.p3_printtemp[first_filament]]
-            metafile["preheatTemperature"]["bed"] = [v.p3_bedtemp[first_filament]]
+            metafile["preheatTemperature"]["bed"] = v.p3_bedtemp[first_filament]
         except:
             pass
 
