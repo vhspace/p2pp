@@ -353,7 +353,7 @@ def generate_meta():
                     "nozzle": [0],
                     "bed": 0
                 },
-                "paletteNozzle": "0",
+                "paletteNozzle": 0,
                 "time": v.printing_time,
                 "length": lena,
                 "totalLength": int(v.total_material_extruded + 0.5 + v.autoloadingoffset),
