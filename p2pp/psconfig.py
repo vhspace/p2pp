@@ -165,6 +165,30 @@ def parse_prusaslicer_config():
         if gcode_line.startswith("; bed_shape") and not v.bed_shape_warning:
             get_bedshape(gcode_line)
 
+        if gcode_line.startswith("; first_layer_temperature"):
+            parameter_start = gcode_line.find("=")
+            if parameter_start != -1:
+                try:
+                    temps = gcode_line[parameter_start + 1:].strip().split(",")
+                    v.p3_printtemp = []
+                    for i in range(len(temps)):
+                        v.p3_printtemp.append(int(temps[i]))
+                except:
+                    v.p3_printtemp = [0, 0, 0, 0, 0, 0, 0, 0]
+
+
+        if gcode_line.startswith("; first_layer_bed_temperature"):
+            parameter_start = gcode_line.find("=")
+            if parameter_start != -1:
+                try:
+                    temps = gcode_line[parameter_start + 1:].strip().split(",")
+                    v.p3_bedtemp = []
+                    for i in range(len(temps)):
+                        v.p3_bedtemp.append(int(temps[i]))
+                except:
+                    v.p3_bedtemp = [0, 0, 0, 0, 0, 0, 0, 0]
+
+
         if gcode_line.startswith("; max_print_height"):
 
             parameter_start = gcode_line.find("=")

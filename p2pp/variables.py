@@ -324,6 +324,11 @@ thumbnail_end = False
 
 printing_time = 0.0
 
+process_preheat = False
+
+p3_printtemp = []
+p3_bedtemp = []
+
 bb_minx = 100000
 bb_miny = 100000
 bb_minz = 100000

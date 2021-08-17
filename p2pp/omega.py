@@ -343,12 +343,17 @@ def generate_meta():
 
     bounding_box = {"min": [v.bb_minx, v.bb_miny, v.bb_minz], "max": [v.bb_maxx, v.bb_maxy, v.bb_maxz]}
 
-    metafile = {"version" : "3.1",
+    metafile = {"version" : "3.2",
                 "setupId": "null",
                 "printerProfile": {
                     "id" : v.printer_profile_string,
                     "name": v.printername
                 },
+                "preheatTemperature": {
+                    "nozzle": [0],
+                    "bed": 0
+                },
+                "paletteNozzel": "0",
                 "time": v.printing_time,
                 "length": lena,
                 "totalLength": int(v.total_material_extruded + 0.5 + v.autoloadingoffset),
@@ -361,6 +366,13 @@ def generate_meta():
                 "filaments": fila
                }
 
+    if v.process_preheat:
+        try:
+            first_filament = v.splice_used_tool[0]
+            metafile["preheatTemperature"]["nozzle"] = [v.p3_printtemp[first_filament]]
+            metafile["preheatTemperature"]["bed"] = [v.p3_bedtemp[first_filament]]
+        except:
+            pass
 
     return json.dumps(metafile, indent=2)
 
@@ -389,11 +401,12 @@ def generate_palette():
         fIdx = 0
         if v.palette_inputs_used[i]:
             try:
-                fIdx = v.used_filament_types.index(v.filament_type[i]) + 1
+                fIdx = i + 1
             except:
                 pass
 
         palette["drives"].append(fIdx)
+
 
         for j in range(v.colors):
 
@@ -432,6 +445,7 @@ def generate_palette():
                 "compression": algo[1],
                 "cooling": algo[2]
             })
+
 
     return json.dumps(palette, indent=2)
 

@@ -104,6 +104,7 @@ releaseinfo = {
 "7.1.14": "Added SIDEWIPEZHOP_SKIPRETURN parameter",
 "7.2.00": "Fixup for Palette 3 Meta and Palette file changes",
 "7.2.01": "Fixup for drives array in Palette 3 json file",
+"7.2.02": "Preheat information parsing",
     '--- RELEASE INFORMATION': 'END'
 }
 

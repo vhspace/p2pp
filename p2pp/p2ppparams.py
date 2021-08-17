@@ -43,6 +43,9 @@ def check_config_parameters(keyword, value):
         v.save_unprocessed = True
 
 
+    if keyword == "P3_PROCESSPREHEAT":
+        v.process_preheat = True
+
     if keyword == "PRINTERPROFILE":
         value = value.strip(" ")
         if len(value) != 16:
