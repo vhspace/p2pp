@@ -127,6 +127,10 @@ def header_generate_omega(job_name):
     if len(v.splice_extruder_position) == 0:
         gui.log_warning("This does not look like a multi-colour file.\n")
 
+    if v.palette3:
+        return {'header': [], 'summary': generatesummary(), 'warnings': generatewarnings()}
+
+
     algorithm_create_table()
     if not v.palette_plus:
         return header_generate_omega_palette2(job_name)
@@ -435,9 +439,6 @@ def generate_palette():
 def header_generate_omega_palette3(job_name):
     return generate_meta() , generate_palette()
 
-
-def palette3_generate_thumbnail():
-    pass
 
 
 
