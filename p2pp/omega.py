@@ -382,10 +382,13 @@ def generate_palette():
 
     for i in range(v.colors):
 
-        try:
-            fIdx = v.used_filament_types.index(v.filament_type[i]) + 1
-        except:
-            fIdx = 0
+        fIdx = 0
+        if v.palette_inputs_used:
+            try:
+                fIdx = v.used_filament_types.index(v.filament_type[i]) + 1
+            except:
+                pass
+
         palette["drives"].append(fIdx)
 
         for j in range(v.colors):

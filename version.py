@@ -103,6 +103,7 @@ releaseinfo = {
 "7.1.13": "Added SIDEWIPEZHOP parameter",
 "7.1.14": "Added SIDEWIPEZHOP_SKIPRETURN parameter",
 "7.2.00": "Fixup for Palette 3 Meta and Palette file changes",
+"7.2.01": "Fixup for drives array in Palette 3 json file",
     '--- RELEASE INFORMATION': 'END'
 }
 
@@ -110,7 +111,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 7
 MinorVersion = 2
-Build = 00
+Build = 1
 
 latest_stable_version = ""
 
