@@ -21,7 +21,7 @@ Allow Palette 2 users to exploit all features and functionality of the palette 2
 - wipe to infill
 - configurable option to create more filament at the end of the print 
 - configurable tower print speeds
-- added support for other hardware like the BifBrain3d side wipe device
+- added support for other hardware like the BigBrain3d side wipe device
 
 
 **BEFORE YOU START:**
