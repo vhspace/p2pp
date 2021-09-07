@@ -424,13 +424,14 @@ def gcode_parselines():
                 extruder = g[gcode.OTHER].strip()
 
                 if extruder.startswith("EXTRUDER=extruder"):
-                    try:
-                        extruder_num = int(extruder[-1])
-                    except ValueError:
-                        extruder_num = None
-                        gui.log_warning("KLIPPER - Named extruders are not supported ({})".format(extruder))
-                    except IndexError:
+                    if len(extruder) == 17:
                         extruder_num = 0
+                    else:
+                        try:
+                            extruder_num = int(extruder[17:])
+                        except:
+                            extruder_num = None
+                            gui.log_warning("KLIPPER - Named extruders are not supported ({})".format(extruder))
 
                     if extruder_num is not None:
                         gcode_process_toolchange(extruder_num)
@@ -438,6 +439,8 @@ def gcode_parselines():
                     if not v.debug_leaveToolCommands:
                         gcode.move_to_comment(g, "--P2PP-- Color Change")
                         v.toolchange_processed = True
+                else:
+                    gui.log_warning("KLIPPER - Named extruders are not supported ({})".format(extruder))
             else:
                 if current_block_class == CLS_TOOL_UNLOAD:
                     if g[gcode.COMMAND] in ["G4", "M900"]:
