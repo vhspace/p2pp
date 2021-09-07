@@ -105,6 +105,7 @@ releaseinfo = {
 "7.2.00": "Fixup for Palette 3 Meta and Palette file changes",
 "7.2.01": "Fixup for drives array in Palette 3 json file",
 "7.2.02": "Preheat information parsing",
+"7.2.03": "Klipper - warning extruders / SuperSlicer - warning empty extrusion width",
     '--- RELEASE INFORMATION': 'END'
 }
 
@@ -112,7 +113,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 7
 MinorVersion = 2
-Build = 2
+Build = 3
 
 latest_stable_version = ""
 

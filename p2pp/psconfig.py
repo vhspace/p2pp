@@ -230,6 +230,12 @@ def parse_prusaslicer_config():
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
                 parm = gcode_line[parameter_start + 1:].strip()
+
+                if len(parm) == 0:
+                    gui.log_warning("extrusion width parameter does not contain any values FULL PURGE REDUCTION will not work")
+                    gui.log_warning("Please manually set the values for default extrusion (Print Settings/Advanced/Extrusion Width to resolve")
+                    continue
+
                 if parm[-1] == "%":
                     parm = parm.replace("%", "").strip()
                     tmpval = float(parm)

@@ -151,15 +151,30 @@ def entertower(layer_hght):
 
         v.disable_z = True
 
+def check_tower_update(stage):
+    # extra checks needed for EMPTY GRID as BRIM on tower does no longer seem to be mandatory
+    if v.tower_measured:
+        return
+    if stage:
+        v.tower_measure = True
+    else:
+        v.tower_measure = False
+        v.tower_measured = True
+        v.wipe_tower_xsize = v.wipe_tower_info_maxx - v.wipe_tower_info_minx
+        v.wipe_tower_ysize = v.wipe_tower_info_maxy - v.wipe_tower_info_miny
+        v.side_wipe_towerdefined = True
+
 
 def update_class(line_hash):
 
     if line_hash == hash_EMPTY_GRID_START:
         v.block_classification = CLS_EMPTY
         v.layer_emptygrid_counter += 1
+        check_tower_update(True)
 
     elif line_hash == hash_EMPTY_GRID_END:
         v.block_classification = CLS_ENDGRID
+        check_tower_update(False)
 
     elif line_hash == hash_TOOLCHANGE_START:
         v.block_classification = CLS_TOOL_START
@@ -177,15 +192,15 @@ def update_class(line_hash):
     elif line_hash == hash_TOOLCHANGE_END:
         v.block_classification = CLS_ENDPURGE
 
-    elif line_hash == hash_FIRST_LAYER_BRIM_START:
-        v.block_classification = CLS_BRIM
-        v.tower_measure = True
+    elif v.tower_measured:
+        if line_hash == hash_FIRST_LAYER_BRIM_START:
+            v.block_classification = CLS_BRIM
+            check_tower_update(True)
 
     elif line_hash == hash_FIRST_LAYER_BRIM_END:
         v.block_classification = CLS_BRIM_END
-        v.tower_measure = False
-        v.wipe_tower_xsize = v.wipe_tower_info_maxx - v.wipe_tower_info_minx
-        v.wipe_tower_ysize = v.wipe_tower_info_maxy - v.wipe_tower_info_miny
+        check_tower_update(False)
+
 
 
 def process_layer(layer, index):
@@ -220,7 +235,6 @@ def parse_gcode():
 
     backpass_line = -1
     jndex = 0
-    side_wipe_towerdefined = False
 
     for index in range(total_line_count):
 
@@ -293,6 +307,7 @@ def parse_gcode():
 
         # determine tower size
         if v.tower_measure:
+            code[gcode.MOVEMENT] += gcode.INTOWER
             if code[gcode.X]:
                 v.wipe_tower_info_minx = min(v.wipe_tower_info_minx, code[gcode.X] - 2 * v.extrusion_width)
                 v.wipe_tower_info_maxx = max(v.wipe_tower_info_maxx, code[gcode.X] + 2 * v.extrusion_width)
@@ -313,10 +328,11 @@ def parse_gcode():
                 backpass_line = len(v.parsed_gcode) - 1
 
             # add
-            if side_wipe_towerdefined:
+            if v.side_wipe_towerdefined:
                 if ((v.wipe_tower_info_minx <= code[gcode.X] <= v.wipe_tower_info_maxx) and
                    (v.wipe_tower_info_miny <= code[gcode.Y] <= v.wipe_tower_info_maxy)):
                     code[gcode.MOVEMENT] += gcode.INTOWER
+
 
             if v.block_classification in [CLS_ENDGRID, CLS_ENDPURGE]:
                 if not (code[gcode.MOVEMENT] & gcode.INTOWER):
@@ -325,7 +341,7 @@ def parse_gcode():
 
         if v.block_classification == CLS_BRIM_END:
             v.block_classification = CLS_NORMAL
-            side_wipe_towerdefined = True
+
 
     v.input_gcode = []
 
@@ -404,14 +420,15 @@ def gcode_parselines():
                     v.toolchange_processed = (current_block_class != CLS_NORMAL)
 
             elif v.klipper and g[gcode.COMMAND] == "ACTIVATE_EXTRUDER":
-                extruder = g[gcode.OTHER]
 
-                if extruder.startswith(" EXTRUDER=extruder"):
+                extruder = g[gcode.OTHER].strip()
 
+                if extruder.startswith("EXTRUDER="):
                     try:
-                        extruder_num = int(extruder[18])
+                        extruder_num = int(extruder[9:])
                     except ValueError:
                         extruder_num = None
+                        gui.log_warning("KLIPPER - Named extruders are not supported ({})".format(extruder))
                     except IndexError:
                         extruder_num = 0
 

@@ -244,6 +244,8 @@ bigbrain3d_minimalclearenceheight = 20
 single_blob = False
 
 tower_measure = False
+tower_measured = False
+side_wipe_towerdefined = False
 expect_retract = False
 
 keep_speed = 0
