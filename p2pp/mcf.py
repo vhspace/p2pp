@@ -423,9 +423,9 @@ def gcode_parselines():
 
                 extruder = g[gcode.OTHER].strip()
 
-                if extruder.startswith("EXTRUDER="):
+                if extruder.startswith("EXTRUDER=extruder"):
                     try:
-                        extruder_num = int(extruder[9:])
+                        extruder_num = int(extruder[-1])
                     except ValueError:
                         extruder_num = None
                         gui.log_warning("KLIPPER - Named extruders are not supported ({})".format(extruder))
