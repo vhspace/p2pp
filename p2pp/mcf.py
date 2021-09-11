@@ -115,7 +115,6 @@ def gcode_process_toolchange(new_tool):
 
 
 def calculate_temp_wait_position():
-
     pos_x = v.wipe_tower_info_minx + v.tx_offset * 1 if abs(v.wipe_tower_info_minx - v.purge_keep_x) < abs(v.wipe_tower_info_maxx - v.purge_keep_x) else -1
     pos_y = v.wipe_tower_info_miny + v.ty_offset * 1 if abs(v.wipe_tower_info_miny - v.purge_keep_y) < abs(v.wipe_tower_info_maxy - v.purge_keep_y) else -1
     return [pos_x, pos_y]
@@ -165,16 +164,46 @@ def check_tower_update(stage):
         v.side_wipe_towerdefined = True
 
 
+def find_alternative_tower():
+    v.wipe_tower_info_maxx = v.wipetower_posx
+    v.wipe_tower_info_minx = v.wipetower_posx
+    v.wipe_tower_info_maxy = v.wipetower_posy
+    v.wipe_tower_info_miny = v.wipetower_posy
+
+    if v.wipetower_posx and v.wipetower_posy:
+        state = 0
+        for i in range(len(v.input_gcode)):
+            line = v.input_gcode[i]
+            if line.startswith(";"):
+                if line.startswith(";TYPE:Wipe tower"):
+                    print(i,line)
+                    state = 1
+                    continue
+                if state == 1 and line.startswith(";TYPE"):
+                    check_tower_update(False)
+                    gui.create_logitem("Tower detected from ({}, {}) to ({}, {})".format(
+                        v.wipe_tower_info_minx, v.wipe_tower_info_miny, v.wipe_tower_info_maxx, v.wipe_tower_info_maxy
+                    ))
+                    break
+            if state == 1:
+                gc = gcode.create_command(line)
+                if gc[gcode.EXTRUDE]:
+                    if gc[gcode.X] is not None:
+                        v.wipe_tower_info_maxx = max(v.wipe_tower_info_maxx, gc[gcode.X] + 6 * v.extrusion_width)
+                        v.wipe_tower_info_minx = min(v.wipe_tower_info_minx, gc[gcode.X] - 6 * v.extrusion_width)
+                    if gc[gcode.Y] is not None:
+                        v.wipe_tower_info_maxy = max(v.wipe_tower_info_maxy, gc[gcode.Y] + 6 * v.extrusion_width)
+                        v.wipe_tower_info_miny = min(v.wipe_tower_info_miny, gc[gcode.Y] - 6 * v.extrusion_width)
+
+
 def update_class(line_hash):
 
     if line_hash == hash_EMPTY_GRID_START:
         v.block_classification = CLS_EMPTY
         v.layer_emptygrid_counter += 1
-        check_tower_update(True)
 
     elif line_hash == hash_EMPTY_GRID_END:
         v.block_classification = CLS_ENDGRID
-        check_tower_update(False)
 
     elif line_hash == hash_TOOLCHANGE_START:
         v.block_classification = CLS_TOOL_START
@@ -192,14 +221,15 @@ def update_class(line_hash):
     elif line_hash == hash_TOOLCHANGE_END:
         v.block_classification = CLS_ENDPURGE
 
-    elif v.tower_measured:
-        if line_hash == hash_FIRST_LAYER_BRIM_START:
+    elif  line_hash == hash_FIRST_LAYER_BRIM_START:
             v.block_classification = CLS_BRIM
-            check_tower_update(True)
+            if not v.tower_measured:
+                check_tower_update(True)
 
     elif line_hash == hash_FIRST_LAYER_BRIM_END:
         v.block_classification = CLS_BRIM_END
-        check_tower_update(False)
+        if not v.tower_measured:
+            check_tower_update(False)
 
 
 
@@ -235,6 +265,8 @@ def parse_gcode():
 
     backpass_line = -1
     jndex = 0
+
+    find_alternative_tower()
 
     for index in range(total_line_count):
 
@@ -341,7 +373,6 @@ def parse_gcode():
 
         if v.block_classification == CLS_BRIM_END:
             v.block_classification = CLS_NORMAL
-
 
     v.input_gcode = []
 
@@ -575,7 +606,7 @@ def gcode_parselines():
                     v.towerskipped = True
                     v.side_wipe_state = 0
 
-            if not v.towerskipped and (g[gcode.MOVEMENT] & 3) == 3:
+            if not v.towerskipped and (g[gcode.MOVEMENT] & 3) != 0:
                 if (g[gcode.MOVEMENT] & gcode.INTOWER) == gcode.INTOWER:
                     v.towerskipped = True
                     v.side_wipe_state = 1 if (current_block_class == CLS_TOOL_PURGE) else 0

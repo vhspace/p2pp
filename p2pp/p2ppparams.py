@@ -274,6 +274,7 @@ def check_config_parameters(keyword, value):
         v.sidewipe_maxy = floatparameter(value)
         return
 
+
     if keyword == "SIDEWIPECORRECTION":
         v.sidewipe_correction = floatparameter(value)
         if v.sidewipe_correction < 0.9 or v.sidewipe_correction > 1.10:
