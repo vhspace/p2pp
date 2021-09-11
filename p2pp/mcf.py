@@ -176,7 +176,6 @@ def find_alternative_tower():
             line = v.input_gcode[i]
             if line.startswith(";"):
                 if line.startswith(";TYPE:Wipe tower"):
-                    print(i,line)
                     state = 1
                     continue
                 if state == 1 and line.startswith(";TYPE"):

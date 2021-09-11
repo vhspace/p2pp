@@ -112,9 +112,9 @@ releaseinfo = {
 
 
 # general version info
-MajorVersion = 1
-MinorVersion = 0
-Build = 99
+MajorVersion = 7
+MinorVersion = 2
+Build = 04
 
 latest_stable_version = ""
 
