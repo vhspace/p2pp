@@ -2,6 +2,14 @@
 
 ##*** P2PP installations should now be downloaded from [this DropBox Share ](https://www.dropbox.com/sh/q0vhg6u90a8wbox/AAB2jEGWGZBYlqXnTCLkojCla?dl=0) ***
 
+Type | MacOS | Windows
+----|---|---
+DEVELOPMENT RELEASES |[DropBox Share ](https://www.dropbox.com/sh/81pvsrvrq6tvdkn/AAB1S9UDWx9yjB4C__nU-3Xca?dl=0) | [DropBox Share ](https://www.dropbox.com/sh/sb9tj3ct53vtrxm/AACRoFVT9nxTa--8SWFYFkWpa?dl=0)
+STABLE RELEASE | [DropBox Share ](https://www.dropbox.com/sh/trbf4q6dwsvtvuf/AAAqxh2q3dwH6rXGAalKurrsa?dl=00) | [DropBox Share ](https://www.dropbox.com/sh/uld6w78njjdq9sg/AADPZy4kwi4NztooUYqh8zFoa?dl=0)
+OLDER RELEASES  | [DropBox Share ](https://www.dropbox.com/sh/prmlxam3hleyqny/AAC7gcW9MF7AbeWTEkJgXu-ma?dl=0)| [DropBox Share ](https://www.dropbox.com/sh/eqr3aw20ucm4c85/AADe2k8ngeoRNlJQOAYUB3Ofa?dl=0)
+
+
+
 Starting with version 6.0.0 P2PP has undergone significant changes.  The tool is now available as a windows' application ZIP file or, a macOS' DMG file. from the [following location](https://www.dropbox.com/sh/q0vhg6u90a8wbox/AAB2jEGWGZBYlqXnTCLkojCla?dl=0) (under development/macOS of development/Windows folder)
 You have to download the file with the latest version onto your computer and either unzip it to the location of your choice on a Windows machine or open the DMG and move the application ofver to the Applications folder on macOS.
 
