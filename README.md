@@ -1,6 +1,6 @@
 # p2pp - **Palette2 Post Processing tool for PrusaSlicer/Slic3r PE**
 
-##*** P2PP installations should now be downloaded from [this DropBox Share ](https://www.dropbox.com/sh/q0vhg6u90a8wbox/AAB2jEGWGZBYlqXnTCLkojCla?dl=0) ***
+##*** P2PP installations should now be downloaded from following locations ***
 
 Type | MacOS | Windows
 ----|---|---
