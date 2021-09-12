@@ -48,7 +48,7 @@ if len(sys.argv) == 1:
                 color = "green"
         else:
             if v.version < MASTER_VERSION:
-                v.version = "VVersion Check: Current version {} (New stable version {} available)".format(ver.Version, MASTER_VERSION)
+                v.version = "Version Check: Current version {} (New stable version {} available)".format(ver.Version, MASTER_VERSION)
                 color = "red"
             else:
                 v.version = "Version Check: Current version {} (Version up to date)".format(ver.Version)

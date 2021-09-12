@@ -28,6 +28,13 @@ INTOWER = 256
 
 # PARAM     A   B   C   D  E  F   G   H   I   J   K   L   M   N   O   P   Q   R  S   T   U  V   W   X  Y  Z
 parmidx = [-1, -1, -1, -1, 3, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 5, -1, -1, -1, -1, 0, 1, 2]
+# X = 1
+# Y = 2
+# Z = 4
+# E = 8
+# F = 16
+# S = 32
+# Other values are not used!!!
 
 
 def create_command(gcode_line, is_comment=False, userclass=0):
@@ -112,7 +119,7 @@ def create_commandstring(gcode_tupple):
             p = p + " " + gcode_tupple[COMMENT]
     else:
         p = gcode_tupple[COMMENT]
-    #
+    # DEBUG INFORMATION // COMMENT OUT BEFORE COMPILING
     # try:
     #     p = p + ";\t{} - ".format(gcode_tupple[CLASS])+v.classes[gcode_tupple[CLASS]]
     # except KeyError:

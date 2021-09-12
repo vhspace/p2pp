@@ -20,7 +20,7 @@ from p2pp.psconfig import parse_prusaslicer_config
 from p2pp.omega import header_generate_omega, header_generate_omega_palette3
 from p2pp.sidewipe import create_side_wipe
 import p2pp.manualswap as swap
-import p2pp.bedprojection as bp
+# import p2pp.bedprojection as bp
 import base64
 import version
 import zipfile
@@ -66,7 +66,6 @@ def optimize_tower_skip(max_layers):
         idx += 1
 
     return skippable
-
 
 
 def gcode_process_toolchange(new_tool):
@@ -150,6 +149,7 @@ def entertower(layer_hght):
 
         v.disable_z = True
 
+
 def check_tower_update(stage):
     # extra checks needed for EMPTY GRID as BRIM on tower does no longer seem to be mandatory
     if v.tower_measured:
@@ -220,16 +220,15 @@ def update_class(line_hash):
     elif line_hash == hash_TOOLCHANGE_END:
         v.block_classification = CLS_ENDPURGE
 
-    elif  line_hash == hash_FIRST_LAYER_BRIM_START:
-            v.block_classification = CLS_BRIM
-            if not v.tower_measured:
-                check_tower_update(True)
+    elif line_hash == hash_FIRST_LAYER_BRIM_START:
+        v.block_classification = CLS_BRIM
+        if not v.tower_measured:
+            check_tower_update(True)
 
     elif line_hash == hash_FIRST_LAYER_BRIM_END:
         v.block_classification = CLS_BRIM_END
         if not v.tower_measured:
             check_tower_update(False)
-
 
 
 def process_layer(layer, index):
@@ -244,7 +243,7 @@ def process_layer(layer, index):
     v.layer_emptygrid_counter = 0
 
 
-def speed_limiter ( g_code ):
+def speed_limiter(g_code):
     if g_code[gcode.F] is not None and g_code[gcode.EXTRUDE] and g_code[gcode.F] > v.wipe_feedrate:
         g_code[gcode.COMMENT] = ";-- SLOW DOWN {} --> {}--;".format(g_code[gcode.F], v.wipe_feedrate)
         g_code[gcode.F] = v.wipe_feedrate
@@ -291,15 +290,13 @@ def parse_gcode():
                 if line.startswith("; thumbnail end"):
                     v.thumbnail = False
                     v.thumbnail_end = True
-                    v.thumbnail_data = v.thumbnail_data.replace("; ","")
+                    v.thumbnail_data = v.thumbnail_data.replace("; ", "")
 
                 if v.thumbnail:
                     v.thumbnail_data += line
 
-
                 if line.startswith("; thumbnail begin"):
                     v.thumbnail = True
-
 
             if line.startswith('; CP'):  # code block assignment
                 update_class(hash(line[5:]))
@@ -337,6 +334,7 @@ def parse_gcode():
                     v.parsed_gcode[idx][gcode.CLASS] = v.block_classification
 
         # determine tower size
+        # this should disappear as PS2.4 will implement a new way of detecting the tower...
         if v.tower_measure:
             code[gcode.MOVEMENT] += gcode.INTOWER
             if code[gcode.X]:
@@ -363,7 +361,6 @@ def parse_gcode():
                 if ((v.wipe_tower_info_minx <= code[gcode.X] <= v.wipe_tower_info_maxx) and
                    (v.wipe_tower_info_miny <= code[gcode.Y] <= v.wipe_tower_info_maxy)):
                     code[gcode.MOVEMENT] += gcode.INTOWER
-
 
             if v.block_classification in [CLS_ENDGRID, CLS_ENDPURGE]:
                 if not (code[gcode.MOVEMENT] & gcode.INTOWER):
@@ -459,7 +456,7 @@ def gcode_parselines():
                     else:
                         try:
                             extruder_num = int(extruder[17:])
-                        except:
+                        except (ValueError, IndexError):
                             extruder_num = None
                             gui.log_warning("KLIPPER - Named extruders are not supported ({})".format(extruder))
 
@@ -728,10 +725,6 @@ def gcode_parselines():
         elif (g[gcode.MOVEMENT] & 3) and g[gcode.EXTRUDE] and v.retraction < -0.01:
             purgetower.unretract(v.current_tool, -1, ";--- P2PP --- fixup retracts")
 
-
-
-
-
         # --------------------- PING PROCESSING
 
         if v.accessory_mode and g[gcode.EXTRUDE]:
@@ -893,8 +886,6 @@ def generate(input_file, output_file):
 
         if v.palette3:
             output_file = os.path.join(path, "print.gcode")
-            pre, ext = os.path.splitext(input_file)
-            mcfx = pre + ".mcfx"
 
         gui.create_logitem("Generating GCODE file: " + output_file)
         opf = open(output_file, "wb")
@@ -907,7 +898,6 @@ def generate(input_file, output_file):
             opf.write("T0\n".encode('utf8'))
         else:
             opf.write(("\n\n;--------- THIS CODE HAS BEEN PROCESSED BY P2PP v{} --- \n\n".format(version.Version)).encode('utf8'))
-
 
         if v.splice_offset == 0:
             gui.log_warning("SPLICE_OFFSET not defined")
@@ -927,8 +917,8 @@ def generate(input_file, output_file):
             # generate zip
             meta, palette = header_generate_omega_palette3(None)
 
-            meta_file = os.path.join(path , "meta.json")
-            palette_file = os.path.join(path , "palette.json")
+            meta_file = os.path.join(path, "meta.json")
+            palette_file = os.path.join(path, "palette.json")
             im_file = os.path.join(path, "thumbnail.png")
 
             gui.create_logitem("Generating Palette 3 output files")
@@ -944,8 +934,10 @@ def generate(input_file, output_file):
             im.write(base64.b64decode(v.thumbnail_data))
             im.close()
 
+            pre, ext = os.path.splitext(input_file)
+            mcfx = pre + ".mcfx"
             zipf = zipfile.ZipFile(mcfx, 'w', zipfile.ZIP_DEFLATED)
-            zipf.write(meta_file , "meta.json")
+            zipf.write(meta_file, "meta.json")
             zipf.write(palette_file, "palette.json")
             zipf.write(output_file, "print.gcode")
             zipf.write(im_file, "thumbnail.png")
@@ -955,8 +947,6 @@ def generate(input_file, output_file):
             os.remove(output_file)
             os.remove(im_file)
             zipf.close()
-
-
 
         if v.accessory_mode:
 
