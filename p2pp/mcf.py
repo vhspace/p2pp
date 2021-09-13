@@ -236,7 +236,7 @@ def process_layer(layer, index):
         return
     v.last_parsed_layer = layer
     v.layer_end.append(index)
-    if layer >= 0:
+    if layer > 0:
         v.skippable_layer.append((v.layer_emptygrid_counter > 0) and (v.layer_toolchange_counter == 0))
 
     v.layer_toolchange_counter = 0
@@ -379,7 +379,7 @@ def gcode_parselines():
     purge = False
     total_line_count = len(v.parsed_gcode)
     v.retraction = 0
-    v.last_parsed_layer = 0
+    v.last_parsed_layer = -1
     v.previous_block_classification = v.parsed_gcode[0][gcode.CLASS]
 
     for process_line_count in range(total_line_count):
@@ -388,7 +388,7 @@ def gcode_parselines():
             if process_line_count >= v.layer_end[0]:
                 v.last_parsed_layer += 1
                 v.layer_end.pop(0)
-                v.current_layer_is_skippable = v.skippable_layer[v.last_parsed_layer] and not v.last_parsed_layer == 1
+                v.current_layer_is_skippable = v.skippable_layer[v.last_parsed_layer] and not v.last_parsed_layer == 0
                 if v.current_layer_is_skippable:
                     if v.last_parsed_layer == 0:
                         v.cur_tower_z_delta += v.first_layer_height
@@ -567,6 +567,7 @@ def gcode_parselines():
                     continue
 
                 if current_block_class == CLS_EMPTY and not v.towerskipped:
+
                     v.towerskipped = (g[gcode.MOVEMENT] & gcode.INTOWER) == gcode.INTOWER and v.current_layer_is_skippable
 
                     if not v.towerskipped:
