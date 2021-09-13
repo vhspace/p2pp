@@ -388,7 +388,7 @@ def gcode_parselines():
             if process_line_count >= v.layer_end[0]:
                 v.last_parsed_layer += 1
                 v.layer_end.pop(0)
-                v.current_layer_is_skippable = v.skippable_layer[v.last_parsed_layer]
+                v.current_layer_is_skippable = v.skippable_layer[v.last_parsed_layer] and not v.last_parsed_layer == 1
                 if v.current_layer_is_skippable:
                     if v.last_parsed_layer == 0:
                         v.cur_tower_z_delta += v.first_layer_height
@@ -858,7 +858,7 @@ def generate(input_file, output_file):
         gui.log_warning("AUTOADDPURGE only works with SIDEWIPE and FULLPURGEREDUCTION")
 
     if len(v.skippable_layer) == 0:
-        gui.log_warning("LAYER configuration is missing.")
+        gui.log_warning("P2PP Layer COnfiguration is missing!!")
         gui.close_button_enable()
         sys.exit(-1)
     else:
