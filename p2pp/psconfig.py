@@ -176,7 +176,6 @@ def parse_prusaslicer_config():
                 except:
                     v.p3_printtemp = [0, 0, 0, 0, 0, 0, 0, 0]
 
-
         if gcode_line.startswith("; first_layer_bed_temperature"):
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
@@ -188,7 +187,6 @@ def parse_prusaslicer_config():
                 except:
                     v.p3_bedtemp = [0, 0, 0, 0, 0, 0, 0, 0]
 
-
         if gcode_line.startswith("; max_print_height"):
 
             parameter_start = gcode_line.find("=")
@@ -199,7 +197,7 @@ def parse_prusaslicer_config():
         if gcode_line.startswith("; wipe_tower_x"):
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
-                v.wipetower_posx = float(gcode_line[parameter_start + 1:].strip())
+                v.wipe_tower_posx = float(gcode_line[parameter_start + 1:].strip())
             continue
 
         if gcode_line.startswith("; min_skirt_length"):
@@ -217,13 +215,13 @@ def parse_prusaslicer_config():
         if gcode_line.startswith("; wipe_tower_width"):
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
-                v.wipetower_width = float(gcode_line[parameter_start + 1:].strip())
+                v.wipe_tower_width = float(gcode_line[parameter_start + 1:].strip())
             continue
 
         if gcode_line.startswith("; wipe_tower_y"):
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
-                v.wipetower_posy = float(gcode_line[parameter_start + 1:].strip())
+                v.wipe_tower_posy = float(gcode_line[parameter_start + 1:].strip())
             continue
 
         if gcode_line.startswith("; extrusion_width"):

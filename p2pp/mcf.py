@@ -165,12 +165,12 @@ def check_tower_update(stage):
 
 
 def find_alternative_tower():
-    v.wipe_tower_info_maxx = v.wipetower_posx
-    v.wipe_tower_info_minx = v.wipetower_posx
-    v.wipe_tower_info_maxy = v.wipetower_posy
-    v.wipe_tower_info_miny = v.wipetower_posy
+    v.wipe_tower_info_maxx = v.wipe_tower_posx
+    v.wipe_tower_info_minx = v.wipe_tower_posx
+    v.wipe_tower_info_maxy = v.wipe_tower_posy
+    v.wipe_tower_info_miny = v.wipe_tower_posy
 
-    if v.wipetower_posx and v.wipetower_posy:
+    if v.wipe_tower_posx and v.wipe_tower_posy:
         state = 0
         for i in range(len(v.input_gcode)):
             line = v.input_gcode[i]
@@ -465,7 +465,7 @@ def gcode_parselines():
 
                     if not v.debug_leaveToolCommands:
                         gcode.move_to_comment(g, "--P2PP-- Color Change")
-                        v.toolchange_processed = True
+                    v.toolchange_processed = True
                 else:
                     gui.log_warning("KLIPPER - Named extruders are not supported ({})".format(extruder))
             else:
@@ -706,6 +706,8 @@ def gcode_parselines():
 
                 gcode.issue_code("G1 F8640 ; correct speed")
                 gcode.issue_command(g)
+                if v.wipe_remove_sparse_layers:
+                    gcode.issue_code("G1 X{}  Y{} F8640 ;P2PP Position XY to avoid tower crash".format(v.current_position_x, v.current_position_y))
                 gcode.issue_code("G1 Z{} F10800 ;P2PP correct z-moves".format(v.current_position_z))
 
                 v.toolchange_processed = False
@@ -823,7 +825,7 @@ def generate(input_file, output_file):
         if v.palette_plus_loading_offset == -9:
             gui.log_warning("P+ parameter P+LOADINGOFFSET incorrectly set up in startup GCODE")
 
-    v.side_wipe = not ((v.bed_origin_x <= v.wipetower_posx <= v.bed_max_x) and (v.bed_origin_y <= v.wipetower_posy <= v.bed_max_y))
+    v.side_wipe = not ((v.bed_origin_x <= v.wipe_tower_posx <= v.bed_max_x) and (v.bed_origin_y <= v.wipe_tower_posy <= v.bed_max_y))
     v.tower_delta = v.max_tower_z_delta > 0
 
     if (v.tower_delta or v.full_purge_reduction) and v.variable_layer:
