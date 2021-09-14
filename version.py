@@ -105,8 +105,8 @@ releaseinfo = {
     "7.2.03": "Klipper - warning extruders / SuperSlicer - warning empty extrusion width",
     "7.2.04": "Updated Tower Detection for PS2.4",
     "7.2.05": "Updated TowerDelta Processing for PS2.4",
-    "_1.0.100": "PS2.4 - Tower Delta first layer correction"
-    "_1.0.101": "PS2.4 - No Sparse Layer Z-Drop correction"            
+    "1.0.100": "PS2.4 - Tower Delta first layer correction",
+    "1.0.101": "PS2.4 - No Sparse Layer Z-Drop correction",
     '--- RELEASE INFORMATION': 'END'
 }
 
