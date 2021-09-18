@@ -5,7 +5,7 @@ __license__ = 'GPLv3'
 __maintainer__ = 'Tom Van den Eede'
 __email__ = 'P2PP@pandora.be'
 
-## Added functionality for manual swap - Manmeet Singh
+# Added functionality for manual swap - Manmeet Singh
 
 import p2pp.variables as v
 import p2pp.gui as gui

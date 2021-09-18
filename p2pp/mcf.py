@@ -861,7 +861,7 @@ def generate(input_file, output_file):
         gui.log_warning("AUTOADDPURGE only works with SIDEWIPE and FULLPURGEREDUCTION")
 
     if len(v.skippable_layer) == 0:
-        gui.log_warning("P2PP Layer COnfiguration is missing!!")
+        gui.log_warning("P2PP Layer Configuration is missing!!")
         gui.close_button_enable()
         sys.exit(-1)
     else:

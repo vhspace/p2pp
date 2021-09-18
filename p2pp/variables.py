@@ -51,7 +51,7 @@ skippable_layer = []  # type array of bool
 
 used_filament_types = []  # type array of string
 
-default_splice_algorithm = None  # type string
+default_splice_algorithm = [0, 0, 0]  # type string
 process_warnings = []  # type array of string
 splice_algorithm_table = []  # type array of string
 splice_algorithm_dictionary = {}  # type dictionary Str->Str

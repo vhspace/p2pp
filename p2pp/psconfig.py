@@ -107,6 +107,7 @@ def get_bedshape(line):
     if len(coords) != 8:
         v.bed_shape_rect = False
 
+
 def parse_prusaslicer_config():
     for idx in range(len(v.input_gcode) - 1, -1, -1):
 
@@ -173,7 +174,7 @@ def parse_prusaslicer_config():
                     v.p3_printtemp = []
                     for i in range(len(temps)):
                         v.p3_printtemp.append(int(temps[i]))
-                except:
+                except (IndexError, ValueError):
                     v.p3_printtemp = [0, 0, 0, 0, 0, 0, 0, 0]
 
         if gcode_line.startswith("; first_layer_bed_temperature"):
@@ -184,7 +185,7 @@ def parse_prusaslicer_config():
                     v.p3_bedtemp = []
                     for i in range(len(temps)):
                         v.p3_bedtemp.append(int(temps[i]))
-                except:
+                except (IndexError, ValueError):
                     v.p3_bedtemp = [0, 0, 0, 0, 0, 0, 0, 0]
 
         if gcode_line.startswith("; max_print_height"):
@@ -398,7 +399,7 @@ def parse_prusaslicer_config():
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
                 gcode_line = gcode_line[parameter_start + 1:].replace(";", "")
-                if not "1" in gcode_line:
+                if "1" not in gcode_line:
                     gui.log_warning("P2PP requires input file with RELATIVE extrusion")
             continue
 

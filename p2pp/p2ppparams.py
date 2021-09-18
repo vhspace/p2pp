@@ -42,7 +42,6 @@ def check_config_parameters(keyword, value):
     if keyword == "SAVEUNPROCESSED":
         v.save_unprocessed = True
 
-
     if keyword == "P3_PROCESSPREHEAT":
         v.process_preheat = True
 
@@ -131,7 +130,7 @@ def check_config_parameters(keyword, value):
         v.autoaddsplice = True
         return
 
-    if keyword == "POWERCHAOS":   #Special feature request to allow sub 300mm pings
+    if keyword == "POWERCHAOS":   # Special feature request to allow sub 300mm pings
         v.powerchaos = True
         return
 
@@ -274,7 +273,6 @@ def check_config_parameters(keyword, value):
         v.sidewipe_maxy = floatparameter(value)
         return
 
-
     if keyword == "SIDEWIPECORRECTION":
         v.sidewipe_correction = floatparameter(value)
         if v.sidewipe_correction < 0.9 or v.sidewipe_correction > 1.10:
@@ -319,8 +317,6 @@ def check_config_parameters(keyword, value):
             gui.create_logitem("Could not check for latest online version")
 
     if keyword == "DO_NOT_GENERATE_M0":
-        return
-        # this command has been obsoleted as harmful to the print
         v.generate_M0 = False
         return
 

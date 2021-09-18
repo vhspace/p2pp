@@ -71,7 +71,7 @@ def algorithm_create_table():
                                          v.used_filament_types.index(v.filament_type[j]) + 1)
                 if algo_key in splice_list:
                     continue
-            except:
+            except (IndexError, KeyError):
                 continue
 
             if not algorithm_transition_used(i, j):
@@ -115,6 +115,7 @@ def generatewarnings():
 
     return warnings
 
+
 ############################################################################
 # Generate the Omega - Header that drives the Palette to generate filament
 ############################################################################
@@ -129,7 +130,6 @@ def header_generate_omega(job_name):
 
     if v.palette3:
         return {'header': [], 'summary': generatesummary(), 'warnings': generatewarnings()}
-
 
     algorithm_create_table()
     if not v.palette_plus:
@@ -178,7 +178,6 @@ def header_generate_omega_paletteplus():
     warnings = []
 
     return {'header': header, 'summary': summary, 'warnings': warnings}
-
 
 
 def header_generate_omega_palette2(job_name):
@@ -272,19 +271,15 @@ def header_generate_omega_palette2(job_name):
 
 
 def generatesummary():
-    summary = []
-
-    summary.append(";---------------------\n")
-    summary.append("; - SPLICE INFORMATION-\n")
-    summary.append(";---------------------\n")
-    summary.append(";       Splice Offset = {:-8.2f}mm\n".format(v.splice_offset))
-    summary.append(";       Autoloading Offset = {:-8.2f}mm\n\n".format(v.autoloadingoffset))
+    summary = [";---------------------\n", "; - SPLICE INFORMATION-\n", ";---------------------\n",
+               ";       Splice Offset = {:-8.2f}mm\n".format(v.splice_offset),
+               ";       Autoloading Offset = {:-8.2f}mm\n\n".format(v.autoloadingoffset)]
 
     for i in range(len(v.splice_extruder_position)):
         if i == 0:
             pos = 0
         else:
-            pos = v.splice_extruder_position[i-1]
+            pos = v.splice_extruder_position[i - 1]
 
         summary.append(";{:04}   Input: {}  Location: {:-8.2f}mm   length {:-8.2f}mm  ({})\n"
                        .format(i + 1,
@@ -316,7 +311,6 @@ def generatesummary():
 # PALETTE 3
 
 def generate_meta():
-
     fila = []
     lena = {}
     vola = {}
@@ -325,11 +319,11 @@ def generate_meta():
         if v.palette_inputs_used[i]:
             inputsused += 1
             fila.append({"materialId": v.used_filament_types.index(v.filament_type[i]) + 1,
-                         "filamentId": i+1,
+                         "filamentId": i + 1,
                          "type": v.filament_type[i],
                          "name": find_nearest_colour(v.filament_color_code[i]),
                          "color": "#" + v.filament_color_code[i].strip("\n")
-            })
+                         })
             try:
                 if i == v.splice_used_tool[0]:
                     add = v.splice_offset
@@ -338,15 +332,15 @@ def generate_meta():
             except IndexError:
                 add = 0
 
-            lena[str(i+1)] = int(v.material_extruded_per_color[i] + add)
-            vola[str(i+1)] = int(purgetower.volfromlength(v.material_extruded_per_color[i] + add))
+            lena[str(i + 1)] = int(v.material_extruded_per_color[i] + add)
+            vola[str(i + 1)] = int(purgetower.volfromlength(v.material_extruded_per_color[i] + add))
 
     bounding_box = {"min": [v.bb_minx, v.bb_miny, v.bb_minz], "max": [v.bb_maxx, v.bb_maxy, v.bb_maxz]}
 
-    metafile = {"version" : "3.2",
+    metafile = {"version": "3.2",
                 "setupId": "null",
                 "printerProfile": {
-                    "id" : v.printer_profile_string,
+                    "id": v.printer_profile_string,
                     "name": v.printername
                 },
                 "preheatTemperature": {
@@ -364,14 +358,14 @@ def generate_meta():
                 "pings": len(v.ping_extruder_position),
                 "boundingBox": bounding_box,
                 "filaments": fila
-               }
+                }
 
     if v.process_preheat:
         try:
             first_filament = v.splice_used_tool[0]
             metafile["preheatTemperature"]["nozzle"] = [v.p3_printtemp[first_filament]]
             metafile["preheatTemperature"]["bed"] = v.p3_bedtemp[first_filament]
-        except:
+        except(IndexError, KeyError):
             pass
 
     return json.dumps(metafile, indent=2)
@@ -383,15 +377,11 @@ def generate_palette():
                "splices": [],
                "pingCount": len(v.ping_extruder_position),
                "algorithm": []
-              }
-
-    algo = set([])
-    prevtool = -1
-
-
+               }
 
     for i in range(len(v.splice_extruder_position)):
-        palette["splices"].append({"id": v.splice_used_tool[i]+1, "length": round(v.splice_extruder_position[i] + v.autoloadingoffset, 4)})
+        palette["splices"].append(
+            {"id": v.splice_used_tool[i] + 1, "length": round(v.splice_extruder_position[i] + v.autoloadingoffset, 4)})
 
     splice_list = []
     palette["drives"] = []
@@ -400,13 +390,9 @@ def generate_palette():
 
         fIdx = 0
         if v.palette_inputs_used[i]:
-            try:
-                fIdx = i + 1
-            except:
-                pass
+            fIdx = i + 1
 
         palette["drives"].append(fIdx)
-
 
         for j in range(v.colors):
 
@@ -417,7 +403,7 @@ def generate_palette():
                                          v.used_filament_types.index(v.filament_type[j]) + 1)
                 if algo_key in splice_list:
                     continue
-            except:
+            except (IndexError, KeyError):
                 continue
 
             if not algorithm_transition_used(i, j):
@@ -428,16 +414,11 @@ def generate_palette():
             try:
                 algo = v.splice_algorithm_dictionary["{}{}".format(v.filament_type[i], v.filament_type[j])]
             except (IndexError, KeyError):
+                algo = v.default_splice_algorithm
                 gui.log_warning("WARNING: No Algorithm defined for transitioning" +
-                                " {} to {}. Using Default".format(v.filament_type[i],
-                                                                  v.filament_type[j]))
+                                " {} to {}. Using Default Splice Algorithm".format(v.filament_type[i],
+                                                                                   v.filament_type[j]))
 
-                if v.default_splice_algorithm is None:
-                    algo = [0,0,0]
-                else:
-                    algo = v.default_splice_algorithm
-
-            algo = v.default_splice_algorithm
             palette["algorithm"].append({
                 "ingoingId": algo_key[0],
                 "outgoingId": algo_key[1],
@@ -446,13 +427,8 @@ def generate_palette():
                 "cooling": algo[2]
             })
 
-
     return json.dumps(palette, indent=2)
 
 
 def header_generate_omega_palette3(job_name):
-    return generate_meta() , generate_palette()
-
-
-
-
+    return generate_meta(), generate_palette()

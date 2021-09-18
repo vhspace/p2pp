@@ -71,11 +71,9 @@ def progress_string(pct):
     last_pct = pct
 
 
-
 def create_logitem(text, color="#000000", force_update=True, position=0):
     word = '<span style=\" color: {}\">  {}</span>'.format(color, text)
-    form.textBrowser.append( word )
-
+    form.textBrowser.append(word)
 
 
 def create_colordefinition(reporttype, p2_input, filament_type, color_code, filamentused):
@@ -93,12 +91,13 @@ def create_colordefinition(reporttype, p2_input, filament_type, color_code, fila
 
     word = ''
     if reporttype == 0:
-        word = "  \t{}  {} {:-8.2f}mm - {} <span style=\" color: #{};\">[######]</span>   \t{:15} {} ".format(name, p2_input, filamentused, filament_type, color_code, colornames.find_nearest_colour(color_code), filament_id )
+        word = "  \t{}  {} {:-8.2f}mm - {} <span style=\" color: #{};\">[######]</span>   \t{:15} {} ".format(name, p2_input, filamentused, filament_type, color_code, colornames.find_nearest_colour(color_code), filament_id)
 
     if reporttype == 1:
         word = "  \t{}  {}  - {} <span style=\" color: #{};\">[######]]</span>   \t{:15} {}".format(name, p2_input, filament_type, color_code, colornames.find_nearest_colour(color_code), filament_id)
 
     form.textBrowser.append(word)
+
 
 def create_emptyline():
     create_logitem('')
@@ -130,7 +129,7 @@ def log_warning(text):
 
 if sys.platform == 'darwin':
     if len(os.path.dirname(sys.argv[0])) > 0:
-        ui ="{}/p2pp.ui".format(os.path.dirname(sys.argv[0]))
+        ui = "{}/p2pp.ui".format(os.path.dirname(sys.argv[0]))
     else:
         ui = "p2pp.ui"
 else:

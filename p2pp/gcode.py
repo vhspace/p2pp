@@ -164,7 +164,7 @@ def issue_command(gcode_tupple, speed=0):
             v.material_extruded_per_color[v.current_tool] += extrusion
 
             if v.absolute_extruder:
-                 # debug absolute mode: gcode_tupple[COMMENT] += '"; AE = {}'.format(gcode_tupple[E])
+                # debug absolute mode: gcode_tupple[COMMENT] += '"; AE = {}'.format(gcode_tupple[E])
                 if v.absolute_counter == -9999 or v.absolute_counter > 3000:
                     v.processed_gcode.append("G92 E0.00  ; Extruder counter reset")
                     v.absolute_counter = 0
