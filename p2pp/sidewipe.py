@@ -100,11 +100,15 @@ def create_sidewipe_bb3d(length):
     keep_xpos = v.current_position_x
     keep_ypos = v.current_position_y
 
-    if v.current_position_z < v.bigbrain3d_minimalclearenceheight:
-        issue_code("\nG1 Z{:.3f} F8640    ; Increase Z to prevent collission with bed".format(v.bigbrain3d_minimalclearenceheight))
+    if v.retraction > -3.0:
+        diff = -3.0 - v.retraction
+        issue_code("\nG1 E{:.3f}   ; retract to -3mm".format(diff))
 
     if v.bigbrain3d_y_position is not None:
         issue_code("\nG1 Y{:.3f} F8640    ; change Y position to purge equipment".format(v.bigbrain3d_y_position))
+
+    if v.current_position_z < v.bigbrain3d_minimalclearenceheight:
+        issue_code("\nG1 Z{:.3f} F8640    ; Increase Z to prevent collission with bed".format(v.bigbrain3d_minimalclearenceheight))
 
     issue_code("G1 X{:.3f} F10800  ; go near edge of bed".format(v.bigbrain3d_x_position - 30))
 
