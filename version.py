@@ -109,6 +109,7 @@ releaseinfo = {
     "1.0.101": "PS2.4 release - No Sparse Layer Z-Drop correction",
     "1.0.102": "PS2.4 release - extra retract on blobs when going away from print",
     "1.0.110": "Incorrect check on definition of algorithms",
+    "1.0.120": "updated generation of thumbnail on PS24",
     '--- RELEASE INFORMATION': 'END'
 }
 
@@ -116,7 +117,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 1
 MinorVersion = 0
-Build = 110
+Build = 120
 
 latest_stable_version = ""
 

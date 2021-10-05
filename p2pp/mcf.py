@@ -250,7 +250,6 @@ def speed_limiter(g_code):
 
 
 def parse_gcode():
-
     v.layer_toolchange_counter = 0
     v.layer_emptygrid_counter = 0
 
@@ -273,7 +272,6 @@ def parse_gcode():
         # memory management, reduce size of data structures when data is processed
         line = v.input_gcode[jndex]
         jndex += 1
-
         if jndex == 100000:
             gui.progress_string(4 + 46 * index // total_line_count)
             v.input_gcode = v.input_gcode[jndex:]
@@ -283,10 +281,8 @@ def parse_gcode():
         if line.startswith(';'):
 
             is_comment = True
-
             # following lines should only be tested at the beginning og the file before the first layer is executed
             if not v.thumbnail_end:
-
                 if line.startswith("; thumbnail end"):
                     v.thumbnail = False
                     v.thumbnail_end = True
@@ -297,6 +293,7 @@ def parse_gcode():
 
                 if line.startswith("; thumbnail begin"):
                     v.thumbnail = True
+
 
             if line.startswith('; CP'):  # code block assignment
                 update_class(hash(line[5:]))
