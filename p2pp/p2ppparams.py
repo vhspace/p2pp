@@ -26,7 +26,7 @@ def intparameter(s):
 
 
 def check_splice_table():
-    if len(v.splice_algorithm_table) > 0 or v.default_splice_algorithm is not None:
+    if len(v.splice_algorithm_table) > 0:
         gui.log_warning("Algorithm definitions should appear AFTER Palette Model selection (PALETTE3/PALETTE3_PRO/ACCESSORYMODE_MAF/ACCESSORYMODE_MSF)")
 
 

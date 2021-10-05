@@ -108,6 +108,7 @@ releaseinfo = {
     "1.0.100": "PS2.4 release - Tower Delta first layer correction",
     "1.0.101": "PS2.4 release - No Sparse Layer Z-Drop correction",
     "1.0.102": "PS2.4 release - extra retract on blobs when going away from print",
+    "1.0.110": "Incorrect check on definition of algorithms",
     '--- RELEASE INFORMATION': 'END'
 }
 
@@ -115,7 +116,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 1
 MinorVersion = 0
-Build = 102
+Build = 110
 
 latest_stable_version = ""
 
