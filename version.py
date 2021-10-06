@@ -110,6 +110,7 @@ releaseinfo = {
     "1.0.102": "PS2.4 release - extra retract on blobs when going away from print",
     "1.0.110": "Incorrect check on definition of algorithms",
     "1.0.120": "updated generation of thumbnail on PS24",
+    "1.0.130": "Added P3_MINIMALTOTALFILAMENT parameter",
     '--- RELEASE INFORMATION': 'END'
 }
 
@@ -117,7 +118,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 1
 MinorVersion = 0
-Build = 120
+Build = 130
 
 latest_stable_version = ""
 

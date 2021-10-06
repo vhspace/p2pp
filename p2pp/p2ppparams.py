@@ -109,6 +109,11 @@ def check_config_parameters(keyword, value):
         gui.create_logitem("Extra filament at end of print {:-8.2f}mm".format(v.extra_runout_filament))
         return
 
+    if keyword == "P3_MINIMALTOTALFILAMENT":
+        v.minimaltotal_filament = floatparameter(value)
+        gui.create_logitem("Minimal ilament length {:-8.2f}mm".format(v.minimaltotal_filament))
+        return
+
     if keyword == "MANUAL_SWAP":
         v.manual_filament_swap = True
         gui.create_logitem("Manual filament swap in place.")

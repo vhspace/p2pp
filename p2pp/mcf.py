@@ -75,9 +75,18 @@ def gcode_process_toolchange(new_tool):
     location = v.total_material_extruded + v.splice_offset
 
     if new_tool == -1:      # LAST SLICE PROCESSING
+
+        filldiff = v.minimaltotal_filament - v.total_material_extruded
+        if filldiff > 0:
+            gui.log_warning("Miinimum print size not met - adding {:-5.2f}.. of filament".format(filldiff))
+            location += filldiff
+            v.material_extruded_per_color[v.current_tool] += filldiff
+            v.total_material_extruded += filldiff
+
         location += v.extra_runout_filament
         v.material_extruded_per_color[v.current_tool] += v.extra_runout_filament
         v.total_material_extruded += v.extra_runout_filament
+
     else:
         v.palette_inputs_used[new_tool] = True
 

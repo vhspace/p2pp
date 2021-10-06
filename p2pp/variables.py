@@ -167,6 +167,7 @@ extrusion_multiplier = 1.0  # type: float  # Monitors M221 commands during the p
 current_print_feedrate = 100  # type: int  # Monitors the current feedrate
 current_print_feed = 2000  # type: int
 extra_runout_filament = 150  # type: int  # Provide extra filament at the end of the print.
+minimaltotal_filament = 0 # no extra filament is generated
 min_splice_length = 70  # type: int  # Minimum overall splice length.
 min_start_splice_length = 100  # type: int  # Minimum first splice length.
 
