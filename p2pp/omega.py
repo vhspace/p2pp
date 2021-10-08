@@ -376,7 +376,7 @@ def generate_palette():
                "drives": [],
                "splices": [],
                "pingCount": len(v.ping_extruder_position),
-               "algorithm": []
+               "algorithms": []
                }
 
     for i in range(len(v.splice_extruder_position)):
