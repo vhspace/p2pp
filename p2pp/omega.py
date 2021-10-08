@@ -418,10 +418,19 @@ def generate_palette():
                 gui.log_warning("WARNING: No Algorithm defined for transitioning" +
                                 " {} to {}. Using Default Splice Algorithm".format(v.filament_type[i],
                                                                                    v.filament_type[j]))
+            try:
+                algin = int(algo_key[0])
+            except ValueError:
+                algin = 0
+
+            try:
+                algout = int(algo_key[1])
+            except ValueError:
+                algout = 0
 
             palette["algorithm"].append({
-                "ingoingId": algo_key[0],
-                "outgoingId": algo_key[1],
+                "ingoingId": algin,
+                "outgoingId": algout,
                 "heat": algo[0],
                 "compression": algo[1],
                 "cooling": algo[2]
