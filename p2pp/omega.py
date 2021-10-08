@@ -428,7 +428,7 @@ def generate_palette():
             except ValueError:
                 algout = 0
 
-            palette["algorithm"].append({
+            palette["algorithms"].append({
                 "ingoingId": algin,
                 "outgoingId": algout,
                 "heat": algo[0],
