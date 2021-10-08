@@ -24,6 +24,7 @@ import p2pp.manualswap as swap
 import base64
 import version
 import zipfile
+import p2pp.genpreview as gp
 
 # GCODE BLOCK CLASSES
 CLS_UNDEFINED = 0
@@ -189,6 +190,8 @@ def find_alternative_tower():
                     continue
                 if state == 1 and line.startswith(";TYPE"):
                     check_tower_update(False)
+                    purgetower.purge_create_layers(v.wipe_tower_info_minx, v.wipe_tower_info_miny, v.wipe_tower_xsize,
+                                                   v.wipe_tower_ysize)
                     gui.create_logitem("Tower detected from ({}, {}) to ({}, {})".format(
                         v.wipe_tower_info_minx, v.wipe_tower_info_miny, v.wipe_tower_info_maxx, v.wipe_tower_info_maxy
                     ))
@@ -924,6 +927,10 @@ def generate(input_file, output_file):
             # generate palette.json
             # generate thumbnail
             # generate zip
+
+            #generate previes
+            gp.buildpreview()
+
             meta, palette = header_generate_omega_palette3(None)
 
             meta_file = os.path.join(path, "meta.json")

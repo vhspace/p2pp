@@ -111,6 +111,7 @@ releaseinfo = {
     "1.0.110": "Incorrect check on definition of algorithms",
     "1.0.120": "updated generation of thumbnail on PS24",
     "1.0.130": "Added P3_MINIMALTOTALFILAMENT parameter",
+    "1.0.140": "BugFix with PS24 and fullpurgereduction",
     '--- RELEASE INFORMATION': 'END'
 }
 
@@ -118,7 +119,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 1
 MinorVersion = 0
-Build = 130
+Build = 140
 
 latest_stable_version = ""
 

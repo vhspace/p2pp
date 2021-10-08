@@ -9,6 +9,7 @@ __email__ = 'P2PP@pandora.be'
 
 import p2pp.variables as v
 import p2pp.bedprojection as bp
+import p2pp.genpreview as gp
 
 X = 0
 Y = 1
@@ -80,7 +81,6 @@ def create_command(gcode_line, is_comment=False, userclass=0):
                         return_value[UNRETRACT] = (return_value[MOVEMENT] & 7) == 0    # no XYZ
                         return_value[EXTRUDE] = True
                         # v.thumbnail_end = True
-
 
     return return_value
 
@@ -159,10 +159,27 @@ def get_parameter(gcode_tupple, pv, defaultvalue=0):
 def issue_command(gcode_tupple, speed=0):
 
     if gcode_tupple[MOVEMENT]:
+
+        # preview simulatrion -- Z Height
+        if gcode_tupple[MOVEMENT] & 4:
+            gp.z = gcode_tupple[Z]
+        # end preview simulation
+
         if gcode_tupple[MOVEMENT] & 8:  # movement WITH extrusion
             extrusion = gcode_tupple[E] * v.extrusion_multiplier
             v.total_material_extruded += extrusion
             v.material_extruded_per_color[v.current_tool] += extrusion
+
+            # preview simulation in this case there is Extruder movement
+            tmp = gcode_tupple[MOVEMENT] & 3
+            if tmp:
+                if tmp == 1:
+                    gp.add_extrusion(gcode_tupple[X], gp.prevy, v.current_tool, gcode_tupple[E])
+                elif tmp == 2:
+                    gp.add_extrusion(gp.prevx, gcode_tupple[Y], v.current_tool, gcode_tupple[E])
+                else:
+                    gp.add_extrusion(gcode_tupple[X], gcode_tupple[Y], v.current_tool, gcode_tupple[E])
+            # end preview simulation
 
             if v.absolute_extruder:
                 # debug absolute mode: gcode_tupple[COMMENT] += '"; AE = {}'.format(gcode_tupple[E])
@@ -171,6 +188,14 @@ def issue_command(gcode_tupple, speed=0):
                     v.absolute_counter = 0
                 v.absolute_counter += gcode_tupple[E]
                 gcode_tupple[E] = v.absolute_counter
+        else:
+
+            # preview simulation in this case there is NO Extruder movement
+            if gcode_tupple[MOVEMENT] & 1:
+                gp.prevx = gcode_tupple[X]
+            if gcode_tupple[MOVEMENT] & 2:
+                gp.prevy = gcode_tupple[Y]
+            # end preview_simulation
 
     elif v.absolute_extruder:
         if gcode_tupple[COMMAND] == "M83":
