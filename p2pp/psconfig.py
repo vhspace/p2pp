@@ -115,9 +115,28 @@ def parse_prusaslicer_config():
 
         if gcode_line.startswith("; estimated printing time"):
             try:
-                fields = gcode_line.split(" ")
-                if len(fields) == 10 and fields[-4] == "=":
-                    v.printing_time = int(fields[-3][:-1])*3600 + int(fields[-2][:-1])*60+int(fields[-1][:-1])
+                fields = gcode_line.split("=")
+                fields = fields[-1].split(" ")
+                for i in range(len(fields)):
+                    fields[i] = "0" + fields[i].strip('hms')
+
+                if len(fields) > 2:
+                    h = int(fields[-3])
+                else:
+                    h = 0
+
+                if len(fields) > 1:
+                    m = int(fields[-2])
+                else:
+                    m = 0
+
+                if len(fields) > 0:
+                    s = int(fields[-1])
+                else:
+                    s = 0
+
+                v.printing_time = h*3600 + m*60 + s
+
             except (ValueError, IndexError):
                 pass
             return

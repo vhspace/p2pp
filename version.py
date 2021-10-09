@@ -114,6 +114,7 @@ releaseinfo = {
     "1.0.140": "BugFix with PS24 and fullpurgereduction",
     "1.0.150": "fixup palette.json file (algo definition bugfix)",
     "1.0.160": "fixup palette.json file (algo definition bugfix, part 2)",
+    "1.0.170": "fixup meta.json - printing time calculation on short prints",
     '--- RELEASE INFORMATION': 'END'
 }
 
@@ -121,7 +122,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 1
 MinorVersion = 0
-Build = 160
+Build = 170
 
 latest_stable_version = ""
 
