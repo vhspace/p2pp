@@ -124,8 +124,8 @@ def gcode_process_toolchange(new_tool):
 
 
 def calculate_temp_wait_position():
-    pos_x = v.wipe_tower_info_minx + v.tx_offset * 1 if abs(v.wipe_tower_info_minx - v.purge_keep_x) < abs(v.wipe_tower_info_maxx - v.purge_keep_x) else -1
-    pos_y = v.wipe_tower_info_miny + v.ty_offset * 1 if abs(v.wipe_tower_info_miny - v.purge_keep_y) < abs(v.wipe_tower_info_maxy - v.purge_keep_y) else -1
+    pos_x = v.wipe_tower_info_minx + v.tx_offset * (1 if abs(v.wipe_tower_info_minx - v.purge_keep_x) < abs(v.wipe_tower_info_maxx - v.purge_keep_x) else -1)
+    pos_y = v.wipe_tower_info_miny + v.ty_offset * (1 if abs(v.wipe_tower_info_miny - v.purge_keep_y) < abs(v.wipe_tower_info_maxy - v.purge_keep_y) else -1)
     return [pos_x, pos_y]
 
 

@@ -1,5 +1,8 @@
-
-
+#
+# import matplotlib.pyplot as plt
+# from mpl_toolkits import mplot3d
+# import p2pp.variables as v
+# from cycler import cycler
 
 extrusions = {}
 z = 0
@@ -20,16 +23,35 @@ def add_extrusion(x, y, tool, extrusion):
 
 
 def buildpreview():
-    # for i in sorted(extrusions.keys()):
-    #     print("Layer z={} has {} extrusions".format(i, len(extrusions[i])))
-    #     fig = plt.figure(figsize=(16, 16))
-    #     sp = fig.add_subplot(111, projection='3d')
-    #     for tupple in extrusions[i]:
+    # fig = plt.figure(figsize=(16, 16))
+    # ax = fig.add_subplot(111, projection='3d')
+    # ax.set_xlim(v.bed_origin_x, v.bed_max_x)
+    # ax.set_ylim(v.bed_origin_y, v.bed_max_y)
+    # ax.set_zlim(0, 300)
+    # prevcol = -9
+    #
+    # colors = []
+    # for i in range(v.colors):
+    #     colors.append("#{}00".format(v.filament_color_code[i]))
+    #
+    # print(colors)
+    # print_cycler = cycler(color=colors)
+    # ax.set_prop_cycle(print_cycler)
+    #
+    #
+    # for z in sorted(extrusions.keys()):
+    #
+    #     for tupple in extrusions[z]:
     #         x0 = tupple[0]
     #         y0 = tupple[1]
     #         x1 = tupple[2]
     #         y1 = tupple[3]
-    #         sp.
-    #         sp.plot([0.5 * (x0 + x1)], [0.5 * (y0 + y1)], tuple[4], markersize=2)
-    #     fig.savefig(fname="layer_{}.png".format(i))
+    #
+    #         if prevcol != tupple[4]:
+    #             prevcol = tupple[4]
+    #             color = "C{}".format(prevcol)
+    #
+    #         ax.plot([x0, x1], [y0, y1], [z, z], color=color, linewidth=0.2, markersize=0)
+    #
+    # fig.savefig(fname="preview.png")
     pass
