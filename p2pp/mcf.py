@@ -801,6 +801,10 @@ def generate(input_file, output_file):
             opf.write("\n".encode('utf8'))
         opf.close()
 
+    if v.palette3:
+        if not input_file.endswith(".mcfx"):
+          gui.log_warning("Your file should have the .mcfx extension (Print Settings/Output Options/Output filename format)")
+
     # added for issue Error: float division by zero (#87)
     if v.extrusion_width == 0:
         gui.create_logitem("Extrusionwidth set to 0, defaulted back to 0.45")
@@ -929,7 +933,7 @@ def generate(input_file, output_file):
             # generate zip
 
             #generate previes
-            gp.buildpreview()
+            #gp.buildpreview()
 
             meta, palette = header_generate_omega_palette3(None)
 
@@ -950,19 +954,19 @@ def generate(input_file, output_file):
             im.write(base64.b64decode(v.thumbnail_data))
             im.close()
 
-            pre, ext = os.path.splitext(input_file)
-            mcfx = pre + ".mcfx"
-            zipf = zipfile.ZipFile(mcfx, 'w', zipfile.ZIP_DEFLATED)
+
+            zipf = zipfile.ZipFile(input_file, 'w', zipfile.ZIP_DEFLATED)
             zipf.write(meta_file, "meta.json")
             zipf.write(palette_file, "palette.json")
             zipf.write(output_file, "print.gcode")
             zipf.write(im_file, "thumbnail.png")
+            zipf.close()
 
             os.remove(meta_file)
             os.remove(palette_file)
             os.remove(output_file)
             os.remove(im_file)
-            zipf.close()
+
 
         if v.accessory_mode:
 

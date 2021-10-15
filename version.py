@@ -116,6 +116,7 @@ releaseinfo = {
     "1.0.160": "fixup palette.json file (algo definition bugfix, part 2)",
     "1.0.170": "fixup meta.json - printing time calculation on short prints",
     "1.0.180": "bug fix - temperature waiting position",
+    "1.0.190": "feature - issue warning when output file extension is not mcfx for palette 3",
     '--- RELEASE INFORMATION': 'END'
 }
 
@@ -123,7 +124,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 1
 MinorVersion = 0
-Build = 180
+Build = 190
 
 latest_stable_version = ""
 
