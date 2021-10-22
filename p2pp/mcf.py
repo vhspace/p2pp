@@ -901,10 +901,12 @@ def generate(input_file, output_file):
         path, _ = os.path.split(output_file)
 
         if v.palette3:
-            output_file = os.path.join(path, "print.gcode")
+            opf = open(os.path.join(path, "print.gcode"), "wb")
+        else:
+            opf = open(output_file, "wb")
 
         gui.create_logitem("Generating GCODE file: " + output_file)
-        opf = open(output_file, "wb")
+
         if not v.accessory_mode and not v.palette3:
             for line in header:
                 opf.write(line.encode('utf8'))
@@ -955,7 +957,7 @@ def generate(input_file, output_file):
             im.close()
 
 
-            zipf = zipfile.ZipFile(input_file, 'w', zipfile.ZIP_DEFLATED)
+            zipf = zipfile.ZipFile(output_file, 'w', zipfile.ZIP_DEFLATED)
             zipf.write(meta_file, "meta.json")
             zipf.write(palette_file, "palette.json")
             zipf.write(output_file, "print.gcode")
