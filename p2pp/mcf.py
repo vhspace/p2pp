@@ -942,6 +942,7 @@ def generate(input_file, output_file):
             meta_file = os.path.join(path, "meta.json")
             palette_file = os.path.join(path, "palette.json")
             im_file = os.path.join(path, "thumbnail.png")
+            gcode_file = os.path.join(path, "print.gcode")
 
             gui.create_logitem("Generating Palette 3 output files")
             mf = open(meta_file, 'wb')
@@ -960,7 +961,7 @@ def generate(input_file, output_file):
             zipf = zipfile.ZipFile(output_file, 'w', zipfile.ZIP_DEFLATED)
             zipf.write(meta_file, "meta.json")
             zipf.write(palette_file, "palette.json")
-            zipf.write(output_file, "print.gcode")
+            zipf.write(gcode_file, "print.gcode")
             zipf.write(im_file, "thumbnail.png")
             zipf.close()
 
