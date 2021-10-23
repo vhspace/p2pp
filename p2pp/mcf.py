@@ -801,9 +801,9 @@ def generate(input_file, output_file):
             opf.write("\n".encode('utf8'))
         opf.close()
 
-    if v.palette3:
-        if not input_file.endswith(".mcfx"):
-          gui.log_warning("Your file should have the .mcfx extension (Print Settings/Output Options/Output filename format)")
+    # if v.palette3:        #check does not work with PS2.4
+    #     if not input_file.endswith(".mcfx"):
+    #       gui.log_warning("Your file should have the .mcfx extension (Print Settings/Output Options/Output filename format)")
 
     # added for issue Error: float division by zero (#87)
     if v.extrusion_width == 0:
