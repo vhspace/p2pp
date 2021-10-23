@@ -188,7 +188,10 @@ def header_generate_omega_palette2(job_name):
     header.append('O21 ' + hexify_short(20) + "\n")  # MSF2.0
 
     if v.printer_profile_string == '':
-        v.printer_profile_string = v.default_printerprofile
+        if v.palette3:
+            v.printer_profile_string = v.default_printerprofile + v.default_printerprofile
+        else:
+            v.printer_profile_string = v.default_printerprofile
         gui.log_warning("No or Invalid Printer profile ID specified\nusing default P2PP printer profile ID {}"
                         .format(v.default_printerprofile))
 

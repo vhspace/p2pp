@@ -53,21 +53,29 @@ def check_config_parameters(keyword, value):
     # defines the printer profile for config storage on the Palette hardware
     if keyword == "PRINTERPROFILE":
         value = value.strip(" ")
-        if len(value) != 16:
-            gui.log_warning("Invalid Printer profile!  - Has invalid length (expect 16) - [{}]"
-                            .format(value))
+        if v.palette3:
+            _idlen = 32
+        else:
+            _idlen = 16
+
+        if len(value) != _idlen:
+            gui.log_warning("Invalid Printer profile!  - Has invalid length (expect {}}) - [{}]"
+                            .format(_idlen, value))
             value = ""
         if not all(char in set("0123456789ABCDEFabcdef") for char in value):
             gui.log_warning("Invalid Printer profile!  - Invalid characters  (expect 0123456789abcdef) - [{}]"
                             .format(value))
             value = ""
 
-        if len(value) == 16:
+        if len(value) <= _idlen:
             v.printer_profile_string = value
             return
 
     # toggles hardware to Palette 3 - sets the number of inputs, output format.
     if keyword == "PALETTE3":
+        if len(v.printer_profile_string) == 16:
+            gui.log_warning("Invalid Printer profile!  - P3 printer profile should be 32 characters")
+
         v.palette3 = True
         v.colors = 4
         # Min first splice length for P3 == 130
@@ -78,6 +86,9 @@ def check_config_parameters(keyword, value):
 
     # toggles hardware to Palette 3 Pro - sets the number of inputs, output format.
     if keyword == "PALETTE3_PRO":
+        if len(v.printer_profile_string) == 16:
+            gui.log_warning("Invalid Printer profile!  - P3 printer profile should be 32 characters")
+
         v.palette3 = True
         v.colors = 8
         # Min first splice length for P3 == 130
@@ -324,6 +335,11 @@ def check_config_parameters(keyword, value):
     # set the highest top speed for purging
     if keyword == "PURGETOPSPEED":
         v.purgetopspeed = int(floatparameter(value))
+
+        # if parameter specified is below 200 then the value is assumed mm/sec and is converted to mm/min
+        if v.purgetopspeed < 200:
+            v.purgetopspeed = v.purgetopspeed * 60
+
         gui.create_logitem("Purge Max speed set to {:.0f}mm/min ({}mm/s)".format(v.purgetopspeed, v.purgetopspeed / 60))
         return
 
