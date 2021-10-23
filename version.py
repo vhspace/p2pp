@@ -120,6 +120,7 @@ releaseinfo = {
     "1.0.200": "feature - updated minimal splice length for P3 ",
     "1.0.201": "buf fix - deleted output file",
     "1.0.202": "buf fix - deleted output file",
+    "1.0.203": "32 char Printer Profiel IDs for P3",
     '--- RELEASE INFORMATION': 'END'
 }
 
