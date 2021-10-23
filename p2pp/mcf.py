@@ -966,7 +966,7 @@ def generate(input_file, output_file):
 
             os.remove(meta_file)
             os.remove(palette_file)
-            os.remove(output_file)
+            os.remove(os.path.join(path, "print.gcode"))
             os.remove(im_file)
 
 

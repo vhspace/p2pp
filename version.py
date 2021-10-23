@@ -118,6 +118,7 @@ releaseinfo = {
     "1.0.180": "bug fix - temperature waiting position",
     "1.0.190": "feature - issue warning when output file extension is not mcfx for palette 3",
     "1.0.200": "feature - updated minimal splice length for P3 ",
+    "1.0.201": "buf fix - deleted output file",
     '--- RELEASE INFORMATION': 'END'
 }
 
@@ -125,7 +126,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 1
 MinorVersion = 0
-Build = 200
+Build = 201
 
 latest_stable_version = ""
 
