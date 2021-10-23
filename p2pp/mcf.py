@@ -902,10 +902,10 @@ def generate(input_file, output_file):
 
         if v.palette3:
             opf = open(os.path.join(path, "print.gcode"), "wb")
+            gui.create_logitem("Generating MCFX file: " + output_file)
         else:
             opf = open(output_file, "wb")
-
-        gui.create_logitem("Generating GCODE file: " + output_file)
+            gui.create_logitem("Generating GCODE file: " + output_file)
 
         if not v.accessory_mode and not v.palette3:
             for line in header:
