@@ -53,13 +53,12 @@ def check_config_parameters(keyword, value):
     # defines the printer profile for config storage on the Palette hardware
     if keyword == "PRINTERPROFILE":
         value = value.strip(" ")
+        _idlen = 16
         if v.palette3:
             _idlen = 32
-        else:
-            _idlen = 16
 
         if len(value) != _idlen:
-            gui.log_warning("Invalid Printer profile!  - Has invalid length (expect {}}) - [{}]"
+            gui.log_warning("Invalid Printer profile!  - Has invalid length (expect {}) - [{}]"
                             .format(_idlen, value))
             value = ""
         if not all(char in set("0123456789ABCDEFabcdef") for char in value):
