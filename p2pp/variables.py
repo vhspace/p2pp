@@ -64,7 +64,7 @@ first_layer_height = 0.2  # type float
 towerskipped = False  # type bool
 
 printer_profile_string = ''
-default_printerprofile = '50325050494e464f'
+default_printerprofile = "50325050494e464f"
 # A unique ID linked to a printer configuration profile in the Palette 2 hardware.
 
 input_gcode = []

@@ -121,9 +121,13 @@ def generatewarnings():
 ############################################################################
 def header_generate_omega(job_name):
     if v.printer_profile_string == '':
-        gui.log_warning("The PRINTERPROFILE identifier is missing, Please add:\n" +
-                        ";P2PP PRINTERPROFILE=<your printer profile ID>\n" +
-                        "to your Printers Start GCODE.\n")
+        v.printer_profile_string = v.default_printerprofile
+        if v.palette3:
+            v.printer_profile_string = v.default_printerprofile+ v.default_printerprofile
+        else:
+            v.printer_profile_string = v.default_printerprofile
+        gui.log_warning("The PRINTERPROFILE identifier is missing, Default will be used {} \n".format(v.printer_profile_string))
+        v.printer_profile_string = v.default_printerprofile
 
     if len(v.splice_extruder_position) == 0:
         gui.log_warning("This does not look like a multi-colour file.\n")
