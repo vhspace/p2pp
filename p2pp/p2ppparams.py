@@ -61,6 +61,8 @@ def check_config_parameters(keyword, value):
             gui.log_warning("Invalid Printer profile!  - Has invalid length (expect {}) - [{}]"
                             .format(_idlen, value))
             value = ""
+
+
         if not all(char in set("0123456789ABCDEFabcdef") for char in value):
             gui.log_warning("Invalid Printer profile!  - Invalid characters  (expect 0123456789abcdef) - [{}]"
                             .format(value))
@@ -73,7 +75,8 @@ def check_config_parameters(keyword, value):
     # toggles hardware to Palette 3 - sets the number of inputs, output format.
     if keyword == "PALETTE3":
         if len(v.printer_profile_string) == 16:
-            gui.log_warning("Invalid Printer profile!  - P3 printer profile should be 32 characters")
+            gui.log_warning("Invalid Printer profile!  - P3 printer profile should be 32 characters ({})".format(v.printer_profile_strin))
+
 
         v.palette3 = True
         v.colors = 4

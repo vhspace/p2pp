@@ -24,7 +24,7 @@ import p2pp.manualswap as swap
 import base64
 import version
 import zipfile
-import p2pp.genpreview as gp
+# import p2pp.genpreview as gp
 
 # GCODE BLOCK CLASSES
 CLS_UNDEFINED = 0
@@ -305,7 +305,6 @@ def parse_gcode():
 
                 if line.startswith("; thumbnail begin"):
                     v.thumbnail = True
-
 
             if line.startswith('; CP'):  # code block assignment
                 update_class(hash(line[5:]))
@@ -934,8 +933,8 @@ def generate(input_file, output_file):
             # generate thumbnail
             # generate zip
 
-            #generate previes
-            #gp.buildpreview()
+            # generate previes
+            # gp.buildpreview()
 
             meta, palette = header_generate_omega_palette3(None)
 
@@ -960,7 +959,6 @@ def generate(input_file, output_file):
             im.write(base64.b64decode(v.thumbnail_data))
             im.close()
 
-
             zipf = zipfile.ZipFile(output_file, 'w', zipfile.ZIP_DEFLATED)
             zipf.write(meta_file, "meta.json")
             zipf.write(palette_file, "palette.json")
@@ -972,7 +970,6 @@ def generate(input_file, output_file):
             os.remove(palette_file)
             os.remove(os.path.join(path, "print.gcode"))
             os.remove(im_file)
-
 
         if v.accessory_mode:
 
