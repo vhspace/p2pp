@@ -954,6 +954,9 @@ def generate(input_file, output_file):
             pa.close()
 
             im = open(im_file, "wb")
+            if len(v.thumbnail_data) == 0:
+                gui.log_warning("Thumbnail Info missing (Printer Settings/General/Firmware/G-Code Thumbnail")
+
             im.write(base64.b64decode(v.thumbnail_data))
             im.close()
 
@@ -993,4 +996,6 @@ def generate(input_file, output_file):
 
     gui.progress_string(101)
     if (len(v.process_warnings) > 0 and not v.ignore_warnings) or v.consolewait:
+        if v.palette3:
+            gui.create_logitem("Go to https://github.com/tomvandeneede/p2pp/wiki/Reference-Configurations for more information on P3 COnfiguration", "blue")
         gui.close_button_enable()

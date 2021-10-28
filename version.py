@@ -122,6 +122,8 @@ releaseinfo = {
     "1.0.202": "buf fix - deleted output file",
     "1.0.203": "32 char Printer Profiel IDs for P3",
     "1.0.204": "32 char Printer Profiel IDs for P3 // docs",
+    "1.0.205": "added info on thumbnail and link to Reference-COnfigs",
+
     '--- RELEASE INFORMATION': 'END'
 }
 
@@ -129,7 +131,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 1
 MinorVersion = 0
-Build = 204
+Build = 205
 
 latest_stable_version = ""
 
