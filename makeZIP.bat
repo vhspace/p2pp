@@ -13,7 +13,7 @@ Rmdir /S /Q _build_update_
 Mkdir _build_update_
 Cd _build_update_
 
-git clone --branch dev git://github.com/tomvandeneede/p2pp.git
+git clone --branch master git://github.com/tomvandeneede/p2pp.git
 
 rem Create the new BUILD
 rem ####################
