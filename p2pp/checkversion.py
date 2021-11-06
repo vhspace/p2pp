@@ -14,7 +14,6 @@ import platform
 version = "https://github.com/tomvandeneede/p2pp/raw/{}/version.py"
 
 MASTER = version.format('master')
-DEV = version.format('dev_Qt')
 
 _p = platform.python_version().strip()
 python_version = _p[0]

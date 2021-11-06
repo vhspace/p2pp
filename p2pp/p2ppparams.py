@@ -397,15 +397,7 @@ def check_config_parameters(keyword, value):
         latest = cv.get_version(cv.MASTER)
         if latest:
             if latest > version.Version:
-                gui.create_logitem("New development version of P2PP available ({})".format(latest), "red", False, "2.0")
-            else:
-                if latest < version.Version:
-                    latest = cv.get_version(cv.DEV)
-                    if latest > version.Version:
-                        gui.create_logitem("New development version of P2PP available ({})".format(latest), "red", False,
-                                           "2.0")
-        else:
-            gui.create_logitem("Could not check for latest online version")
+                gui.create_logitem("New version of P2PP available ({})".format(latest), "red", False, "2.0")
 
     # co be removed ?
     if keyword == "DO_NOT_GENERATE_M0":
