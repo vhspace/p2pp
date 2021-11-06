@@ -123,8 +123,7 @@ releaseinfo = {
     "1.0.203": "32 char Printer Profiel IDs for P3",
     "1.0.204": "32 char Printer Profiel IDs for P3 // docs",
     "1.0.205": "added info on thumbnail and link to Reference-COnfigs",
-    "8.0.0" : "PS2.4 Support - Cutoff point"
-
+    "8.0.0" : "PS2.4 Support - Cutoff point",
     '--- RELEASE INFORMATION': 'END'
 }
 
