@@ -12,6 +12,7 @@ from PIL import Image, ImageDraw
 
 totallength = 0
 
+
 class Tower(object):
 
     def __init__(self, purge_per_layer_array, first_layerheight, layerheight, extrusionwidth, wipespeed, filamentdiameter=1.75):
@@ -35,10 +36,12 @@ class Tower(object):
 
         self._optimized_zigurat = deepcopy(self._zigurat)
 
-    def _dist(self, p1, p2):
+    @staticmethod
+    def _dist(p1, p2):
         return sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
 
-    def _move(self, p):
+    @staticmethod
+    def _move(p):
         return "G1 X{:0.3f} Y{:0.3f} F8640".format(p[0], p[1])
 
     def _extrude(self, p1, p2):
@@ -111,12 +114,12 @@ class Tower(object):
 
         return points
 
-    def _diagonal(self, direction, pct):
+    def _diagonal(self, direction, ppct):
 
         def _swap(last, _next):
             return self._dist(last, _next[0]) > self._dist(last, _next[1])
 
-        dx = self.extrusionwidth * (100 / pct * sqrt(2))
+        dx = self.extrusionwidth * (100 / ppct * sqrt(2))
 
         _ip = []
         _gcode = []
@@ -154,12 +157,12 @@ class Tower(object):
         self.data.save('/Users/tomvandeneede/Desktop/tower.png', "PNG")
         return _gcode
 
-    def generate_layer(self, layernum, pct):
+    def generate_layer(self, layernum, ppct):
         __gcode = self._perimeter(layernum)
         if layernum % 2:
-            __gcode += self._diagonal(-1, pct)
+            __gcode += self._diagonal(-1, ppct)
         else:
-            __gcode += self._diagonal(1, pct)
+            __gcode += self._diagonal(1, ppct)
         return __gcode
 
 

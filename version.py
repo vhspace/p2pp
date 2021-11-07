@@ -124,13 +124,14 @@ releaseinfo = {
     "1.0.204": "32 char Printer Profiel IDs for P3 // docs",
     "1.0.205": "added info on thumbnail and link to Reference-COnfigs",
     "8.0.0" : "PS2.4 Support - Cutoff point",
+    "8.0.1" : "Bug Fix - profile ID check",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 0
+Build = 1
 
 latest_stable_version = ""
 

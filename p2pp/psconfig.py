@@ -113,9 +113,6 @@ def parse_config_parameters():
     # TODO - get this information from the environment parameters
     # TODO - need to find out as from what version of PS this is working
 
-
-
-
     for idx in range(len(v.input_gcode) - 1, -1, -1):
 
         gcode_line = v.input_gcode[idx]
