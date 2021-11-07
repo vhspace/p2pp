@@ -9,9 +9,7 @@ __email__ = 'P2PP@pandora.be'
 
 import platform
 
-version = "https://github.com/tomvandeneede/p2pp/raw/{}/version.py"
-
-MASTER = version.format('master')
+MASTER = "https://github.com/tomvandeneede/p2pp/raw/master/version.py"
 
 _p = platform.python_version().strip()
 python_version = _p[0]
@@ -45,4 +43,4 @@ def get_version(_url_):
 
         return "{}.{:02}.{:03}".format(_maj, _min, _bld)
     except:
-        return None
+        return "0.0"
