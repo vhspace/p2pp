@@ -38,6 +38,8 @@ if len(sys.argv) == 1:
 
         MASTER_VERSION = checkversion.get_version(checkversion.MASTER)
 
+
+
         if MASTER_VERSION != "0.0":
             if v.version < MASTER_VERSION:
                 v.version = "Version Check: New release {} available (Current version {})".format(MASTER_VERSION, ver.Version)
@@ -46,7 +48,7 @@ if len(sys.argv) == 1:
                 v.version = "Version Check: Current version {} (Version up to date)".format(ver.Version)
                 color = "green"
 
-        gui.create_logitem(v.version, color, True)
+            gui.create_logitem(v.version, color, True)
 
         gui.create_emptyline()
         gui.create_logitem("Line to be used in PrusaSlicer [Print Settings][Output Options][Post Processing Script]",

@@ -39,7 +39,7 @@ del %name%.zip
 
 rem copy the file to dropbox
 rem ########################
-copy %name%.zip "c:\users\tomvandeneede\dropbox\public\p2pp\stable release\Windows\"
+copy %name%.zip "c:\users\tomvandeneede\dropbox\public\p2pp\Development\Windows\"
 
 rem # go up to the top level #
 cd ..
