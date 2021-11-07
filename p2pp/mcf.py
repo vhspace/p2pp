@@ -16,7 +16,7 @@ import p2pp.gui as gui
 import p2pp.pings as pings
 import p2pp.purgetower as purgetower
 import p2pp.variables as v
-from p2pp.psconfig import parse_prusaslicer_config
+from p2pp.psconfig import parse_config_parameters
 from p2pp.omega import header_generate_omega, header_generate_omega_palette3
 from p2pp.sidewipe import create_side_wipe
 import p2pp.manualswap as swap
@@ -261,7 +261,8 @@ def speed_limiter(g_code):
         g_code[gcode.F] = v.wipe_feedrate
 
 
-def parse_gcode():
+def parse_gcode_first_pass():
+
     v.layer_toolchange_counter = 0
     v.layer_emptygrid_counter = 0
 
@@ -378,10 +379,10 @@ def parse_gcode():
         if v.block_classification == CLS_BRIM_END:
             v.block_classification = CLS_NORMAL
 
-    v.input_gcode = []
+    v.input_gcode = None
 
 
-def gcode_parselines():
+def parse_gcode_second_pass():
 
     idx = 0
     purge = False
@@ -409,7 +410,7 @@ def gcode_parselines():
 
         idx = idx + 1
 
-        # ----- MEMORY MANAGEMENT - when 10K lines are processed, remove the top of the list
+        # ----- MEMORY MANAGEMENT - when 100K lines are processed, remove the top of the list
 
         if idx > 100000:
             v.parsed_gcode = v.parsed_gcode[idx:]
@@ -517,6 +518,7 @@ def gcode_parselines():
                         v.saved_fanspeed = gcode.get_parameter(g, gcode.S, v.saved_fanspeed)
 
                     elif commandNum == 221:
+                        old_value = v.extrusion_multiplier
                         v.extrusion_multiplier = float(gcode.get_parameter(g, gcode.S, v.extrusion_multiplier * 100.0)) / 100.0
 
                     elif commandNum == 220:
@@ -755,41 +757,143 @@ def gcode_parselines():
 # -- MAIN ROUTINE --- GLUES ALL THE PROCESSING ROUTINED
 # -- FILE READING / FIRST PASS / SECOND PASS / FILE WRITING
 
+def config_checks():
 
-def generate(input_file, output_file):
+    # CHECK BED SIZE PARAMETERS
+    if v.bed_size_x == -9999 or v.bed_size_y == -9999 or v.bed_origin_x == -9999 or v.bed_origin_y == -9999:
+        gui.log_warning("Bedsize nor or incorrectly defined.")
+
+    v.bed_max_x = v.bed_origin_x + v.bed_size_x
+    v.bed_max_y = v.bed_origin_y + v.bed_size_y
+
+    # CHECK EXTRUSION WIDTH
+    if v.extrusion_width == 0:
+        gui.create_logitem("Extrusionwidth set to 0, defaulted back to 0.45")
+        v.extrusion_width = 0.45
+
+    if v.process_temp and v.side_wipe:
+        gui.log_warning("TEMPERATURECONTROL and SIDEWIPE / BigBrain3D are incompatible (TEMPERATURECONTROL disabled")
+        v.process_temp = False
+
+    if v.palette_plus:
+        if v.palette_plus_ppm == -9:
+            gui.log_warning("P+ parameter P+PPM incorrectly set up in startup GCODE - Processing Halted")
+            return -1
+        if v.palette_plus_loading_offset == -9:
+            gui.log_warning("P+ parameter P+LOADINGOFFSET incorrectly set up in startup GCODE - Processing Halted")
+            return -1
+
+    v.side_wipe = not ((v.bed_origin_x <= v.wipe_tower_posx <= v.bed_max_x) and (
+                v.bed_origin_y <= v.wipe_tower_posy <= v.bed_max_y))
+    v.tower_delta = v.max_tower_z_delta > 0
+
+    if (v.tower_delta or v.full_purge_reduction) and v.variable_layer:
+        gui.log_warning("Variable layers may cause issues with FULLPURGE / TOWER DELTA")
+        gui.log_warning("This warning could be caused by support that will print on variable layer offsets")
+
+    ## sidewipe option compatibility test
+    if v.side_wipe:
+
+        if v.full_purge_reduction:
+            gui.log_warning("FULLURGEREDUCTION is incompatible with SIDEWIPE, parameter ignored")
+            v.full_purge_reduction = False
+
+        if v.skirts:
+            if v.ps_version >= "2.2":
+                gui.log_warning("SIDEWIPE and SKIRTS are NOT compatible in PS2.2 or later")
+
+        if v.wipe_remove_sparse_layers:
+            gui.log_warning("SIDE WIPE mode not compatible with sparse wipe tower in PS - Processing Halted")
+            return -1
+
+        gui.create_logitem("Side wipe activated", "blue")
+
+    # fullpurge option compatibility test
+    if v.full_purge_reduction:
+
+        if v.skirts:
+            gui.log_warning("FULLPURGE and SKIRTS are NOT compatible.  Overlaps may occur")
+
+        if v.tower_delta:
+            gui.log_warning("FULLPURGEREDUCTION is incompatible with TOWERDELTA")
+            v.tower_delta = False
+        gui.create_logitem("FULLPURGEREDUCTION activated", "blue")
+
+    # auto add splice length only works with full purge reeduction / sidewipe
+    if v.autoaddsplice:
+        if not v.full_purge_reduction and not v.side_wipe:
+            gui.log_warning("AUTOADDPURGE only works with SIDEWIPE and FULLPURGEREDUCTION")
+        else:
+            gui.create_logitem("Automatic Splice length increase activated", "blue")
+
+    if len(v.skippable_layer) == 0:
+        gui.log_warning("P2PP Layer Configuration is missing!!")
+        return -1
+
+    skippable = optimize_tower_skip(int(v.max_tower_z_delta / v.layer_height))
+    if v.tower_delta:
+        v.skippable_layer[0] = False
+        if skippable > 0:
+            gui.log_warning(
+                "TOWERDELTA in effect for {} Layers or {:.2f}mm".format(skippable, skippable * v.layer_height))
+        else:
+            gui.create_logitem("TOWERDELTA could not be applied to this print")
+
+    return 0
+
+
+def p2pp_process_file(input_file, output_file):
 
     starttime = time.time()
-    basename = os.path.basename(input_file)
-    _taskName = os.path.splitext(basename)[0].replace(" ", "_")
-    _taskName = _taskName.replace(".mcf", "")
-    gui.setfilename(input_file)
-    gui.app.sync()
+
+    # get the base name from the environment variable if available....
+    # check for P3 that output is written to file at this point.
+    # check for P3 that the output file is named mcfx
+
     try:
-        # python 3.x
-        # noinspection PyArgumentList
+        basename = os.environ["SLIC3R_PP_OUTPUT_NAME"]
+
+        if v.palette3 and not os.environ["SLIC3R_PP_HOST"].startswith("File"):
+            gui.log_warning("Palette 3 File uploading currently not supported")
+
+        if v.palette3 and not os.environ["SLIC3R_PP_HOST"].endswith(".mcfx"):
+            gui.log_warning("Palette 3 files should have a .mcfx extension")
+
+    # if any the retrieval of this information fails, the good old way is used
+
+    except KeyError:
+        basename = os.path.basename(input_file)
+
+
+    gui.setfilename(basename)
+
+    # Determine the task name for this print form the filename without any extensions.
+    _taskName = os.path.splitext(basename)[0].replace(" ", "_")
+    _taskName = _taskName.replace(".mcfx", "")
+    _taskName = _taskName.replace(".mcf", "")
+    _taskName = _taskName.replace(".gcode", "")
+
+    gui.app.sync()
+
+    # Read the input file
+    try:
         opf = open(input_file, encoding='utf-8')
-    except TypeError:
-        try:
-            # python 2.x
-            opf = open(input_file)
-        except IOError:
-            gui.log_warning("Error Reading:'{}'".format(input_file))
-            return
-    except IOError:
+        gui.create_logitem("Reading File " + input_file)
+        gui.progress_string(1)
+        v.input_gcode = opf.readlines()
+        opf.close()
+        v.input_gcode = [item.strip() for item in v.input_gcode]
+
+    except (IOError, MemoryError):
         gui.log_warning("Error Reading: '{}'".format(input_file))
         return
 
-    gui.create_logitem("Reading File " + input_file)
-    gui.progress_string(1)
-    v.input_gcode = opf.readlines()
-    opf.close()
-
-    v.input_gcode = [item.strip() for item in v.input_gcode]
-
     gui.create_logitem("Analyzing Prusa Slicer Configuration")
     gui.progress_string(2)
-    parse_prusaslicer_config()
 
+    parse_config_parameters()    # Parse the Prusa Slicer  and P2PP Config Parameters
+
+    # Write the unprocessed file
     if v.save_unprocessed:
         pre, ext = os.path.splitext(input_file)
         of = pre + "_unprocessed" + ext
@@ -797,202 +901,123 @@ def generate(input_file, output_file):
         opf = open(of, "wb")
         for line in v.input_gcode:
             opf.write(line.encode('utf8'))
-            opf.write("\n".encode('utf8'))
+            opf.write("\n""".encode('utf8'))
         opf.close()
 
-    # if v.palette3:        #check does not work with PS2.4
-    #     if not input_file.endswith(".mcfx"):
-    #       gui.log_warning("Your file should have the .mcfx extension (Print Settings/Output Options/Output filename format)")
-
-    # added for issue Error: float division by zero (#87)
-    if v.extrusion_width == 0:
-        gui.create_logitem("Extrusionwidth set to 0, defaulted back to 0.45")
-        v.extrusion_width = 0.45
-
-    # v.bed = bp.BedProjection(int(v.bed_size_x), int(v.bed_size_y))
-    gui.create_logitem("Analyzing Layers / Functional blocks")
     gui.progress_string(4)
-    parse_gcode()
-    # if v.bedtrace:
-    #     v.bed.save_image()
-    v.input_gcode = None
+    gui.create_logitem("GCode Analysis ... Pass 1")
+    parse_gcode_first_pass()
 
-    if v.bed_size_x == -9999 or v.bed_size_y == -9999 or v.bed_origin_x == -9999 or v.bed_origin_y == -9999:
-        gui.log_warning("Bedsize nor or incorrectly defined.")
+    if config_checks()==-1:
+        return
+
+    gui.create_logitem("Gcode Analysis ... Pass 2")
+    parse_gcode_second_pass()
+
+
+    v.processtime = time.time() - starttime
+
+    omega_result = header_generate_omega(_taskName)
+    header = omega_result['header'] + omega_result['summary'] + omega_result['warnings']
+
+    # write the output file
+    ######################
+
+    if output_file is None:
+        output_file = input_file
+
+    path, _ = os.path.split(output_file)
+
+    if v.palette3:
+        opf = open(os.path.join(path, "print.gcode"), "wb")
+        gui.create_logitem("Generating MCFX file: " + output_file)
     else:
-        if v.bed_shape_rect and v.bed_shape_warning:
-            gui.create_logitem("Manual bed size override, PrusaSlicer Bedshape configuration ignored.")
-        gui.create_logitem("Bed origin ({:3.1f}mm, {:3.1f}mm)".format(v.bed_origin_x, v.bed_origin_y))
-        gui.create_logitem("Bed size   ({:3.1f}mm, {:3.1f}mm)".format(v.bed_size_x, v.bed_size_y))
+        opf = open(output_file, "wb")
+        gui.create_logitem("Generating GCODE file: " + output_file)
 
-    v.bed_max_x = v.bed_origin_x + v.bed_size_x
-    v.bed_max_y = v.bed_origin_y + v.bed_size_y
-
-    if v.process_temp and v.side_wipe:
-        gui.log_warning("TEMPERATURECONTROL and SIDEWIPE / BigBrain3D are incompatible")
-
-    if v.palette_plus:
-        if v.palette_plus_ppm == -9:
-            gui.log_warning("P+ parameter P+PPM incorrectly set up in startup GCODE")
-        if v.palette_plus_loading_offset == -9:
-            gui.log_warning("P+ parameter P+LOADINGOFFSET incorrectly set up in startup GCODE")
-
-    v.side_wipe = not ((v.bed_origin_x <= v.wipe_tower_posx <= v.bed_max_x) and (v.bed_origin_y <= v.wipe_tower_posy <= v.bed_max_y))
-    v.tower_delta = v.max_tower_z_delta > 0
-
-    if (v.tower_delta or v.full_purge_reduction) and v.variable_layer:
-        gui.log_warning("Variable layers may cause issues with FULLPURGE / TOWER DELTA")
-        gui.log_warning("This warning could be caused by support that will print on variable layer offsets")
-
-    if v.side_wipe:
-
-        if v.skirts:
-            if v.ps_version >= "2.2":
-                gui.log_warning("SIDEWIPE and SKIRTS are NOT compatible in PS2.2 or later")
-            if v.full_purge_reduction:
-                gui.log_warning("FULLPURGE and SKIRTS are NOT compatible.  Overlaps may occur")
-
-        if v.wipe_remove_sparse_layers:
-            gui.log_warning("SIDE WIPE mode not compatible with sparse wipe tower in PS")
-            gui.log_warning("Use Tower Delta instead")
-
-        gui.create_logitem("Side wipe activated", "blue")
-
-        if v.full_purge_reduction:
-            gui.log_warning("FULLURGEREDUCTION is incompatible with SIDEWIPE, parameter ignored")
-            v.full_purge_reduction = False
-
-    if v.full_purge_reduction:
-
-        if v.tower_delta:
-            gui.log_warning("FULLPURGEREDUCTION is incompatible with TOWERDELTA")
-            v.tower_delta = False
-        gui.create_logitem("FULLPURGEREDUCTION activated", "blue")
-
-    if v.autoaddsplice and not v.full_purge_reduction and not v.side_wipe:
-        gui.log_warning("AUTOADDPURGE only works with SIDEWIPE and FULLPURGEREDUCTION")
-
-    if len(v.skippable_layer) == 0:
-        gui.log_warning("P2PP Layer Configuration is missing!!")
-        gui.close_button_enable()
-        sys.exit(-1)
+    if not v.accessory_mode and not v.palette3:
+        for line in header:
+            opf.write(line.encode('utf8'))
+        opf.write(("\n\n;--------- THIS CODE HAS BEEN PROCESSED BY P2PP v{} --- \n\n".format(version.Version)).encode('utf8'))
+        if v.generate_M0:
+            header.append("M0\n")
+        opf.write("T0\n".encode('utf8'))
     else:
-        skippable = optimize_tower_skip(int(v.max_tower_z_delta / v.layer_height))
-        if v.tower_delta:
-            v.skippable_layer[0] = False
-            if skippable > 0:
-                gui.log_warning("TOWERDELTA in effect for {} Layers or {:.2f}mm".format(skippable, skippable * v.layer_height))
-            else:
-                gui.create_logitem("TOWERDELTA could not be applied to this print")
+        opf.write(("\n\n;--------- THIS CODE HAS BEEN PROCESSED BY P2PP v{} --- \n\n".format(version.Version)).encode('utf8'))
 
-        gui.create_logitem("Generate processed GCode")
-        gcode_parselines()
-        v.processtime = time.time() - starttime
-        omega_result = header_generate_omega(_taskName)
-        header = omega_result['header'] + omega_result['summary'] + omega_result['warnings']
+    if v.splice_offset == 0:
+        gui.log_warning("SPLICE_OFFSET not defined")
+    for line in v.processed_gcode:
+        try:
+            opf.write(line.encode('utf8'))
+        except IOError:
+            gui.log_warning("Line : {} could not be written to output".format(line))
+        opf.write("\n".encode('utf8'))
+    opf.close()
 
-        # write the output file
-        ######################
+    if v.palette3:
+        meta, palette = header_generate_omega_palette3(None)
 
-        if output_file is None:
-            output_file = input_file
+        meta_file = os.path.join(path, "meta.json")
+        palette_file = os.path.join(path, "palette.json")
+        im_file = os.path.join(path, "thumbnail.png")
+        gcode_file = os.path.join(path, "print.gcode")
 
-        path, _ = os.path.split(output_file)
+        gui.create_logitem("Generating Palette 3 output files")
+        mf = open(meta_file, 'wb')
+        mf.write(meta.__str__().encode('ascii'))
+        mf.close()
 
-        if v.palette3:
-            opf = open(os.path.join(path, "print.gcode"), "wb")
-            gui.create_logitem("Generating MCFX file: " + output_file)
+        pa = open(palette_file, 'wb')
+        pa.write(palette.__str__().encode('ascii'))
+        pa.close()
+
+        im = open(im_file, "wb")
+        if len(v.thumbnail_data) == 0:
+            gui.log_warning("Thumbnail Info missing (Printer Settings/General/Firmware/G-Code Thumbnail")
+
+        im.write(base64.b64decode(v.thumbnail_data))
+        im.close()
+
+        zipf = zipfile.ZipFile(output_file, 'w', zipfile.ZIP_DEFLATED)
+        zipf.write(meta_file, "meta.json")
+        zipf.write(palette_file, "palette.json")
+        zipf.write(gcode_file, "print.gcode")
+        zipf.write(im_file, "thumbnail.png")
+        zipf.close()
+
+        os.remove(meta_file)
+        os.remove(palette_file)
+        os.remove(os.path.join(path, "print.gcode"))
+        os.remove(im_file)
+
+    if v.accessory_mode:
+
+        pre, ext = os.path.splitext(output_file)
+        if v.palette_plus:
+            maffile = pre + ".msf"
         else:
-            opf = open(output_file, "wb")
-            gui.create_logitem("Generating GCODE file: " + output_file)
+            maffile = pre + ".maf"
+        gui.create_logitem("Generating PALETTE MAF/MSF file: " + maffile)
 
-        if not v.accessory_mode and not v.palette3:
-            for line in header:
-                opf.write(line.encode('utf8'))
-            opf.write(("\n\n;--------- THIS CODE HAS BEEN PROCESSED BY P2PP v{} --- \n\n".format(version.Version)).encode('utf8'))
-            if v.generate_M0:
-                header.append("M0\n")
-            opf.write("T0\n".encode('utf8'))
-        else:
-            opf.write(("\n\n;--------- THIS CODE HAS BEEN PROCESSED BY P2PP v{} --- \n\n".format(version.Version)).encode('utf8'))
+        maf = open(maffile, 'wb')
 
-        if v.splice_offset == 0:
-            gui.log_warning("SPLICE_OFFSET not defined")
-        for line in v.processed_gcode:
-            try:
-                opf.write(line.encode('utf8'))
-            except IOError:
-                gui.log_warning("Line : {} could not be written to output".format(line))
-            opf.write("\n".encode('utf8'))
-        opf.close()
+        for h in header:
+            h = str(h).strip("\r\n")
+            maf.write(h.encode('ascii'))
+            maf.write("\r\n".encode('ascii'))
 
-        if v.palette3:
+        maf.close()
 
-            # generate meta.json
-            # generate palette.json
-            # generate thumbnail
-            # generate zip
-
-            # generate previes
-            # gp.buildpreview()
-
-            meta, palette = header_generate_omega_palette3(None)
-
-            meta_file = os.path.join(path, "meta.json")
-            palette_file = os.path.join(path, "palette.json")
-            im_file = os.path.join(path, "thumbnail.png")
-            gcode_file = os.path.join(path, "print.gcode")
-
-            gui.create_logitem("Generating Palette 3 output files")
-            mf = open(meta_file, 'wb')
-            mf.write(meta.__str__().encode('ascii'))
-            mf.close()
-
-            pa = open(palette_file, 'wb')
-            pa.write(palette.__str__().encode('ascii'))
-            pa.close()
-
-            im = open(im_file, "wb")
-            if len(v.thumbnail_data) == 0:
-                gui.log_warning("Thumbnail Info missing (Printer Settings/General/Firmware/G-Code Thumbnail")
-
-            im.write(base64.b64decode(v.thumbnail_data))
-            im.close()
-
-            zipf = zipfile.ZipFile(output_file, 'w', zipfile.ZIP_DEFLATED)
-            zipf.write(meta_file, "meta.json")
-            zipf.write(palette_file, "palette.json")
-            zipf.write(gcode_file, "print.gcode")
-            zipf.write(im_file, "thumbnail.png")
-            zipf.close()
-
-            os.remove(meta_file)
-            os.remove(palette_file)
-            os.remove(os.path.join(path, "print.gcode"))
-            os.remove(im_file)
-
-        if v.accessory_mode:
-
-            pre, ext = os.path.splitext(output_file)
-            if v.palette_plus:
-                maffile = pre + ".msf"
-            else:
-                maffile = pre + ".maf"
-            gui.create_logitem("Generating PALETTE MAF/MSF file: " + maffile)
-
-            maf = open(maffile, 'wb')
-
-            for h in header:
-                h = str(h).strip("\r\n")
-                maf.write(h.encode('ascii'))
-                maf.write("\r\n".encode('ascii'))
-
-            maf.close()
-
-        gui.print_summary(omega_result['summary'])
+    gui.print_summary(omega_result['summary'])
 
     gui.progress_string(101)
+
     if (len(v.process_warnings) > 0 and not v.ignore_warnings) or v.consolewait:
+
         if v.palette3:
-            gui.create_logitem("Go to https://github.com/tomvandeneede/p2pp/wiki/Reference-Configurations for more information on P3 COnfiguration", "blue")
+            gui.create_logitem("===========================================================================================", "green")
+            gui.create_logitem("Go to https://github.com/tomvandeneede/p2pp/wiki for more information on P2PP Configuration", "green")
+            gui.create_logitem("===========================================================================================", "green")
+
         gui.close_button_enable()

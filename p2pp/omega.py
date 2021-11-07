@@ -101,7 +101,7 @@ def algorithm_create_table():
 def generatewarnings():
     warnings = ["\n",
                 ";------------------------:\n",
-                "; - PROCESS INFO/WARNINGS:\n",
+                "; - Process Info/Warnings:\n",
                 ";------------------------:\n",
                 ";Generated with P2PP version {}\n".format(v.version),
                 ";Processed file:. {}\n".format(v.filename),
@@ -117,7 +117,7 @@ def generatewarnings():
 
 
 ############################################################################
-# Generate the Omega - Header that drives the Palette to generate filament
+# Generate the Omega - Header that drives the Palette to p2pp_process_file filament
 ############################################################################
 def header_generate_omega(job_name):
     if v.printer_profile_string == '':
@@ -278,7 +278,7 @@ def header_generate_omega_palette2(job_name):
 
 
 def generatesummary():
-    summary = [";---------------------\n", "; - SPLICE INFORMATION-\n", ";---------------------\n",
+    summary = [";Splice Information:\n", ";-------------------\n",
                ";       Splice Offset = {:-8.2f}mm\n".format(v.splice_offset),
                ";       Autoloading Offset = {:-8.2f}mm\n\n".format(v.autoloadingoffset)]
 
@@ -288,24 +288,21 @@ def generatesummary():
         else:
             pos = v.splice_extruder_position[i - 1]
 
-        summary.append(";{:04}   Input: {}  Location: {:-8.2f}mm   length {:-8.2f}mm  ({})\n"
+        summary.append(";{:04}   Input: {}  Location: {:-8.2f}mm   length {:-8.2f}mm \n"
                        .format(i + 1,
                                v.splice_used_tool[i] + 1,
                                pos,
-                               v.splice_length[i],
-                               hexify_float(pos)
+                               v.splice_length[i]
                                )
                        )
 
     summary.append("\n")
-    summary.append(";-------------------\n")
-    summary.append("; - PING INFORMATION-\n")
-    summary.append(";-------------------\n")
+    summary.append(";Ping Information:\n")
+    summary.append(";-----------------\n")
 
     for i in range(len(v.ping_extruder_position)):
-        pingtext = ";Ping {:04} at {:-8.2f}mm ({})\n".format(i + 1,
-                                                             v.ping_extruder_position[i],
-                                                             hexify_float(v.ping_extruder_position[i])
+        pingtext = ";Ping {:04} at {:-8.2f}mm\n".format(i + 1,
+                                                             v.ping_extruder_position[i]
                                                              )
         summary.append(pingtext)
 

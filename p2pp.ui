@@ -97,7 +97,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Input File</string>
+            <string>Target File</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>

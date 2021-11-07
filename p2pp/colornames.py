@@ -79,10 +79,13 @@ def find_nearest_colour(user_colour):
 
     converted_user_color = color2rgb(user_colour)
 
+    _r = converted_user_color["r"]
+    _g = converted_user_color["g"]
+    _b = converted_user_color["b"]
+
     for colour_num in range(len(color_values_hex)):
         test_colour = color2rgb(color_values_hex[colour_num])
-        col_dist = colour_dist(converted_user_color["r"], converted_user_color["g"], converted_user_color["b"],
-                               test_colour["r"], test_colour["g"], test_colour["b"])
+        col_dist = colour_dist(_r, _g, _b, test_colour["r"], test_colour["g"], test_colour["b"])
         if col_dist < threshold:
             threshold = col_dist
             color_name = color_names_sorted[colour_num]

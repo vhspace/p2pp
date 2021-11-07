@@ -303,7 +303,7 @@ def purge_generate_sequence():
 
     gcode.issue_code("G1 Z{:.2f} F10800".format((v.purgelayer + 1) * v.layer_height))
     unretract(v.current_tool)
-    # generate wipe code
+    # p2pp_process_file wipe code
     while v.side_wipe_length > 0:
         next_command = _purge_get_nextcommand_in_sequence()
 

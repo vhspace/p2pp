@@ -45,5 +45,6 @@ rem # go up to the top level #
 cd ..
 cd ..
 cd ..
+Rmdir /S /Q _build_update_
 
 

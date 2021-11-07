@@ -7,9 +7,7 @@ __license__ = 'GPLv3'
 __maintainer__ = 'Tom Van den Eede'
 __email__ = 'P2PP@pandora.be'
 
-
 import platform
-
 
 version = "https://github.com/tomvandeneede/p2pp/raw/{}/version.py"
 
@@ -21,18 +19,13 @@ python_version = _p[0]
 
 def get_version(_url_):
     try:
-        if python_version == "2":
-            import urllib
-            response = urllib.urlopen(_url_)
-            lines = "".join(response).splitlines()
-        else:   # python version 3
-            import urllib.request
-            import ssl
-            https_sslv3_handler = urllib.request.HTTPSHandler(context=ssl.SSLContext())
-            opener = urllib.request.build_opener(https_sslv3_handler)
-            urllib.request.install_opener(opener)
-            response = opener.open(_url_).read().decode('utf-8')
-            lines = "".join(response).splitlines()
+        import urllib.request
+        import ssl
+        https_sslv3_handler = urllib.request.HTTPSHandler(context=ssl.SSLContext())
+        opener = urllib.request.build_opener(https_sslv3_handler)
+        urllib.request.install_opener(opener)
+        response = opener.open(_url_).read().decode('utf-8')
+        lines = "".join(response).splitlines()
 
         # get version information
         _maj = -1

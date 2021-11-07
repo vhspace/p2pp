@@ -75,7 +75,7 @@ else:
     else:
         outputfile = None
     try:
-        mcf.generate(filename, outputfile)
+        mcf.p2pp_process_file(filename, outputfile)
     except Exception as e:
         gui.create_emptyline()
         gui.log_warning("We're sorry but an unexpected error occurred while processing your file")

@@ -90,7 +90,7 @@ releaseinfo = {
     "7.0.04": "Fix bug in palette+ when no default and actual algorithms are defines",
     "7.0.05": "Fix bug in palette+ invalid interpollation calculation",
     "7.0.06": "Added warning to place palette model specifier BEFORE algorithm info",
-    "7.0.07": "Do not generate T0 if in Klipper mode",
+    "7.0.07": "Do not p2pp_process_file T0 if in Klipper mode",
     "7.0.08": "Handle TOOLCHANGE LOAD",
     "7.0.09": "Added BIGBRAIN3D_SINGLEBLOB",
     "7.1.00": "Fixup large retruact on blobs",

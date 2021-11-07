@@ -191,30 +191,6 @@ def check_config_parameters(keyword, value):
             gui.log_warning("Minimal first slice length adjusted to 100mm")
         return
 
-    # obsolete, now taken from gcode file
-    if keyword == "BEDSIZEX":
-        v.bed_size_x = floatparameter(value)
-        v.bed_shape_warning = True
-        return
-
-    # obsolete, now taken from gcode file
-    if keyword == "BEDSIZEY":
-        v.bed_size_y = floatparameter(value)
-        v.bed_shape_warning = True
-        return
-
-    # obsolete, now taken from gcode file
-    if keyword == "BEDORIGINX":
-        v.bed_origin_x = floatparameter(value)
-        v.bed_shape_warning = True
-        return
-
-    # obsolete, now taken from gcode file
-    if keyword == "BEDORIGINY":
-        v.bed_origin_y = floatparameter(value)
-        v.bed_shape_warning = True
-        return
-
     # BB3D config parm
     if keyword == "BIGBRAIN3D_BLOBSIZE":
         v.bigbrain3d_blob_size = intparameter(value)
@@ -419,7 +395,7 @@ def check_config_parameters(keyword, value):
         v.ignore_warnings = True
         return
 
-    # generate a gcode file with absolute extrusios instead of relative ones
+    # p2pp_process_file a gcode file with absolute extrusios instead of relative ones
     if keyword == "ABSOLUTEEXTRUDER":
         v.absolute_extruder = True
         gui.create_logitem("Convert to absolute extrusion parameters")
