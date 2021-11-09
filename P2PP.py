@@ -38,8 +38,6 @@ if len(sys.argv) == 1:
 
         MASTER_VERSION = checkversion.get_version(checkversion.MASTER)
 
-
-
         if MASTER_VERSION != "0.0":
             if v.version < MASTER_VERSION:
                 v.version = "Version Check: New release {} available (Current version {})".format(MASTER_VERSION, ver.Version)
