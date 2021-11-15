@@ -125,6 +125,7 @@ releaseinfo = {
     "1.0.205": "added info on thumbnail and link to Reference-COnfigs",
     "8.0.0" : "PS2.4 Support - Cutoff point",
     "8.0.1" : "Bug Fix - profile ID check",
+    "8.0.2" : "Bug Fix - no startup parm",
     '--- RELEASE INFORMATION': 'END'
 }
 

@@ -97,6 +97,12 @@ def check_config_parameters(keyword, value):
         check_splice_table()
         return
 
+    if keyword == "P3_HOSTNAME":
+        v.p3_hostname = value
+
+    if keyword == "P3_UPLOADFILE":
+        v.uploadfile = True
+
     # toggles Palette 2 accessory mode
     if keyword == "ACCESSORYMODE_MAF":
         v.accessory_mode = True

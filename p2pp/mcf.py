@@ -24,6 +24,7 @@ import p2pp.manualswap as swap
 import base64
 import version
 import zipfile
+import p2pp.upload as upload
 # import p2pp.genpreview as gp
 
 # GCODE BLOCK CLASSES
@@ -518,7 +519,6 @@ def parse_gcode_second_pass():
                         v.saved_fanspeed = gcode.get_parameter(g, gcode.S, v.saved_fanspeed)
 
                     elif commandNum == 221:
-                        old_value = v.extrusion_multiplier
                         v.extrusion_multiplier = float(gcode.get_parameter(g, gcode.S, v.extrusion_multiplier * 100.0)) / 100.0
 
                     elif commandNum == 220:
@@ -535,7 +535,6 @@ def parse_gcode_second_pass():
             continue
 
         # ---- AS OF HERE ONLY MOVEMENT COMMANDS ----
-
         classupdate = current_block_class != v.previous_block_classification
         v.previous_block_classification = current_block_class
 
@@ -864,7 +863,6 @@ def p2pp_process_file(input_file, output_file):
     except KeyError:
         basename = os.path.basename(input_file)
 
-
     gui.setfilename(basename)
 
     # Determine the task name for this print form the filename without any extensions.
@@ -990,6 +988,18 @@ def p2pp_process_file(input_file, output_file):
         os.remove(palette_file)
         os.remove(os.path.join(path, "print.gcode"))
         os.remove(im_file)
+
+        if v.uploadfile:
+            try:
+                filename = os.path.basename(os.environ["SLIC3R_PP_OUTPUT_NAME"])
+                if filename.endswith(".gcode"):
+                    filename = filename.replace(".gcode", ".mcfx")
+
+                filename = filename.replace(" ", "_")
+            except:
+                filename = "output.mcfx"
+
+            upload.uploadfile(output_file, filename)
 
     if v.accessory_mode:
 

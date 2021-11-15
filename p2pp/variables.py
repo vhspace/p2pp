@@ -45,7 +45,7 @@ accessory_mode = False  # type Bool
 palette_plus = False
 palette_plus_loading_offset = -9
 palette_plus_ppm = -9
-printername = "Pruse Slicer - P3PP Output"
+printername = "Prusa Slicer - P2PP Output"
 
 skippable_layer = []  # type array of bool
 
@@ -342,3 +342,9 @@ bb_maxy = -100000
 bb_maxz = -100000
 
 addzop = 0.0
+
+# Palette 3 file uploading
+
+p3_hostname = ""
+uploadfile = False
+retry_state = True
