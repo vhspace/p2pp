@@ -7,7 +7,7 @@ __email__ = 'P2PP@pandora.be'
 
 
 import p2pp.variables as v
-from PIL import Image, ImageDraw
+#from PIL import Image, ImageDraw
 
 
 class BedProjection(object):

@@ -20,7 +20,7 @@ def uploadfile(localfile, p3file):
         gui.log_warning("Could not upload file: No hostname defined")
         return
 
-    gui.create_logitem("Sending file {}  to P3 ({}) - {}".format(p3file, v.p3_hostname), "blue")
+    gui.create_logitem("Sending file {}  to P3 ({})".format(p3file, v.p3_hostname), "blue")
     gui.app.sync()
     v.retry_state = True
     while v.retry_state:
@@ -92,7 +92,7 @@ else:
     if len(os.path.dirname(sys.argv[0])) > 0:
         ui = "{}\\SendError.ui".format(os.path.dirname(sys.argv[0]))
     else:
-        ui = "p2pp.ui"
+        ui = "SendError.ui"
 
 Form, Window = uic.loadUiType(ui)
 window = Window()

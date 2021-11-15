@@ -16,6 +16,7 @@ python_version = _p[0]
 
 
 def get_version(_url_):
+
     try:
         import urllib.request
         import ssl

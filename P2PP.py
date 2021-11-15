@@ -13,7 +13,6 @@ import os
 import platform
 import sys
 
-
 if len(sys.argv) == 2 and sys.argv[1].lower() == "-config":
     import config.config_gui as gui
     gui.init_gui()
@@ -27,15 +26,12 @@ else:
     import p2pp.gui as gui
 
 v.version = ver.Version
-
-
 if len(sys.argv) == 1:
     try:
         platformD = platform.system()
 
         gui.setfilename('')
         gui.form.label_5.setText("")
-
         MASTER_VERSION = checkversion.get_version(checkversion.MASTER)
 
         if MASTER_VERSION != "0.0":
@@ -47,23 +43,24 @@ if len(sys.argv) == 1:
                 color = "green"
 
             gui.create_logitem(v.version, color, True)
-
+        gui.app.sync()
         gui.create_emptyline()
         gui.create_logitem("Line to be used in PrusaSlicer [Print Settings][Output Options][Post Processing Script]",
                            "blue")
         gui.create_emptyline()
-
+        gui.app.sync()
         if platformD == 'Darwin':
             gui.create_logitem("<b>open -W -a P2PP.app --args<b>".format(os.path.dirname(sys.argv[0])), "red")
         elif platformD == 'Windows':
             pathname = os.path.dirname(sys.argv[0])
             pathname = pathname.replace(" ", "! ")
             gui.create_logitem("<b>{}\\p2pp.exe</b>".format(os.path.dirname(sys.argv[0]).replace(" ", "! ")), "red")
-
+        gui.app.sync()
         gui.create_emptyline()
         gui.create_logitem("This requires ADVANCED/EXPERT settings to be visible", "blue")
         gui.create_emptyline()
         gui.create_emptyline()
+        gui.app.sync()
         gui.create_logitem("Don't forget to complete the remaining Prusaslicer Configuration", "blue")
         gui.create_logitem("===========================================================================================",
                            "blue")
@@ -71,7 +68,7 @@ if len(sys.argv) == 1:
                            "blue")
         gui.create_logitem("===========================================================================================",
                            "blue")
-
+        gui.app.sync()
         gui.progress_string(101)
         gui.close_button_enable()
         sys.exit()
@@ -117,5 +114,7 @@ else:
         gui.progress_string(0)
         gui.close_button_enable()
         sys.exit(-1)
+
+
 
 gui.close_button_enable()

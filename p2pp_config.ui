@@ -1,0 +1,1214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>Tom Van den Eede</author>
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1074</width>
+    <height>762</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>P2PP - Palette 2 Post Processing Script</string>
+  </property>
+  <widget class="QWidget" name="verticalLayoutWidget">
+   <layout class="QVBoxLayout" name="v" stretch="0,1,0">
+    <property name="spacing">
+     <number>3</number>
+    </property>
+    <property name="sizeConstraint">
+     <enum>QLayout::SetNoConstraint</enum>
+    </property>
+    <property name="leftMargin">
+     <number>10</number>
+    </property>
+    <property name="topMargin">
+     <number>10</number>
+    </property>
+    <property name="rightMargin">
+     <number>10</number>
+    </property>
+    <property name="bottomMargin">
+     <number>10</number>
+    </property>
+    <item>
+     <layout class="QHBoxLayout" name="h" stretch="0,1">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMinAndMaxSize</enum>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="maximumSize">
+         <size>
+          <width>80</width>
+          <height>80</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="image.qrc">:/newPrefix/icons/icon.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>111</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Arial Black</family>
+          <pointsize>20</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>P2PP configurator for PrusaSlicer Configurator 2.3+</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QFrame" name="frame_2">
+      <property name="minimumSize">
+       <size>
+        <width>400</width>
+        <height>300</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="leftMargin">
+        <number>5</number>
+       </property>
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="rightMargin">
+        <number>5</number>
+       </property>
+       <property name="bottomMargin">
+        <number>5</number>
+       </property>
+       <item>
+        <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0">
+         <item row="19" column="0">
+          <widget class="QLabel" name="label_24">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>X position for SideWipe (mm)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="3">
+          <widget class="QCheckBox" name="_p2pp_lLINEARPINGENABLE">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>Enable Linear Ping</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_25">
+           <property name="text">
+            <string>Extra Filament at end of print (mm)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="20" column="0">
+          <widget class="QLabel" name="label_28">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>Y Sidewipe Position Range (mm)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="12" column="3">
+          <widget class="Line" name="line_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="3">
+          <widget class="QLabel" name="label_26">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>EXTRAENDFILAMENT</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="18" column="3">
+          <widget class="QCheckBox" name="checkBox">
+           <property name="text">
+            <string>INCLUDE</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="2">
+          <widget class="QLineEdit" name="_p2pp_LINEARPINGLENGTH">
+           <property name="font">
+            <font>
+             <pointsize>13</pointsize>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Linear Ping Length defines how often&lt;br/&gt; the printer syncs to the Palette 2 (&lt;br/&gt;resulting in PINGS)&lt;br/&gt;The minimal value is 300mm&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="inputMask">
+            <string>D9900</string>
+           </property>
+           <property name="text">
+            <string>300</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="15" column="0">
+          <widget class="QLabel" name="label_16">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>PLA - PLA Splicing Algorithm</string>
+           </property>
+          </widget>
+         </item>
+         <item row="19" column="2">
+          <widget class="QLineEdit" name="_p2pp_SIDEWIPELOC">
+           <property name="font">
+            <font>
+             <pointsize>13</pointsize>
+            </font>
+           </property>
+           <property name="inputMask">
+            <string>#9000.0000</string>
+           </property>
+           <property name="text">
+            <string>254.00</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="2">
+          <widget class="QLineEdit" name="_p2pp_EXTRAENDFILAMENT">
+           <property name="font">
+            <font>
+             <pointsize>13</pointsize>
+            </font>
+           </property>
+           <property name="inputMask">
+            <string>D000.00</string>
+           </property>
+           <property name="text">
+            <string>150.00</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="12" column="2">
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="12" column="0">
+          <widget class="Line" name="line_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_38">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>Location of P2PP Script</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QLineEdit" name="_p2pp_script">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QLabel" name="label_39">
+           <property name="text">
+            <string>Processing Script</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QLabel" name="label_32">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>Convert print to absolute extrusions</string>
+           </property>
+          </widget>
+         </item>
+         <item row="17" column="3">
+          <widget class="Line" name="line_6">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="17" column="0">
+          <widget class="Line" name="line_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="2">
+          <widget class="QCheckBox" name="_p2pp_DO_NOT_GENERATE_M0">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="0">
+          <widget class="QLabel" name="label_36">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>Check Version on startup (requires internet)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="20" column="3">
+          <widget class="QLabel" name="label_31">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>SIDEWIPEMINY/SIDEWIPEMAXY</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="3">
+          <widget class="QLabel" name="label_33">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>ABSOLUTEEXTRUDER</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="2">
+          <widget class="QCheckBox" name="_p2pp_ABSOLUTEEXTRUDER">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="3">
+          <widget class="QLabel" name="label_35">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>SAVEUNPROCESSED</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="17" column="1">
+          <widget class="Line" name="line_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="0">
+          <widget class="QLabel" name="label_34">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>Save a copy of the unprocessed GCODE </string>
+           </property>
+          </widget>
+         </item>
+         <item row="17" column="2">
+          <widget class="Line" name="line_7">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="3">
+          <widget class="QLabel" name="cfg_profileID">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>PRINTERPROFILE </string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="lbl_PrinterID">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>300</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Printer Profile ID &lt;span style=&quot; font-weight:600;&quot;&gt;(16 char HEX String)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item row="16" column="3">
+          <widget class="QLabel" name="label_19">
+           <property name="text">
+            <string>MATERIAL_PETG_PETG</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="3">
+          <widget class="QLabel" name="label_3">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>SPLICEOFFSET</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QLineEdit" name="_p2pp_SPLICEOFFSET">
+           <property name="font">
+            <font>
+             <pointsize>13</pointsize>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Spliceoffset defines the amount of material is purged of the OLD color before the toolchange is expected.  This allows for overconsumption during the print without risking early transition.   The default value for this parameter is 40mm.  Values between 25 and 40mm should be fine.   The more accurate your printer prints the lower you can put this value.   &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="inputMask">
+            <string>D0</string>
+           </property>
+           <property name="text">
+            <string>40</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="14" column="3">
+          <widget class="QLabel" name="label_9">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>DEFAULT_MATERIAL</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0">
+          <widget class="QLabel" name="lbl_consolewait">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>Wait for input after processing</string>
+           </property>
+          </widget>
+         </item>
+         <item row="13" column="2">
+          <widget class="QLabel" name="Material">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>16</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Material Setup&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="3">
+          <widget class="QLabel" name="label_7">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>CONSOLEWAIT</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="15" column="3">
+          <widget class="QLabel" name="label_17">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>MATERIAL_PLA_PLA</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Linear Ping Distance &lt;span style=&quot; font-weight:600;&quot;&gt;(mm)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="3">
+          <widget class="QLabel" name="label_6">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>LINEARPINGLENGTH</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QLineEdit" name="_p2pp_PRINTERPROFILE">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>13</pointsize>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The Printer Profile ID can be taken from a print generated by &lt;CR&gt;Canvas. Look for a line starting with O22 in the generated &lt;CR&gt;GCode file and copy the part indicated below into this box&lt;CR&gt;&lt;span style=&quot; color:#fc0107;&quot;&gt;O22 D&lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline; color:#fc0107;&quot;&gt;e827315ff39d9c78&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="inputMask">
+            <string>HHHHHHHHHHHHHHHH</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="2">
+          <widget class="QCheckBox" name="_p2pp_CHECKVERSION">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="18" column="2">
+          <widget class="QLabel" name="label_23">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
+             <weight>75</weight>
+             <italic>false</italic>
+             <bold>true</bold>
+             <underline>true</underline>
+            </font>
+           </property>
+           <property name="text">
+            <string>Side Wipe Configuration (optional)</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="2">
+          <widget class="QCheckBox" name="_p2pp_CONSOLEWAIT">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="16" column="0">
+          <widget class="QLabel" name="label_18">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>PETG - PETG Splicing Algorithm</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLabel" name="label_2">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>16</pointsize>
+            </font>
+           </property>
+           <property name="toolTipDuration">
+            <number>0</number>
+           </property>
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Basic Setup Items&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="19" column="3">
+          <widget class="QLabel" name="label_27">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>SIDEWIPELOC</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="lbl_spliceoffset">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>300</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>300</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Splice Offset &lt;span style=&quot; font-weight:600;&quot;&gt;(mm)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item row="14" column="0">
+          <widget class="QLabel" name="label_8">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>Default Splice Algorithm</string>
+           </property>
+          </widget>
+         </item>
+         <item row="15" column="2">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="label_15">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+              </font>
+             </property>
+             <property name="text">
+              <string>HEAT</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="_p2pp_PLAPLAHEAT">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="minimum">
+              <number>-20</number>
+             </property>
+             <property name="maximum">
+              <number>20</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_14">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+              </font>
+             </property>
+             <property name="text">
+              <string>COMPRESS</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="_p2pp_PLAPLACOMPRESS">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="minimum">
+              <number>-20</number>
+             </property>
+             <property name="maximum">
+              <number>20</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_13">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+              </font>
+             </property>
+             <property name="text">
+              <string>COOL</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="_p2pp_PLAPLACOOL">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="minimum">
+              <number>-20</number>
+             </property>
+             <property name="maximum">
+              <number>20</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="16" column="2">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QLabel" name="label_20">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+              </font>
+             </property>
+             <property name="text">
+              <string>HEAT</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="_p2pp_PETGPETGHEAT">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="minimum">
+              <number>-20</number>
+             </property>
+             <property name="maximum">
+              <number>20</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_21">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+              </font>
+             </property>
+             <property name="text">
+              <string>COMPRESS</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="_p2pp_PETGPETGCOMPRESS">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="minimum">
+              <number>-20</number>
+             </property>
+             <property name="maximum">
+              <number>20</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_22">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+              </font>
+             </property>
+             <property name="text">
+              <string>COOL</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="_p2pp_PETGPETGCOOL">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="minimum">
+              <number>-20</number>
+             </property>
+             <property name="maximum">
+              <number>20</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="20" column="2">
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QLabel" name="label_29">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+              </font>
+             </property>
+             <property name="text">
+              <string>MIN Y</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="_p2pp_SIDEWIDEINY">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="inputMask">
+              <string>#D00000</string>
+             </property>
+             <property name="text">
+              <string>40</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_30">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+              </font>
+             </property>
+             <property name="text">
+              <string>MAX Y</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="_p2pp_SIDEWIPEMAXY">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="inputMask">
+              <string>#D00000</string>
+             </property>
+             <property name="text">
+              <string>150</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="14" column="2">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="label_10">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+              </font>
+             </property>
+             <property name="text">
+              <string>HEAT</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="_p2pp_DEFAULTHEAT">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="specialValueText">
+              <string/>
+             </property>
+             <property name="minimum">
+              <number>-20</number>
+             </property>
+             <property name="maximum">
+              <number>20</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_11">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+              </font>
+             </property>
+             <property name="text">
+              <string>COMPRESS</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="_p2pp_DEFAULTCOMPRESS">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="minimum">
+              <number>-20</number>
+             </property>
+             <property name="maximum">
+              <number>20</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_12">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+              </font>
+             </property>
+             <property name="text">
+              <string>COOL</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="_p2pp_DEFAULTCOOL">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignJustify|Qt::AlignVCenter</set>
+             </property>
+             <property name="minimum">
+              <number>-20</number>
+             </property>
+             <property name="maximum">
+              <number>20</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="11" column="3">
+          <widget class="QLabel" name="label_37">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>CHECKVERSION</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="Line" name="line_8">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="exitButton">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Exit P2PP Configurator</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources>
+  <include location="image.qrc"/>
+  <include location="image.qrc"/>
+ </resources>
+ <connections/>
+</ui>

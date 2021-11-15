@@ -146,6 +146,8 @@ form = Form()
 form.setupUi(window)
 create_logitem("P2PP Version: {}".format(version.Version))
 create_logitem("Python Version: {}".format(sys.version.split(' ')[0]))
+create_logitem("Platform: {}".format(sys.platform))
+create_emptyline()
 
 if sys.platform != "darwin":
     form.filename.setFont(QFont("Courier", 8))
@@ -158,3 +160,4 @@ if sys.platform != "darwin":
 
 window.show()
 app.sync()
+
