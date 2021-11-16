@@ -10,6 +10,7 @@ __email__ = 'P2PP@pandora.be'
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QFont
+import traceback
 import image_rc
 import p2pp.variables as v
 import p2pp.colornames as colornames
@@ -139,8 +140,8 @@ else:
     else:
         ui = "p2pp.ui"
 
-Form, Window = uic.loadUiType(ui)
 app = QApplication([])
+Form, Window = uic.loadUiType(ui)
 window = Window()
 form = Form()
 form.setupUi(window)
@@ -160,4 +161,5 @@ if sys.platform != "darwin":
 
 window.show()
 app.sync()
+
 

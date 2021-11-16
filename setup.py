@@ -15,8 +15,9 @@ if sys.platform == "darwin":
     DATA_FILES = ['p2pp.ui', 'p2ppconf.ui', "SendError.ui"]
     OPTIONS = {'argv_emulation': True,
                "iconfile": "icons/icon.icns",
-               #"includes": ['PyQt5._qt']
-               "includes": ['PyQt5', 'PyQt5-sip']
+               #"includes": ['PyQt5._qt'],
+               "includes": ['PyQt5.QtWidgets','PyQt5.QtGui', 'PyQt5.Qt', 'PyQt5', 'PyQt5.QtCore'],
+               "excludes": ["tkinter"]
                }
 
     setup(
