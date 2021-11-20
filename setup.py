@@ -12,7 +12,7 @@ if sys.platform == "darwin":
     from setuptools import setup
 
     APP = ['P2PP.py']
-    DATA_FILES = ['p2pp.ui', 'p2ppconf.ui', "SendError.ui"]
+    DATA_FILES = ['p2pp.ui', 'p2ppconf.ui', "SendError.ui", "p3browser.ui"]
     OPTIONS = {'argv_emulation': True,
                "iconfile": "icons/icon.icns",
                #"includes": ['PyQt5._qt'],
@@ -33,7 +33,7 @@ else:
     import version
     from cx_Freeze import setup, Executable
 
-    includefiles = ["p2pp.ui", 'p2ppconf.ui', "icons/icon.ico", "SendError.ui"]
+    includefiles = ["p2pp.ui", 'p2ppconf.ui', "icons/icon.ico", "SendError.ui", "p3browser.ui"]
     excludes = ["tkinter"]
 
     build_exe_options = {"packages": ["os"], 'include_files': includefiles, "excludes": excludes}
