@@ -7,7 +7,7 @@ __license__ = 'GPLv3'
 __maintainer__ = 'Tom Van den Eede'
 __email__ = 'P2PP@pandora.be'
 
-from PyQt5 import uic
+from PyQt5 import uic, QtWebEngineWidgets
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QFont
 import traceback
@@ -17,8 +17,21 @@ import p2pp.colornames as colornames
 import version
 import sys
 import os
+import traceback
 
 last_pct = -10
+
+def logexception(e):
+    create_emptyline()
+    log_warning("We're sorry but an unexpected error occurred while processing your file")
+    log_warning("Please sumbit an issue report on https://github.com/tomvandeneede/p2pp")
+    create_emptyline()
+    create_logitem("<b>Error:</b> {}".format(e))
+    tb = traceback.format_tb(e.__traceback__)
+    create_emptyline()
+    create_logitem("<b>Traceback Info:</b>")
+    for line in tb:
+        create_logitem("{}".format(line))
 
 
 def print_summary(summary):
@@ -158,7 +171,6 @@ if sys.platform != "darwin":
     form.label.setFont(QFont("Courier", 8))
     form.exitButton.setFont(QFont("Courier", 8))
     form.textBrowser.setFont(QFont("Courier", 8))
-
 window.show()
 app.sync()
 

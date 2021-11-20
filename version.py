@@ -123,21 +123,19 @@ releaseinfo = {
     "1.0.203": "32 char Printer Profiel IDs for P3",
     "1.0.204": "32 char Printer Profiel IDs for P3 // docs",
     "1.0.205": "added info on thumbnail and link to Reference-COnfigs",
-    "8.0.0" : "PS2.4 Support - Cutoff point",
-    "8.0.1" : "Bug Fix - profile ID check",
-    "8.0.2" : "Bug Fix - no startup parm",
+    "8.0.0": "PS2.4 Support - Cutoff point",
+    "8.0.1": "Bug Fix - profile ID check",
+    "8.0.2": "Bug Fix - no startup parm",
+    "8.0.3": "Added upload functionality [hardcoded addresses - not yet supported by Palette 3]",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 2
-
-latest_stable_version = ""
+Build = 3
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
-
 
 if __name__ == "__main__":
     print(Version)

@@ -24,7 +24,7 @@ import p2pp.manualswap as swap
 import base64
 import version
 import zipfile
-import p2pp.upload as upload
+import p2pp.p3_upload as upload
 # import p2pp.genpreview as gp
 
 # GCODE BLOCK CLASSES
@@ -990,13 +990,13 @@ def p2pp_process_file(input_file, output_file):
         os.remove(im_file)
 
         if v.uploadfile:
-            try:
+            try:  # get the correct output filename from the PS environment variable
                 filename = os.path.basename(os.environ["SLIC3R_PP_OUTPUT_NAME"])
                 if filename.endswith(".gcode"):
                     filename = filename.replace(".gcode", ".mcfx")
 
                 filename = filename.replace(" ", "_")
-            except:
+            except:  # regardsless of the error, use this filename
                 filename = "output.mcfx"
 
             upload.uploadfile(output_file, filename)

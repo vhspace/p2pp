@@ -29,7 +29,7 @@ filament_type = [""] * 20
 
 filament_color_code = ["-"] * 20
 
-filament_short = [0, 0, 0, 0,0,0,0,0]
+filament_short = [0, 0, 0, 0, 0, 0, 0, 0]
 
 retraction = 0.0
 retract_lift = [0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6]
@@ -348,3 +348,4 @@ addzop = 0.0
 p3_hostname = ""
 uploadfile = False
 retry_state = True
+showwebbrowser = True
