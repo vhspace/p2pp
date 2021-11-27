@@ -428,7 +428,7 @@ def parse_gcode_second_pass():
             gcode.issue_code(v.temp1_stored_command)
             v.temp1_stored_command = ""
 
-        if current_block_class != v.previous_block_classification:
+        if current_block_class != v.previous_block_classification and not v.side_wipe and not v.full_purge_reduction:
             if v.previous_block_classification == CLS_TOOL_UNLOAD:
                 if v.restore_move_point:
                     v.restore_move_point = False
@@ -570,7 +570,7 @@ def parse_gcode_second_pass():
 
         # this goes for all situations: START and UNLOAD are not needed
         if current_block_class in [CLS_TOOL_START, CLS_TOOL_UNLOAD]:
-            if not (v.side_wipe or v.tower_delta or v.full_purge_reduction):
+            if not (v.side_wipe or v.full_purge_reduction):
                 v.restore_move_point = True
             gcode.move_to_comment(g, "--P2PP-- tool unload")
             gcode.issue_command(g)
