@@ -296,17 +296,17 @@ def parse_gcode_first_pass():
 
             is_comment = True
             # following lines should only be tested at the beginning og the file before the first layer is executed
-            if not v.thumbnail_end:
+            if not v.p3_processing_thumbnail_end:
                 if line.startswith("; thumbnail end"):
-                    v.thumbnail = False
-                    v.thumbnail_end = True
-                    v.thumbnail_data = v.thumbnail_data.replace("; ", "")
+                    v.p3_thumbnail = False
+                    v.p3_processing_thumbnail_end = True
+                    v.p3_thumbnail_data = v.p3_thumbnail_data.replace("; ", "")
 
-                if v.thumbnail:
-                    v.thumbnail_data += line
+                if v.p3_thumbnail:
+                    v.p3_thumbnail_data += line
 
                 if line.startswith("; thumbnail begin"):
-                    v.thumbnail = True
+                    v.p3_thumbnail = True
 
             if line.startswith('; CP'):  # code block assignment
                 update_class(hash(line[5:]))
@@ -428,6 +428,13 @@ def parse_gcode_second_pass():
             gcode.issue_code(v.temp1_stored_command)
             v.temp1_stored_command = ""
 
+        if current_block_class != v.previous_block_classification:
+            if v.previous_block_classification == CLS_TOOL_UNLOAD:
+                if v.restore_move_point:
+                    v.restore_move_point = False
+                    gcode.issue_code("G1 X{:0.3f} Y{:0.3f} ; P2PP positional alignment".format(v.current_position_x ,v.current_position_y))
+
+
         # ---- SECOND SECTION HANDLES COMMENTS AND NONE-MOVEMENT COMMANDS ----
 
         if g[gcode.COMMAND] is None:
@@ -534,9 +541,11 @@ def parse_gcode_second_pass():
             gcode.issue_command(g)
             continue
 
-        # ---- AS OF HERE ONLY MOVEMENT COMMANDS ----
         classupdate = current_block_class != v.previous_block_classification
         v.previous_block_classification = current_block_class
+
+
+        # ---- AS OF HERE ONLY MOVEMENT COMMANDS ----
 
         if g[gcode.MOVEMENT] & 1:
             v.previous_purge_keep_x = v.purge_keep_x
@@ -561,6 +570,8 @@ def parse_gcode_second_pass():
 
         # this goes for all situations: START and UNLOAD are not needed
         if current_block_class in [CLS_TOOL_START, CLS_TOOL_UNLOAD]:
+            if not (v.side_wipe or v.tower_delta or v.full_purge_reduction):
+                v.restore_move_point = True
             gcode.move_to_comment(g, "--P2PP-- tool unload")
             gcode.issue_command(g)
             continue
@@ -971,10 +982,10 @@ def p2pp_process_file(input_file, output_file):
         pa.close()
 
         im = open(im_file, "wb")
-        if len(v.thumbnail_data) == 0:
+        if len(v.p3_thumbnail_data) == 0:
             gui.log_warning("Thumbnail Info missing (Printer Settings/General/Firmware/G-Code Thumbnail")
 
-        im.write(base64.b64decode(v.thumbnail_data))
+        im.write(base64.b64decode(v.p3_thumbnail_data))
         im.close()
 
         zipf = zipfile.ZipFile(output_file, 'w', zipfile.ZIP_DEFLATED)

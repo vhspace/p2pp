@@ -14,7 +14,6 @@ import re
 # Variable default values
 #########################################
 
-
 # Filament Transition Table
 palette_inputs_used = [False,
                        False,
@@ -41,11 +40,10 @@ nozzle_diameter = 0.4
 wiping_info = []
 accessory_mode = False  # type Bool
 
-
 palette_plus = False
 palette_plus_loading_offset = -9
 palette_plus_ppm = -9
-printername = "Prusa Slicer - P2PP Output"
+
 
 skippable_layer = []  # type array of bool
 
@@ -86,6 +84,7 @@ side_wipe_length = 0  # type: float
 sidewipe_miny = 25  # type: float
 sidewipe_maxy = 175  # type: float
 wipe_feedrate = 5000  # type: int
+addzop = 0.0
 sidewipe_delay_zreturn = False  # type: bool
 toolchange_start = False
 toolchange_processed = False
@@ -267,6 +266,7 @@ skirtsize = 0
 skirts = 0
 
 autoloadingoffset = 0
+restore_move_point = False
 
 classes = {
     0: "Undefined     ",
@@ -320,16 +320,18 @@ disable_z = False
 
 #Palette 3 support
 
-thumbnail = False
-thumbnail_data = ""
+p3_printername = "Prusa Slicer - P2PP Output"
+
+p3_thumbnail = False
+p3_thumbnail_data = ""
 
 colors = 4
 palette3 = False
-thumbnail_end = False
+p3_processing_thumbnail_end = False
 
 printing_time = 0.0
 
-process_preheat = False
+p3_process_preheat = False
 
 p3_printtemp = []
 p3_bedtemp = []
@@ -341,11 +343,17 @@ bb_maxx = -100000
 bb_maxy = -100000
 bb_maxz = -100000
 
-addzop = 0.0
-
 # Palette 3 file uploading
+############################
 
+# this should either be the IP address or the device hostname (serial number).
 p3_hostname = ""
+
+# upload the file to the device (future development)
 uploadfile = False
+
+# retry connecting to the davice for uploading
 retry_state = True
-showwebbrowser = True
+
+# show the webbrowser after uploading
+showwebbrowser = False

@@ -80,7 +80,7 @@ def create_command(gcode_line, is_comment=False, userclass=0):
                     else:
                         return_value[UNRETRACT] = (return_value[MOVEMENT] & 7) == 0    # no XYZ
                         return_value[EXTRUDE] = True
-                        # v.thumbnail_end = True
+                        # v.p3_processing_thumbnail_end = True
 
     return return_value
 

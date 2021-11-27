@@ -87,6 +87,7 @@ def uploadfile(localfile, p3file):
             gui.app.exec()
             v.p3_hostname = form.hostname.text()
 
+    gui.close_button_enable()
 
 
 

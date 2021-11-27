@@ -48,7 +48,7 @@ def check_config_parameters(keyword, value):
 
     # enable the preheat function on the Palette 3
     if keyword == "P3_PROCESSPREHEAT":
-        v.process_preheat = True
+        v.p3_process_preheat = True
 
     # defines the printer profile for config storage on the Palette hardware
     if keyword == "PRINTERPROFILE":
@@ -99,6 +99,9 @@ def check_config_parameters(keyword, value):
 
     if keyword == "P3_HOSTNAME":
         v.p3_hostname = value
+
+    if keyword == "P3_PROFILENAME":
+        v.p3_printername = value
 
     if keyword == "P3_UPLOADFILE":
         v.uploadfile = True

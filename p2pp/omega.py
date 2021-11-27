@@ -345,7 +345,7 @@ def generate_meta():
                 "setupId": "null",
                 "printerProfile": {
                     "id": v.printer_profile_string,
-                    "name": v.printername
+                    "name": v.p3_printername
                 },
                 "preheatTemperature": {
                     "nozzle": [0],
@@ -364,7 +364,7 @@ def generate_meta():
                 "filaments": fila
                 }
 
-    if v.process_preheat:
+    if v.p3_process_preheat:
         try:
             first_filament = v.splice_used_tool[0]
             metafile["preheatTemperature"]["nozzle"] = [v.p3_printtemp[first_filament]]

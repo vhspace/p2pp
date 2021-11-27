@@ -109,7 +109,7 @@ releaseinfo = {
     "1.0.101": "PS2.4 release - No Sparse Layer Z-Drop correction",
     "1.0.102": "PS2.4 release - extra retract on blobs when going away from print",
     "1.0.110": "Incorrect check on definition of algorithms",
-    "1.0.120": "updated generation of thumbnail on PS24",
+    "1.0.120": "updated generation of p3_thumbnail on PS24",
     "1.0.130": "Added P3_MINIMALTOTALFILAMENT parameter",
     "1.0.140": "BugFix with PS24 and fullpurgereduction",
     "1.0.150": "fixup palette.json file (algo definition bugfix)",
@@ -122,18 +122,19 @@ releaseinfo = {
     "1.0.202": "buf fix - deleted output file",
     "1.0.203": "32 char Printer Profiel IDs for P3",
     "1.0.204": "32 char Printer Profiel IDs for P3 // docs",
-    "1.0.205": "added info on thumbnail and link to Reference-COnfigs",
+    "1.0.205": "added info on p3_thumbnail and link to Reference-COnfigs",
     "8.0.0": "PS2.4 Support - Cutoff point",
     "8.0.1": "Bug Fix - profile ID check",
     "8.0.2": "Bug Fix - no startup parm",
     "8.0.3": "Added upload functionality [hardcoded addresses - not yet supported by Palette 3]",
+    "8.0.4": "Correction incorect extrusions while moving to tower.",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 3
+Build = 4
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
