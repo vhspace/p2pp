@@ -13,6 +13,7 @@ import p2pp.gcode as gcode
 import p2pp.psconfig as gcodeparser
 import p2pp.variables as v
 import p2pp.manualswap as swap
+import p2pp.gui as gui
 import copy
 
 solidlayer = []
@@ -131,6 +132,10 @@ def purge_create_layers(x, y, w, h):
     filllayer = []
 
     ew = v.extrusion_width
+
+    if ew == 0:
+        ew = 0.45
+        gui.log_warning("Extrusion Width of 0 detected, using default 0.45mm")
 
     w = int(w / ew) * ew
     h = int(h / ew) * ew

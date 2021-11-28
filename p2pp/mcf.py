@@ -428,12 +428,13 @@ def parse_gcode_second_pass():
             gcode.issue_code(v.temp1_stored_command)
             v.temp1_stored_command = ""
 
+        # BLOCK Added 27/11/2021 - PS2.4 - P3 - showinf lines between print and tower
         if current_block_class != v.previous_block_classification and not v.side_wipe and not v.full_purge_reduction:
             if v.previous_block_classification == CLS_TOOL_UNLOAD:
                 if v.restore_move_point:
                     v.restore_move_point = False
                     gcode.issue_code("G1 X{:0.3f} Y{:0.3f} ; P2PP positional alignment".format(v.current_position_x ,v.current_position_y))
-
+        # BLOCK END
 
         # ---- SECOND SECTION HANDLES COMMENTS AND NONE-MOVEMENT COMMANDS ----
 
@@ -570,8 +571,10 @@ def parse_gcode_second_pass():
 
         # this goes for all situations: START and UNLOAD are not needed
         if current_block_class in [CLS_TOOL_START, CLS_TOOL_UNLOAD]:
+            # BLOCK Added 27/11/2021 - PS2.4 - P3 - showinf lines between print and tower
             if not (v.side_wipe or v.full_purge_reduction):
                 v.restore_move_point = True
+            # BLOCK END
             gcode.move_to_comment(g, "--P2PP-- tool unload")
             gcode.issue_command(g)
             continue

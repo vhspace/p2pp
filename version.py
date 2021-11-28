@@ -128,13 +128,14 @@ releaseinfo = {
     "8.0.2": "Bug Fix - no startup parm",
     "8.0.3": "Added upload functionality [hardcoded addresses - not yet supported by Palette 3]",
     "8.0.4": "Correction incorect extrusions while moving to tower.",
+    "8.0.5": "Catch error for zero extrusionm width.",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 4
+Build = 5
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
