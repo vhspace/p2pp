@@ -35,8 +35,9 @@ else:
 
     includefiles = ["p2pp.ui", 'p2ppconf.ui', "icons/icon.ico", "SendError.ui", "p3browser.ui"]
     excludes = ["tkinter"]
+    includes = ["PyQt5"]
 
-    build_exe_options = {"packages": ["os"], 'include_files': includefiles, "excludes": excludes}
+    build_exe_options = {"packages": ["os"], 'include_files': includefiles, "excludes": excludes, "includes": includes}
 
     setup(name="p2pp",
           version=version.Version,
