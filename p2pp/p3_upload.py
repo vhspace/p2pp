@@ -95,12 +95,12 @@ def uploadfile(localfile, p3file):
 def on_clickretry():
     v.retry_state = True
     window.hide()
-    webwindow.hide()
+    # webwindow.hide()
     gui.app.quit()
 
 
 def on_clickclose():
-    webwindow.hide()
+    # webwindow.hide()
     gui.close_button_enable()
 
 
