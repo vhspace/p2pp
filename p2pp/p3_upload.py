@@ -133,18 +133,18 @@ form.setupUi(window)
 form.AbortButton.clicked.connect(on_clickabort)
 form.RetryButton.clicked.connect(on_clickretry)
 
-if sys.platform == 'darwin':
-    if len(os.path.dirname(sys.argv[0])) > 0:
-        ui = "{}/p3browser.ui".format(os.path.dirname(sys.argv[0]))
-    else:
-        ui = "p3browser.ui"
-else:
-    ui = "p3browser.ui"
-    if len(os.path.dirname(sys.argv[0])) > 0:
-        ui = "{}\\p3browser.ui".format(os.path.dirname(sys.argv[0]))
-    else:
-        ui = "p3browser.ui"
-
+# if sys.platform == 'darwin':
+#     if len(os.path.dirname(sys.argv[0])) > 0:
+#         ui = "{}/p3browser.ui".format(os.path.dirname(sys.argv[0]))
+#     else:
+#         ui = "p3browser.ui"
+# else:
+#     ui = "p3browser.ui"
+#     if len(os.path.dirname(sys.argv[0])) > 0:
+#         ui = "{}\\p3browser.ui".format(os.path.dirname(sys.argv[0]))
+#     else:
+#         ui = "p3browser.ui"
+#
 # WebForm, WebWindow = uic.loadUiType(ui)
 # webwindow = WebWindow()
 #
