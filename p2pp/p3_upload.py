@@ -11,7 +11,7 @@ import ftplib
 import p2pp.variables as v
 import p2pp.gui as gui
 from PyQt5 import uic, QtCore
-from PyQt5 import QtWebEngineWidgets
+# from PyQt5 import QtWebEngineWidgets
 
 
 def uploadfile(localfile, p3file):
