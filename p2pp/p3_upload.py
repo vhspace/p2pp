@@ -10,7 +10,8 @@ import os
 import ftplib
 import p2pp.variables as v
 import p2pp.gui as gui
-from PyQt5 import uic, QtCore, QtWebEngineWidgets
+from PyQt5 import uic, QtCore
+from PyQt5 import QtWebEngineWidgets
 
 
 def uploadfile(localfile, p3file):
@@ -60,18 +61,18 @@ def uploadfile(localfile, p3file):
 
             ftp.quit()
 
-            if v.showwebbrowser:
-                try:
-                    # todo - change to supplied hostname:5000
-                    # tgtName = "http://{}:5000".format(v.p3_hostname)
-
-                    tgtName = "http://{}:5000".format("0PLM-P3P")
-                    webform.webBrowser.load(QtCore.QUrl("http://192.168.3.201:5000"))
-                    webwindow.show()
-                    gui.app.exec()
-
-                except Exception as e:
-                    gui.logexception(e)
+            # if v.showwebbrowser:
+            #     try:
+            #         # todo - change to supplied hostname:5000
+            #         # tgtName = "http://{}:5000".format(v.p3_hostname)
+            #
+            #         tgtName = "http://{}:5000".format("0PLM-P3P")
+            #         webform.webBrowser.load(QtCore.QUrl("http://192.168.3.201:5000"))
+            #         webwindow.show()
+            #         gui.app.exec()
+            #
+            #     except Exception as e:
+            #         gui.logexception(e)
 
         except ftplib.all_errors:
             gui.log_warning("Could not connect to P3 ({})".format(v.p3_hostname))
@@ -144,15 +145,15 @@ else:
     else:
         ui = "p3browser.ui"
 
-WebForm, WebWindow = uic.loadUiType(ui)
-webwindow = WebWindow()
-
-webwindow.setWindowFlags(webwindow.windowFlags() | QtCore.Qt.CustomizeWindowHint)
-webwindow.setWindowFlags(webwindow.windowFlags() & ~QtCore.Qt.WindowCloseButtonHint)
-
-webform = WebForm()
-webform.setupUi(webwindow)
-webform.closeButton.clicked.connect(on_clickclose)
+# WebForm, WebWindow = uic.loadUiType(ui)
+# webwindow = WebWindow()
+#
+# webwindow.setWindowFlags(webwindow.windowFlags() | QtCore.Qt.CustomizeWindowHint)
+# webwindow.setWindowFlags(webwindow.windowFlags() & ~QtCore.Qt.WindowCloseButtonHint)
+#
+# webform = WebForm()
+# webform.setupUi(webwindow)
+# webform.closeButton.clicked.connect(on_clickclose)
 
 
 
