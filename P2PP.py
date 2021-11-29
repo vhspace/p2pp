@@ -13,10 +13,10 @@ import os
 import platform
 import sys
 
-# if len(sys.argv) == 2 and sys.argv[1].lower() == "-config":
-#     import config.config_gui as gui
-#     gui.init_gui()
-#     sys.exit(-1)
+if len(sys.argv) == 2 and sys.argv[1].lower() == "-config":
+    import config.config_gui as gui
+    gui.init_gui()
+    sys.exit(-1)
 
 
 import p2pp.checkversion as checkversion
