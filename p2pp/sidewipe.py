@@ -131,6 +131,12 @@ def create_sidewipe_bb3d(length):
 
     if v.current_position_z < v.bigbrain3d_minimalclearenceheight:
 
+        if keep_xpos > v.bed_max_x or keep_xpos < v.bed_origin_x:
+            keep_xpos = (v.bed_max_x - v.bed_origin_x) / 2
+
+        if keep_ypos > v.bed_max_y or keep_ypos < v.bed_origin_y:
+            keep_ypos = (v.bed_max_y - v.bed_origin_y) / 2
+
         issue_code("\nG1 X{:.3f} Y{:.3f} F8640".format(keep_xpos, keep_ypos))
         if not v.sidewipe_delay_zreturn:
             issue_code("\nG1 Z{:.4f} F8640    ; P2PP - ZHOP - return to oroginal height".format(v.current_position_z))
