@@ -436,10 +436,13 @@ def parse_config_parameters():
                 for i in range(len(wiping_info)):
                     if int(wiping_info[i]) != 140 and int(wiping_info[i]) != 0:
                         _warning = False
+                    wiping_info[i] =float(wiping_info[i])
 
-                    wiping_info[i] = filament_volume_to_length(float(wiping_info[i]))
             v.max_wipe = max(wiping_info)
             v.bigbrain3d_matrix_blobs = v.max_wipe < 20
+            if not v.bigbrain3d_matrix_blobs:
+                map(filament_volume_to_length,wiping_info)
+
             v.wiping_info = wiping_info
             if _warning:
                 gui.create_logitem("<b>All purge lenghths 70/70 OR 140.  Purge lengths may not have been set correctly.</b>")

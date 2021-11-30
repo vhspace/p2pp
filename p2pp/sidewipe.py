@@ -11,6 +11,7 @@ import p2pp.purgetower as purgetower
 import p2pp.variables as v
 from p2pp.gcode import issue_code
 import p2pp.manualswap as swap
+import p2pp.gui as gui
 
 
 #
@@ -73,12 +74,12 @@ def generate_blob(length, count):
 def create_sidewipe_bb3d(length):
 
     # purge blobs should all be same size
-    if v.bigbrain3d_matrix_blobs:
+    if v.bigbrain3d_matrix_blobs and v.bigbrain3d_last_toolchange>=0:
         filin = int(v.bigbrain3d_last_toolchange / 10)
         filout = v.bigbrain3d_last_toolchange % 10
         matidx = filin * v.colors + filout
         purgeleft = 0
-        purgeblobs = v.wiping_info[matidx]
+        purgeblobs = int(v.wiping_info[matidx])
         correction = 0
         length = purgeblobs * v.bigbrain3d_blob_size
     else:
