@@ -14,6 +14,7 @@ import p2pp.gui as gui
 import p2pp.variables as v
 import p2pp.p2ppparams as parameters
 from p2pp.omega import algorithm_process_material_configuration
+from tabulate import tabulate
 
 
 def gcode_remove_params(gcode, params):
@@ -442,6 +443,25 @@ def parse_config_parameters():
             v.bigbrain3d_matrix_blobs = v.max_wipe < 20
             if not v.bigbrain3d_matrix_blobs:
                 map(filament_volume_to_length,wiping_info)
+            else:
+                gui.create_emptyline()
+                gui.create_logitem("BigBrain3D BLOB transitions detected")
+                color_table_size = int(math.sqrt(len(wiping_info)))
+                data = []
+                headers = ["From\\To"]
+                for i in range(color_table_size):
+                    headers.append("Input {}   ".format(i))
+                    line = ["Input {} ".format(i)]
+                    for j in range(color_table_size):
+                           line.append("{}   ".format(int(wiping_info[j*color_table_size + i])))
+                    data.append(line)
+
+                gui.create_logitem(tabulate(data, headers, tablefmt='html'))
+                gui.create_emptyline()
+
+
+
+
 
             v.wiping_info = wiping_info
             if _warning:
