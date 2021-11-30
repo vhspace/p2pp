@@ -73,13 +73,22 @@ def generate_blob(length, count):
 def create_sidewipe_bb3d(length):
 
     # purge blobs should all be same size
-    purgeleft = length % v.bigbrain3d_blob_size
-    purgeblobs = int(length / v.bigbrain3d_blob_size)
+    if v.bigbrain3d_matrix_blobs:
+        filin = int(v.bigbrain3d_last_toolchange / 10)
+        filout = v.bigbrain3d_last_toolchange % 10
+        matidx = filin * v.colors + filout
+        purgeleft = 0
+        purgeblobs = v.wiping_info[matidx]
+        correction = 0
+        length = purgeblobs * v.bigbrain3d_blob_size
+    else:
+        purgeleft = length % v.bigbrain3d_blob_size
+        purgeblobs = int(length / v.bigbrain3d_blob_size)
 
-    if purgeleft > 1:
-        purgeblobs += 1
+        if purgeleft > 1:
+            purgeblobs += 1
 
-    correction = v.bigbrain3d_blob_size * purgeblobs - length
+        correction = v.bigbrain3d_blob_size * purgeblobs - length
 
     if v.single_blob:
         purgeblobs = 1

@@ -71,12 +71,17 @@ def optimize_tower_skip(max_layers):
 
 
 def gcode_process_toolchange(new_tool):
+
     if new_tool == v.current_tool:
         return
 
     location = v.total_material_extruded + v.splice_offset
 
+    v.bigbrain3d_last_toolchange = v.current_tool * 10 + new_tool
+
     if new_tool == -1:      # LAST SLICE PROCESSING
+
+        v.bigbrain3d_last_toolchange = -abs(v.bigbrain3d_last_toolchange)
 
         filldiff = v.minimaltotal_filament - v.total_material_extruded
         if filldiff > 0:
