@@ -69,12 +69,12 @@ def generate_blob(length, count):
             v.bigbrain3d_x_position))  # takes 2.5 seconds
         issue_code("G1 X{:.3f} F10800  ; WHACKAAAAA!!!!".format(v.bigbrain3d_x_position - v.bigbrain3d_left * 20))
 
-    purgetower.largeretract()
+    purgetower.largeretract(v.bigbrain3d_retract)
 
 def create_sidewipe_bb3d(length):
 
     # purge blobs should all be same size
-    if v.bigbrain3d_matrix_blobs and v.bigbrain3d_last_toolchange>=0:
+    if v.bigbrain3d_matrix_blobs and v.bigbrain3d_last_toolchange >= 0:
         filin = int(v.bigbrain3d_last_toolchange / 10)
         filout = v.bigbrain3d_last_toolchange % 10
         matidx = filin * v.colors + filout
@@ -105,14 +105,14 @@ def create_sidewipe_bb3d(length):
     issue_code(";-------------------------------")
 
     if v.retraction == 0:
-        purgetower.largeretract()
+        purgetower.largeretract(v.bigbrain3d_retract)
 
     keep_xpos = v.current_position_x
     keep_ypos = v.current_position_y
 
-    if v.retraction > -3.0:
-        diff = -3.0 - v.retraction
-        issue_code("\nG1 E{:.3f}   ; retract to -3mm".format(diff))
+    if v.retraction > -v.bigbrain3d_retract:
+        diff = -v.bigbrain3d_retract - v.retraction
+        issue_code("\nG1 E{:.3f}   ; retract to -{}mm".format(diff, v.bigbrain3d_retract))
 
     if v.bigbrain3d_y_position is not None:
         issue_code("\nG1 Y{:.3f} F8640    ; change Y position to purge equipment".format(v.bigbrain3d_y_position))

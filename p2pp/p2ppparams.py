@@ -264,6 +264,11 @@ def check_config_parameters(keyword, value):
         return
 
     # BB3D config parm
+    if keyword == "BIGBRAIN3D_RETRACT":
+        v.bigbrain3d_retract = floatparameter(value)
+        return
+
+    # BB3D config parm
     if keyword == "BIGBRAIN3D_ENABLE":
         if not v.wipe_remove_sparse_layers:
             v.bigbrain3d_purge_enabled = True

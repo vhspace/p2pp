@@ -238,6 +238,7 @@ bigbrain3d_purge_enabled = False
 bigbrain3d_smartfan = False
 bigbrain3d_motorpower_high = 450
 bigbrain3d_motorpower_normal = 300
+bigbrain3d_retract = 3.0
 bigbrain3d_whacks = 1
 bigbrain3d_fanoffdelay = 0
 bigbrain3d_left = 1
