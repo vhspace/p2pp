@@ -54,8 +54,10 @@ def generate_blob(length, count):
         setfanspeed(96)
         issue_code("G1 E{:6.3f} F{}     ; Purge FAN 37% ".format(length / 4, v.bigbrain3d_blob_speed))
     else:
-        issue_code("G1 E{:6.3f} F{}     ; UNRETRACT/PURGE/RETRACT ".format(length-8, v.bigbrain3d_blob_speed))
-        issue_code("G1 E{:6.3f} F{}     ; UNRETRACT/PURGE/RETRACT ".format(8, v.bigbrain3d_blob_speed/2))
+        issue_code("G1 E{:6.3f} F{}     ; Purge Part 1 ".format(length-8, v.bigbrain3d_blob_speed))
+        issue_code("G1 E{:6.3f} F{}     ; Purge Part 2 ".format(8, v.bigbrain3d_blob_speed/2))
+
+    purgetower.largeretract(v.bigbrain3d_retract)
 
     setfanspeed(255)
     issue_code(
@@ -70,7 +72,6 @@ def generate_blob(length, count):
             v.bigbrain3d_x_position))  # takes 2.5 seconds
         issue_code("G1 X{:.3f} F10800  ; WHACKAAAAA!!!!".format(v.bigbrain3d_x_position - v.bigbrain3d_left * 20))
 
-    purgetower.largeretract(v.bigbrain3d_retract)
 
 def create_sidewipe_bb3d(length):
 
