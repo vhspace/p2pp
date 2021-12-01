@@ -170,7 +170,7 @@ minimaltotal_filament = 0 # no extra filament is generated
 min_splice_length = 70  # type: int  # Minimum overall splice length.
 min_start_splice_length = 100  # type: int  # Minimum first splice length.
 
-min_splice_p3 = 90
+min_splice_p3 = 80
 min_first_splice_p3 = 130
 
 consolewait = False
