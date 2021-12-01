@@ -55,7 +55,7 @@ def generate_blob(length, count):
         issue_code("G1 E{:6.3f} F{}     ; Purge FAN 37% ".format(length / 4, v.bigbrain3d_blob_speed))
     else:
         issue_code("G1 E{:6.3f} F{}     ; Purge Part 1 ".format(length-8, v.bigbrain3d_blob_speed))
-        issue_code("G1 E{:6.3f} F{}     ; Purge Part 2 ".format(8, v.bigbrain3d_blob_speed/2))
+        issue_code("G1 E8.000 F{}     ; Purge Part 2 ".format(v.bigbrain3d_blob_speed/2))
 
     purgetower.largeretract(v.bigbrain3d_retract)
 
