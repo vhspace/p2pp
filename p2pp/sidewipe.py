@@ -54,7 +54,8 @@ def generate_blob(length, count):
         setfanspeed(96)
         issue_code("G1 E{:6.3f} F{}     ; Purge FAN 37% ".format(length / 4, v.bigbrain3d_blob_speed))
     else:
-        issue_code("G1 E{:6.3f} F{}     ; UNRETRACT/PURGE/RETRACT ".format(length, v.bigbrain3d_blob_speed))
+        issue_code("G1 E{:6.3f} F{}     ; UNRETRACT/PURGE/RETRACT ".format(length-8, v.bigbrain3d_blob_speed))
+        issue_code("G1 E{:6.3f} F{}     ; UNRETRACT/PURGE/RETRACT ".format(8, v.bigbrain3d_blob_speed/2))
 
     setfanspeed(255)
     issue_code(
