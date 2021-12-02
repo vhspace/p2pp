@@ -129,7 +129,7 @@ def header_generate_omega(job_name):
         gui.log_warning("The PRINTERPROFILE identifier is missing, Default will be used {} \n".format(v.printer_profile_string))
         v.printer_profile_string = v.default_printerprofile
 
-    if len(v.splice_extruder_position) == 0:
+    if len(v.splice_extruder_position) == 0 and not v.palette3:
         gui.log_warning("This does not look like a multi-colour file.\n")
 
     if v.palette3:
@@ -382,55 +382,75 @@ def generate_palette():
                "pingCount": len(v.ping_extruder_position),
                "algorithms": []
                }
+    if len(v.splice_extruder_position) < 2:
+        gui.log_warning(v.splice_used_tool.__str__())
+        try:
+            drive_used = v.splice_used_tool[0]+1
+        except IndexError:
+            drive_used = 1
+        gui.log_warning(str(drive_used))
+        palette["splices"] = {"id": drive_used, "length" : round(v.total_material_extruded + v.autoloadingoffset,4) }
+        if v.colors == 4:
+            palette["drives"] = [0, 0, 0,0]
+        else:
+            palette["drives"] = [0, 0, 0, 0, 0, 0, 0, 0]
+        palette["drives"][drive_used-1] = drive_used
+        palette["algorithms"].append({
+            "ingoingId": drive_used,
+            "outgoingId": drive_used,
+            "heat": 0,
+            "compression": 0,
+            "cooling": 0
+        })
+    else:
+        for i in range(len(v.splice_extruder_position)):
+            palette["splices"].append(
+                {"id": v.splice_used_tool[i] + 1, "length": round(v.splice_extruder_position[i] + v.autoloadingoffset, 4)})
 
-    for i in range(len(v.splice_extruder_position)):
-        palette["splices"].append(
-            {"id": v.splice_used_tool[i] + 1, "length": round(v.splice_extruder_position[i] + v.autoloadingoffset, 4)})
+        splice_list = []
+        palette["drives"] = []
 
-    splice_list = []
-    palette["drives"] = []
+        for i in range(v.colors):
 
-    for i in range(v.colors):
+            fIdx = 0
+            if v.palette_inputs_used[i]:
+                fIdx = i + 1
 
-        fIdx = 0
-        if v.palette_inputs_used[i]:
-            fIdx = i + 1
+            palette["drives"].append(fIdx)
 
-        palette["drives"].append(fIdx)
+            for j in range(v.colors):
 
-        for j in range(v.colors):
-
-            if i == j:
-                continue
-            try:
-                algo_key = "{}{}".format(v.used_filament_types.index(v.filament_type[i]) + 1,
-                                         v.used_filament_types.index(v.filament_type[j]) + 1)
-                if algo_key in splice_list:
+                if i == j:
                     continue
-            except (IndexError, KeyError):
-                continue
+                try:
+                    algo_key = "{}{}".format(v.used_filament_types.index(v.filament_type[i]) + 1,
+                                             v.used_filament_types.index(v.filament_type[j]) + 1)
+                    if algo_key in splice_list:
+                        continue
+                except (IndexError, KeyError):
+                    continue
 
-            if not algorithm_transition_used(i, j):
-                continue
+                if not algorithm_transition_used(i, j):
+                    continue
 
-            splice_list.append(algo_key)
+                splice_list.append(algo_key)
 
-            try:
-                algo = v.splice_algorithm_dictionary["{}{}".format(v.filament_type[i], v.filament_type[j])]
-            except (IndexError, KeyError):
-                algo = v.default_splice_algorithm
-                gui.log_warning("WARNING: No Algorithm defined for transitioning" +
-                                " {} to {}. Using Default Splice Algorithm".format(v.filament_type[i],
-                                                                                   v.filament_type[j]))
-            try:
-                algin = int(algo_key[0])
-            except ValueError:
-                algin = 0
+                try:
+                    algo = v.splice_algorithm_dictionary["{}{}".format(v.filament_type[i], v.filament_type[j])]
+                except (IndexError, KeyError):
+                    algo = v.default_splice_algorithm
+                    gui.log_warning("WARNING: No Algorithm defined for transitioning" +
+                                    " {} to {}. Using Default Splice Algorithm".format(v.filament_type[i],
+                                                                                       v.filament_type[j]))
+                try:
+                    algin = int(algo_key[0])
+                except ValueError:
+                    algin = 0
 
-            try:
-                algout = int(algo_key[1])
-            except ValueError:
-                algout = 0
+                try:
+                    algout = int(algo_key[1])
+                except ValueError:
+                    algout = 0
 
             palette["algorithms"].append({
                 "ingoingId": algin,

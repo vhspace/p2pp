@@ -85,7 +85,7 @@ def gcode_process_toolchange(new_tool):
 
         filldiff = v.minimaltotal_filament - v.total_material_extruded
         if filldiff > 0:
-            gui.log_warning("Miinimum print size not met - adding {:-5.2f}.. of filament".format(filldiff))
+            gui.log_warning("Minimum print size not met - adding {:-5.2f}.. of filament".format(filldiff))
             location += filldiff
             v.material_extruded_per_color[v.current_tool] += filldiff
             v.total_material_extruded += filldiff
