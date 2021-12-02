@@ -383,12 +383,10 @@ def generate_palette():
                "algorithms": []
                }
     if len(v.splice_extruder_position) < 2:
-        gui.log_warning(v.splice_used_tool.__str__())
         try:
             drive_used = v.splice_used_tool[0]+1
         except IndexError:
             drive_used = 1
-        gui.log_warning(str(drive_used))
         palette["splices"] = {"id": drive_used, "length" : round(v.total_material_extruded + v.autoloadingoffset,4) }
         if v.colors == 4:
             palette["drives"] = [0, 0, 0,0]
