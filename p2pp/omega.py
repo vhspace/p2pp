@@ -123,7 +123,7 @@ def header_generate_omega(job_name):
     if v.printer_profile_string == '':
         v.printer_profile_string = v.default_printerprofile
         if v.palette3:
-            v.printer_profile_string = v.default_printerprofile+ v.default_printerprofile
+            v.printer_profile_string = v.default_printerprofile + v.default_printerprofile
         else:
             v.printer_profile_string = v.default_printerprofile
         gui.log_warning("The PRINTERPROFILE identifier is missing, Default will be used {} \n".format(v.printer_profile_string))
@@ -301,9 +301,7 @@ def generatesummary():
     summary.append(";-----------------\n")
 
     for i in range(len(v.ping_extruder_position)):
-        pingtext = ";Ping {:04} at {:-8.2f}mm\n".format(i + 1,
-                                                             v.ping_extruder_position[i]
-                                                             )
+        pingtext = ";Ping {:04} at {:-8.2f}mm\n".format(i + 1, v.ping_extruder_position[i])
         summary.append(pingtext)
 
     if v.side_wipe and v.side_wipe_loc == "" and not v.bigbrain3d_purge_enabled:
@@ -319,6 +317,14 @@ def generate_meta():
     lena = {}
     vola = {}
     inputsused = 0
+
+    if len(v.splice_extruder_position) < 2:
+        try:
+            drive_used = v.splice_used_tool[0]+1
+        except IndexError:
+            drive_used = 1
+        v.palette_inputs_used[drive_used-1] = True
+
     for i in range(v.colors):
         if v.palette_inputs_used[i]:
             inputsused += 1
@@ -387,10 +393,10 @@ def generate_palette():
             drive_used = v.splice_used_tool[0]+1
         except IndexError:
             drive_used = 1
-        v.palette_inputs_used[drive_used-1] = True
-        palette["splices"] = {"id": drive_used, "length" : round(v.total_material_extruded + v.autoloadingoffset,4) }
+
+        palette["splices"] = {"id": drive_used, "length": round(v.total_material_extruded + v.autoloadingoffset, 4)}
         if v.colors == 4:
-            palette["drives"] = [0, 0, 0,0]
+            palette["drives"] = [0, 0, 0, 0]
         else:
             palette["drives"] = [0, 0, 0, 0, 0, 0, 0, 0]
         palette["drives"][drive_used-1] = drive_used

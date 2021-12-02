@@ -132,13 +132,14 @@ releaseinfo = {
     "8.0.6": "Prime BLOB error for BB3D correction.",
     "8.0.7": "P3 single color prints (with input select option).",
     "8.0.8": "F8640 parameter added to move back from tower.",
+    "8.0.9": "Buf in single color prints.",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 8
+Build = 9
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
