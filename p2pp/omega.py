@@ -383,7 +383,11 @@ def generate_meta():
 
     if v.p3_process_preheat:
         try:
-            first_filament = v.splice_used_tool[0]
+            if v.palette3 and len(v.splice_extruder_position) < 2:
+                first_filament = drive_used-1
+            else:
+                first_filament = v.splice_used_tool[0]
+
             metafile["preheatTemperature"]["nozzle"] = [v.p3_printtemp[first_filament]]
             metafile["preheatTemperature"]["bed"] = v.p3_bedtemp[first_filament]
         except(IndexError, KeyError):
@@ -405,7 +409,7 @@ def generate_palette():
         except IndexError:
             drive_used = 1
 
-        palette["splices"] = {"id": drive_used, "length": round(v.total_material_extruded + v.autoloadingoffset, 4)}
+        palette["splices"] = [{"id": drive_used, "length": round(v.total_material_extruded + v.autoloadingoffset, 4)}]
         if v.colors == 4:
             palette["drives"] = [0, 0, 0, 0]
         else:
