@@ -418,7 +418,6 @@ def generate_palette():
             palette["drives"].append(fIdx)
 
             for j in range(v.colors):
-
                 if i == j:
                     continue
                 try:
@@ -433,7 +432,6 @@ def generate_palette():
                     continue
 
                 splice_list.append(algo_key)
-
                 try:
                     algo = v.splice_algorithm_dictionary["{}{}".format(v.filament_type[i], v.filament_type[j])]
                 except (IndexError, KeyError):
@@ -451,13 +449,13 @@ def generate_palette():
                 except ValueError:
                     algout = 0
 
-            palette["algorithms"].append({
-                "ingoingId": algin,
-                "outgoingId": algout,
-                "heat": algo[0],
-                "compression": algo[1],
-                "cooling": algo[2]
-            })
+                palette["algorithms"].append({
+                    "ingoingId": algin,
+                    "outgoingId": algout,
+                    "heat": algo[0],
+                    "compression": algo[1],
+                    "cooling": algo[2]
+                })
 
     return json.dumps(palette, indent=2)
 
