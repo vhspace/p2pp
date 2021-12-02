@@ -387,6 +387,7 @@ def generate_palette():
             drive_used = v.splice_used_tool[0]+1
         except IndexError:
             drive_used = 1
+        v.palette_inputs_used[drive_used-1] = True
         palette["splices"] = {"id": drive_used, "length" : round(v.total_material_extruded + v.autoloadingoffset,4) }
         if v.colors == 4:
             palette["drives"] = [0, 0, 0,0]
