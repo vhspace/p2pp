@@ -318,7 +318,8 @@ def generate_meta():
     vola = {}
     inputsused = 0
 
-    if len(v.splice_extruder_position) < 2:
+
+    if v.palette3 and len(v.splice_extruder_position) < 2:
         try:
             drive_used = v.splice_used_tool[0]+1
         except IndexError:
@@ -347,6 +348,12 @@ def generate_meta():
 
     bounding_box = {"min": [v.bb_minx, v.bb_miny, v.bb_minz], "max": [v.bb_maxx, v.bb_maxy, v.bb_maxz]}
 
+
+    splice_count = len(v.splice_extruder_position)
+
+    if v.palette3 and splice_count == 0:
+        splice_count = 1
+
     metafile = {"version": "3.2",
                 "setupId": "null",
                 "printerProfile": {
@@ -364,7 +371,7 @@ def generate_meta():
                 "volume": vola,
                 "totalVolume": int(purgetower.volfromlength(v.total_material_extruded + 0.5 + v.autoloadingoffset)),
                 "inputsUsed": inputsused,
-                "splices": len(v.splice_extruder_position),
+                "splices": splice_count,
                 "pings": len(v.ping_extruder_position),
                 "boundingBox": bounding_box,
                 "filaments": fila
