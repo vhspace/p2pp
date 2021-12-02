@@ -438,7 +438,7 @@ def parse_gcode_second_pass():
             if v.previous_block_classification == CLS_TOOL_UNLOAD:
                 if v.restore_move_point:
                     v.restore_move_point = False
-                    gcode.issue_code("G1 X{:0.3f} Y{:0.3f} ; P2PP positional alignment".format(v.current_position_x ,v.current_position_y))
+                    gcode.issue_code("G1 X{:0.3f} Y{:0.3f} F8640 ; P2PP positional alignment".format(v.current_position_x ,v.current_position_y))
         # BLOCK END
 
         # ---- SECOND SECTION HANDLES COMMENTS AND NONE-MOVEMENT COMMANDS ----
