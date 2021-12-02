@@ -343,8 +343,12 @@ def generate_meta():
             except IndexError:
                 add = 0
 
-            lena[str(i + 1)] = int(v.material_extruded_per_color[i] + add)
-            vola[str(i + 1)] = int(purgetower.volfromlength(v.material_extruded_per_color[i] + add))
+            if v.palette3 and len(v.splice_extruder_position) < 2:
+                lena[str(i + 1)] = int(v.total_material_extruded + 0.5 + v.autoloadingoffset)
+                vola[str(i + 1)] = int(purgetower.volfromlength(v.total_material_extruded + 0.5 + v.autoloadingoffset))
+            else:
+                lena[str(i + 1)] = int(v.material_extruded_per_color[i] + add)
+                vola[str(i + 1)] = int(purgetower.volfromlength(v.material_extruded_per_color[i] + add))
 
     bounding_box = {"min": [v.bb_minx, v.bb_miny, v.bb_minz], "max": [v.bb_maxx, v.bb_maxy, v.bb_maxz]}
 
