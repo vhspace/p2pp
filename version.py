@@ -133,6 +133,7 @@ releaseinfo = {
     "8.0.7": "P3 single color prints (with input select option).",
     "8.0.8": "F8640 parameter added to move back from tower.",
     "8.0.9": "Buf in single color prints.",
+    "8.0.10": "LP reduced to minimum of 100mm.",
     '--- RELEASE INFORMATION': 'END'
 }
 

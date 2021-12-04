@@ -302,8 +302,8 @@ def check_config_parameters(keyword, value):
         v.ping_interval = floatparameter(value)
         v.ping_length_multiplier = 1.0
         if not v.powerchaos:
-            if v.ping_interval < 300:
-                v.ping_interval = 300
+            if v.ping_interval < 100:
+                v.ping_interval = 100
                 gui.log_warning("Minimal Linear Ping distance is 300mm!  Your config stated: {}".format(value))
             gui.create_logitem("Linear Ping interval of  {:-6.2f}mm".format(v.ping_interval))
         return
