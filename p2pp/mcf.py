@@ -626,8 +626,6 @@ def parse_gcode_second_pass():
             if classupdate:
 
                 if current_block_class == CLS_BRIM:
-                    if v.bigbrain3d_purge_enabled:
-                        create_side_wipe(v.bigbrain3d_prime * v.bigbrain3d_blob_size)
                     v.towerskipped = True
                     v.side_wipe_state = 0
 
@@ -654,6 +652,13 @@ def parse_gcode_second_pass():
                 gcode.move_to_comment(g, "--P2PP-- side wipe skipped ({})".format(inc))
                 gcode.issue_command(g)
                 continue
+
+            # for PS2.4
+            # before first extrusion prime the nozzle
+            if not v.bb3d_hasprimed and g[gcode.EXTRUDE]:
+                if v.bigbrain3d_purge_enabled:
+                    create_side_wipe(v.bigbrain3d_prime * v.bigbrain3d_blob_size)
+                v.bb3d_hasprimed = True
 
         # --------------------- FULL PURGE PROCESSING
         elif v.full_purge_reduction:

@@ -134,13 +134,14 @@ releaseinfo = {
     "8.0.8": "F8640 parameter added to move back from tower.",
     "8.0.9": "Buf in single color prints.",
     "8.0.10": "LP reduced to minimum of 100mm.",
+    "8.0.11": "BB3D primimng for PS2.4 - priming now BEFORE first extrusion.",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 9
+Build = 11
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 

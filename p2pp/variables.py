@@ -247,6 +247,7 @@ bigbrain3d_minimalclearenceheight = 20
 single_blob = False
 bigbrain3d_last_toolchange = -99
 bigbrain3d_matrix_blobs = False
+bb3d_hasprimed = False
 
 tower_measure = False
 tower_measured = False
