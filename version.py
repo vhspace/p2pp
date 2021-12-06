@@ -143,7 +143,6 @@ MajorVersion = 8
 MinorVersion = 0
 Build = 11
 
-
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
 if __name__ == "__main__":

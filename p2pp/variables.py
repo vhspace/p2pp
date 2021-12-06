@@ -13,8 +13,8 @@ import re
 #########################################
 # Variable default values
 #########################################
-
 # Filament Transition Table
+
 palette_inputs_used = [False,
                        False,
                        False,

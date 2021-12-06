@@ -8,7 +8,6 @@ __maintainer__ = 'Tom Van den Eede'
 __email__ = 'P2PP@pandora.be'
 
 import math
-
 import p2pp.gcode as gcode
 import p2pp.psconfig as gcodeparser
 import p2pp.variables as v

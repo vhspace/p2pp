@@ -10,7 +10,6 @@ __email__ = 'P2PP@pandora.be'
 import os
 import time
 import sys
-
 import p2pp.gcode as gcode
 import p2pp.gui as gui
 import p2pp.pings as pings
