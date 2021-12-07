@@ -135,13 +135,14 @@ releaseinfo = {
     "8.0.9": "Buf in single color prints.",
     "8.0.10": "LP reduced to minimum of 100mm.",
     "8.0.11": "BB3D primimng for PS2.4 - priming now BEFORE first extrusion.",
+    "8.0.12": "Added FINISH_MOVES_M400.",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 11
+Build = 12
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 

@@ -128,7 +128,7 @@ def create_sidewipe_bb3d(length):
         swap.swap_pause("M25")
         swap.swap_unpause()
 
-    issue_code("G4 S0               ; wait for the print buffer to clear")
+    issue_code("{}               ; wait for the print buffer to clear".format(v.finish_moves))
     v.processed_gcode.append("M907 X{}           ; increase motor power".format(v.bigbrain3d_motorpower_high))
     issue_code("; -- P2PP -- Generating {} blobs for {}mm of purge".format(purgeblobs, length), True)
 

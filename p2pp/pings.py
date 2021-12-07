@@ -30,7 +30,7 @@ def check_connected_ping():
             "; --- P2PP - INSERT PING CODE {} after {:-10.4f}mm of extrusion".format(len(v.ping_extruder_position),
                                                                                      v.last_ping_extruder_position))
         # wait for the planning buffer to clear
-        gcode.issue_code("G4 S0")
+        gcode.issue_code(v.finish_moves)
 
         # insert O31 commands format depending on device
         if v.palette3:

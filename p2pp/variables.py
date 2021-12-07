@@ -361,3 +361,6 @@ retry_state = True
 
 # show the webbrowser after uploading
 showwebbrowser = False
+
+# use M400 to finish moves instead of G4 P0 or G4 S0
+finish_moves  = "G4 S0"

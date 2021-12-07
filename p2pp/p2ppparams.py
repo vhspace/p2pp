@@ -397,6 +397,9 @@ def check_config_parameters(keyword, value):
         v.consolewait = True
         return
 
+    if keyword == "FINISH_MOVES_M400":
+        v.finish_moves = "M400"
+
     # process toolchanges the KLIPPER way
     if keyword == "KLIPPER_TOOLCHANGE":
         v.klipper = True
