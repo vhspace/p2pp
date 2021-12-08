@@ -71,6 +71,10 @@ def create_command(gcode_line, is_comment=False, userclass=0):
                 except (IndexError, ValueError):
                     return_value[OTHER] = return_value[OTHER] + " " + param
 
+            if v. replace_G4S0:
+                if return_value[COMMAND] == "G4" and return_value[S] == 0:
+                    return create_command("M400", False, userclass)
+
             check = (param_coefficient & 31)
             if check and return_value[COMMAND] == "G1":
                 return_value[MOVEMENT] = check

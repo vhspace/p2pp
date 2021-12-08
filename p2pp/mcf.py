@@ -492,7 +492,7 @@ def parse_gcode_second_pass():
                     gui.log_warning("KLIPPER - Named extruders are not supported ({})".format(extruder))
             else:
                 if current_block_class == CLS_TOOL_UNLOAD:
-                    if g[gcode.COMMAND] in ["G4", "M900"]:
+                    if g[gcode.COMMAND] in ["G4", "M900", "M400"]:
                         gcode.move_to_comment(g, "--P2PP-- tool unload")
 
                 if g[gcode.COMMAND] is not None and g[gcode.COMMAND].startswith('M'):
