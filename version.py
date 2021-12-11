@@ -137,13 +137,14 @@ releaseinfo = {
     "8.0.11": "BB3D primimng for PS2.4 - priming now BEFORE first extrusion.",
     "8.0.12": "Added FINISH_MOVES_M400.",
     "8.0.13": "Replace G4 S0 by M400 - also PS generated.",
+    "8.0.14": "Correct location of .MAF / .MSF files.",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 13
+Build = 14
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 

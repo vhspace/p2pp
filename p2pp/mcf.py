@@ -868,12 +868,17 @@ def p2pp_process_file(input_file, output_file):
 
     starttime = time.time()
 
+    if output_file is None:
+        output_file = input_file
+
     # get the base name from the environment variable if available....
     # check for P3 that output is written to file at this point.
     # check for P3 that the output file is named mcfx
 
     try:
         basename = os.environ["SLIC3R_PP_OUTPUT_NAME"]
+        pathname = os.path.dirname(os.environ["SLIC3R_PP_OUTPUT_NAME"])
+        maffile = basename
 
         if v.palette3 and not os.environ["SLIC3R_PP_HOST"].startswith("File"):
             gui.log_warning("Palette 3 File uploading currently not supported")
@@ -881,10 +886,13 @@ def p2pp_process_file(input_file, output_file):
         if v.palette3 and not os.environ["SLIC3R_PP_HOST"].endswith(".mcfx"):
             gui.log_warning("Palette 3 files should have a .mcfx extension")
 
+
     # if any the retrieval of this information fails, the good old way is used
 
     except KeyError:
+        maffile = output_file
         basename = os.path.basename(input_file)
+        pathname = os.path.dirname(input_file)
 
     gui.setfilename(basename)
 
@@ -944,9 +952,6 @@ def p2pp_process_file(input_file, output_file):
     # write the output file
     ######################
 
-    if output_file is None:
-        output_file = input_file
-
     path, _ = os.path.split(output_file)
 
     if v.palette3:
@@ -954,7 +959,7 @@ def p2pp_process_file(input_file, output_file):
         gui.create_logitem("Generating MCFX file: " + output_file)
     else:
         opf = open(output_file, "wb")
-        gui.create_logitem("Generating GCODE file: " + output_file)
+        gui.create_logitem("Generating GCODE file: (temp location, PS will move) " + output_file)
 
     if not v.accessory_mode and not v.palette3:
         for line in header:
@@ -1026,11 +1031,15 @@ def p2pp_process_file(input_file, output_file):
 
     if v.accessory_mode:
 
-        pre, ext = os.path.splitext(output_file)
+        pre, ext = os.path.splitext(maffile)
         if v.palette_plus:
             maffile = pre + ".msf"
         else:
             maffile = pre + ".maf"
+
+        maffile = os.path.basename(maffile)
+        maffile = os.path.join(pathname, maffile)
+
         gui.create_logitem("Generating PALETTE MAF/MSF file: " + maffile)
 
         maf = open(maffile, 'wb')
