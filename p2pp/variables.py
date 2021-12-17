@@ -212,6 +212,7 @@ powerchaos = False
 retract_move = False
 max_tower_delta = 0.0
 min_tower_delta = 0.0
+z_correction = None
 
 retract_x = None
 retract_y = None

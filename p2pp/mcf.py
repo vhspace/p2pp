@@ -9,7 +9,6 @@ __email__ = 'P2PP@pandora.be'
 
 import os
 import time
-import sys
 import p2pp.gcode as gcode
 import p2pp.gui as gui
 import p2pp.pings as pings
@@ -437,7 +436,7 @@ def parse_gcode_second_pass():
             if v.previous_block_classification == CLS_TOOL_UNLOAD:
                 if v.restore_move_point:
                     v.restore_move_point = False
-                    gcode.issue_code("G1 X{:0.3f} Y{:0.3f} F8640 ; P2PP positional alignment".format(v.current_position_x ,v.current_position_y))
+                    gcode.issue_code("G1 X{:0.3f} Y{:0.3f} F8640 ; P2PP positional alignment".format(v.current_position_x, v.current_position_y))
         # BLOCK END
 
         # ---- SECOND SECTION HANDLES COMMENTS AND NONE-MOVEMENT COMMANDS ----
@@ -466,7 +465,9 @@ def parse_gcode_second_pass():
                 gcode_process_toolchange(int(g[gcode.COMMAND][1:]))
                 if not v.debug_leaveToolCommands:
                     gcode.move_to_comment(g, "--P2PP-- Color Change")
-                    v.toolchange_processed = (current_block_class != CLS_NORMAL)
+
+                v.toolchange_processed = (current_block_class != CLS_NORMAL)
+
 
             elif v.klipper and g[gcode.COMMAND] == "ACTIVATE_EXTRUDER":
 
@@ -487,7 +488,7 @@ def parse_gcode_second_pass():
 
                     if not v.debug_leaveToolCommands:
                         gcode.move_to_comment(g, "--P2PP-- Color Change")
-                    v.toolchange_processed = True
+                        v.toolchange_processed = True
                 else:
                     gui.log_warning("KLIPPER - Named extruders are not supported ({})".format(extruder))
             else:
@@ -548,7 +549,6 @@ def parse_gcode_second_pass():
 
         classupdate = current_block_class != v.previous_block_classification
         v.previous_block_classification = current_block_class
-
 
         # ---- AS OF HERE ONLY MOVEMENT COMMANDS ----
 
@@ -728,7 +728,6 @@ def parse_gcode_second_pass():
                 speed_limiter(g)
 
             if v.toolchange_processed:
-
                 if v.temp2_stored_command != "":
                     wait_location = calculate_temp_wait_position()
                     gcode.issue_code(
@@ -740,7 +739,8 @@ def parse_gcode_second_pass():
                 gcode.issue_command(g)
                 if v.wipe_remove_sparse_layers:
                     gcode.issue_code("G1 X{}  Y{} F8640 ;P2PP Position XY to avoid tower crash".format(v.current_position_x, v.current_position_y))
-                gcode.issue_code("G1 Z{} F10800 ;P2PP correct z-moves".format(v.current_position_z))
+                v.z_correction = "G1 Z{} F10800 ;P2PP correct z-moves".format(v.current_position_z)
+
 
                 v.toolchange_processed = False
                 continue
@@ -757,8 +757,17 @@ def parse_gcode_second_pass():
             v.retraction += g[gcode.E]
         elif g[gcode.RETRACT]:
             v.retraction += g[gcode.E]
-        elif (g[gcode.MOVEMENT] & 3) and g[gcode.EXTRUDE] and v.retraction < -0.01:
-            purgetower.unretract(v.current_tool, -1, ";--- P2PP --- fixup retracts")
+        elif (g[gcode.MOVEMENT] & 3) and g[gcode.EXTRUDE]:
+            if v.z_correction is not None or v.retraction < -0.01:
+                gcode.issue_command(g)
+                gcode.issue_code(";P2PP START Z/E alignment processing")
+                if v.z_correction is not None:
+                    gcode.issue_code(v.z_correction)
+                    v.z_correction = None
+                if v.retraction < -0.01:
+                    purgetower.unretract(v.current_tool, -1, ";--- P2PP --- fixup retracts")
+                g = gcode.create_command(";P2PP END Z/E alignment processing")
+
 
         # --------------------- PING PROCESSING
 
@@ -775,6 +784,7 @@ def parse_gcode_second_pass():
 
     # LAST STEP IS ADDING AN EXTRA TOOL UNLOAD TO DETERMINE THE LENGTH OF THE LAST SPLICE
     gcode_process_toolchange(-1)
+
 
 # -- MAIN ROUTINE --- GLUES ALL THE PROCESSING ROUTINED
 # -- FILE READING / FIRST PASS / SECOND PASS / FILE WRITING
@@ -813,7 +823,7 @@ def config_checks():
         gui.log_warning("Variable layers may cause issues with FULLPURGE / TOWER DELTA")
         gui.log_warning("This warning could be caused by support that will print on variable layer offsets")
 
-    ## sidewipe option compatibility test
+    # sidewipe option compatibility test
     if v.side_wipe:
 
         if v.full_purge_reduction:
@@ -860,6 +870,7 @@ def config_checks():
                 "TOWERDELTA in effect for {} Layers or {:.2f}mm".format(skippable, skippable * v.layer_height))
         else:
             gui.create_logitem("TOWERDELTA could not be applied to this print")
+            v.tower_delta = False
 
     return 0
 
@@ -885,7 +896,6 @@ def p2pp_process_file(input_file, output_file):
 
         if v.palette3 and not os.environ["SLIC3R_PP_HOST"].endswith(".mcfx"):
             gui.log_warning("Palette 3 files should have a .mcfx extension")
-
 
     # if any the retrieval of this information fails, the good old way is used
 
@@ -937,12 +947,11 @@ def p2pp_process_file(input_file, output_file):
     gui.create_logitem("GCode Analysis ... Pass 1")
     parse_gcode_first_pass()
 
-    if config_checks()==-1:
+    if config_checks() == -1:
         return
 
     gui.create_logitem("Gcode Analysis ... Pass 2")
     parse_gcode_second_pass()
-
 
     v.processtime = time.time() - starttime
 
