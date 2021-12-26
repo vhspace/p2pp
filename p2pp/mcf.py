@@ -890,6 +890,7 @@ def p2pp_process_file(input_file, output_file):
         basename = os.environ["SLIC3R_PP_OUTPUT_NAME"]
         pathname = os.path.dirname(os.environ["SLIC3R_PP_OUTPUT_NAME"])
         maffile = basename
+        mybasename = os.path.basename(basename)
 
         if v.palette3 and not os.environ["SLIC3R_PP_HOST"].startswith("File"):
             gui.log_warning("Palette 3 File uploading currently not supported")
@@ -902,12 +903,13 @@ def p2pp_process_file(input_file, output_file):
     except KeyError:
         maffile = output_file
         basename = os.path.basename(input_file)
+        mybasename = basename
         pathname = os.path.dirname(input_file)
 
     gui.setfilename(basename)
 
     # Determine the task name for this print form the filename without any extensions.
-    _taskName = os.path.splitext(basename)[0].replace(" ", "_")
+    _taskName = os.path.splitext(mybasename)[0].replace(" ", "_")
     _taskName = _taskName.replace(".mcfx", "")
     _taskName = _taskName.replace(".mcf", "")
     _taskName = _taskName.replace(".gcode", "")
