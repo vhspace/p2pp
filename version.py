@@ -139,6 +139,7 @@ releaseinfo = {
     "8.0.13": "Replace G4 S0 by M400 - also PS generated.",
     "8.0.14": "Correct location of .MAF / .MSF files.",
     "8.0.15": "Correct Z height after in PS2.4 in case of empty after purge.",
+
     "8.0.16": "Corrected project name for P2 output.",
     '--- RELEASE INFORMATION': 'END'
 }
