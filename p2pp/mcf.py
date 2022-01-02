@@ -759,13 +759,23 @@ def parse_gcode_second_pass():
             v.retraction += g[gcode.E]
         elif (g[gcode.MOVEMENT] & 3) and g[gcode.EXTRUDE]:
             if v.z_correction is not None or v.retraction < -0.01:
-                gcode.issue_code(";P2PP START Z/E alignment processing")
-                if v.z_correction is not None:
-                    gcode.issue_code(v.z_correction)
-                    v.z_correction = None
-                if v.retraction < -0.01:
-                    purgetower.unretract(v.retraction, -1, ";--- P2PP --- fixup retracts")
-                gcode.issue_code(";P2PP END Z/E alignment processing")
+                if current_block_class != CLS_TOOL_START:
+                    gcode.issue_code(";P2PP START Z/E alignment processing")
+                    if v.z_correction is not None:
+                        gcode.issue_code(v.z_correction)
+                        v.z_correction = None
+                    if v.retraction < -0.01:
+                        purgetower.unretract(v.retraction, -1, ";--- P2PP --- fixup retracts")
+                    gcode.issue_code(";P2PP END Z/E alignment processing")
+                else:
+                    gcode.issue_command(g)
+                    gcode.issue_code(";P2PP START Z/E alignment processing")
+                    if v.z_correction is not None:
+                        gcode.issue_code(v.z_correction)
+                        v.z_correction = None
+                    if v.retraction < -0.01:
+                        purgetower.unretract(v.retraction, -1, ";--- P2PP --- fixup retracts")
+                    g = gcode.create_command(";P2PP END Z/E alignment processing")
 
 
         # --------------------- PING PROCESSING
