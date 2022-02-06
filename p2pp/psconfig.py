@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2022, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -15,6 +15,8 @@ import p2pp.variables as v
 import p2pp.p2ppparams as parameters
 from p2pp.omega import algorithm_process_material_configuration
 
+
+# SECTION OBSOLETE HELPERS
 
 def gcode_remove_params(gcode, params):
     removed = False
@@ -49,6 +51,8 @@ def get_gcode_parameter(gcode, parameter, default=None):
     return default
 
 
+# SECTION HELPERS
+
 def split_csv_strings(s):
     newvalues = []
     keyval = s.split("=")
@@ -80,6 +84,7 @@ def split_csv_strings(s):
 def filament_volume_to_length(x):
     return x / (v.filament_diameter[v.current_tool] / 2 * v.filament_diameter[v.current_tool] / 2 * math.pi)
 
+# SECTION BEDSIZE
 
 def get_bedshape(line):
     bedshape = re.compile("([+-]?\d+(\.\d*)?|\.\d+)")
@@ -107,6 +112,8 @@ def get_bedshape(line):
     if len(coords) != 8:
         v.bed_shape_rect = False
 
+
+# SECTION PS Parameters
 
 def parse_config_parameters():
 
@@ -156,7 +163,7 @@ def parse_config_parameters():
                 gui.create_logitem("File was created with PS version:{}".format(v.ps_version))
                 if v.ps_version < "2.2":
                     gui.create_logitem("<b>This version of P2PP is optimized to work with PS2.2 and higher!<b>")
-            except [ValueError, IndexError]:
+            except (ValueError, IndexError):
                 pass
             continue
 
@@ -167,7 +174,7 @@ def parse_config_parameters():
                     if int(gcode_line[parameter_start + 1:].strip()) == 1:
                         gui.log_warning("[Print Settings][Multiple Extruders][Wipe Tower]Prime all printing extruders MUST be turned off")
                         gui.log_warning("THIS FILE WILL NOT PRINT CORRECTLY")
-                except [ValueError, IndexError]:
+                except (ValueError, IndexError):
                     pass
             continue
 
@@ -176,7 +183,7 @@ def parse_config_parameters():
             if parameter_start != -1:
                 try:
                     v.wipe_remove_sparse_layers = (int(gcode_line[parameter_start + 1:].strip()) == 1)
-                except [ValueError, IndexError]:
+                except (ValueError, IndexError):
                     pass
             continue
 
@@ -460,10 +467,6 @@ def parse_config_parameters():
                 gui.create_logitem(header + data)
                 
                 gui.create_emptyline()
-
-
-
-
 
             v.wiping_info = wiping_info
             if _warning:

@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2022, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -36,6 +36,7 @@ last_posy = None
 last_brim_x = None
 last_brim_y = None
 
+# SECTION HELPERS
 
 def if_defined(x, y):
     if x:
@@ -51,6 +52,8 @@ def calculate_purge(movelength):
 def volfromlength(length):
     return length * v.filament_diameter[0] / 2.0 * v.filament_diameter[0] / 2.0 * math.pi
 
+
+# SECTION Code Array Generators
 
 def generate_rectangle(result, x, y, w, h):
     ew = v.extrusion_width
@@ -159,6 +162,7 @@ def purge_create_layers(x, y, w, h):
     v.purge_sequence_x = x
     v.purge_sequence_y = y
 
+# SECTION Purge Output Generation
 
 def _purge_number_of_gcodelines():
     if current_purge_form == PURGE_SOLID:
@@ -213,6 +217,8 @@ def _purge_generate_tower_brim(x, y, w, h):
         brimlayer.append(gcode.create_command("G1 X{:.3f} Y{:.3f}  E{:.4f}".format(x, y, calculate_purge(h))))
 
 
+# SECTION Retractions
+
 def retract(tool, speed=-1):
     length = v.retract_length[tool]
     if speed > 0:
@@ -243,6 +249,8 @@ def unretract(tool, speed=-1, comment=""):
     else:
         gcode.issue_code("G1 E{:.2f} {}".format(-v.retraction, comment))
     v.retraction = 0
+
+# SECTION Actual tower generation
 
 
 def getwipespeed():

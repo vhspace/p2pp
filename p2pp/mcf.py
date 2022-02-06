@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2022, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -51,8 +51,9 @@ hash_TOOLCHANGE_WIPE = hash("TOOLCHANGE WIPE")
 hash_TOOLCHANGE_END = hash("TOOLCHANGE END")
 
 
-#  delta tower strategy: try to delay the delta as long as possible to minimize the extra print time
+# section Helpers
 
+#  delta tower strategy: try to delay the delta as long as possible to minimize the extra print time
 
 def optimize_tower_skip(max_layers):
     skippable = v.skippable_layer.count(True)
@@ -67,6 +68,19 @@ def optimize_tower_skip(max_layers):
 
     return skippable
 
+def calculate_temp_wait_position():
+    pos_x = v.wipe_tower_info_minx + v.tx_offset * (1 if abs(v.wipe_tower_info_minx - v.purge_keep_x) < abs(v.wipe_tower_info_maxx - v.purge_keep_x) else -1)
+    pos_y = v.wipe_tower_info_miny + v.ty_offset * (1 if abs(v.wipe_tower_info_miny - v.purge_keep_y) < abs(v.wipe_tower_info_maxy - v.purge_keep_y) else -1)
+    return [pos_x, pos_y]
+
+
+def speed_limiter(g_code):
+    if g_code[gcode.F] is not None and g_code[gcode.EXTRUDE] and g_code[gcode.F] > v.wipe_feedrate:
+        g_code[gcode.COMMENT] = ";-- SLOW DOWN {} --> {}--;".format(g_code[gcode.F], v.wipe_feedrate)
+        g_code[gcode.F] = v.wipe_feedrate
+
+
+# SECTION Toolchange
 
 def gcode_process_toolchange(new_tool):
 
@@ -127,11 +141,7 @@ def gcode_process_toolchange(new_tool):
     v.current_tool = new_tool
 
 
-def calculate_temp_wait_position():
-    pos_x = v.wipe_tower_info_minx + v.tx_offset * (1 if abs(v.wipe_tower_info_minx - v.purge_keep_x) < abs(v.wipe_tower_info_maxx - v.purge_keep_x) else -1)
-    pos_y = v.wipe_tower_info_miny + v.ty_offset * (1 if abs(v.wipe_tower_info_miny - v.purge_keep_y) < abs(v.wipe_tower_info_maxy - v.purge_keep_y) else -1)
-    return [pos_x, pos_y]
-
+# SECTION Tower
 
 def entertower(layer_hght):
 
@@ -211,6 +221,8 @@ def find_alternative_tower():
                         v.wipe_tower_info_miny = min(v.wipe_tower_info_miny, gc[gcode.Y] - 6 * v.extrusion_width)
 
 
+# SECTION First Pass
+
 def update_class(line_hash):
 
     if line_hash == hash_EMPTY_GRID_START:
@@ -257,12 +269,6 @@ def process_layer(layer, index):
 
     v.layer_toolchange_counter = 0
     v.layer_emptygrid_counter = 0
-
-
-def speed_limiter(g_code):
-    if g_code[gcode.F] is not None and g_code[gcode.EXTRUDE] and g_code[gcode.F] > v.wipe_feedrate:
-        g_code[gcode.COMMENT] = ";-- SLOW DOWN {} --> {}--;".format(g_code[gcode.F], v.wipe_feedrate)
-        g_code[gcode.F] = v.wipe_feedrate
 
 
 def parse_gcode_first_pass():
@@ -385,6 +391,8 @@ def parse_gcode_first_pass():
 
     v.input_gcode = None
 
+# SECTION Second Pass
+
 
 def parse_gcode_second_pass():
 
@@ -468,7 +476,6 @@ def parse_gcode_second_pass():
 
                 v.toolchange_processed = (current_block_class != CLS_NORMAL)
 
-
             elif v.klipper and g[gcode.COMMAND] == "ACTIVATE_EXTRUDER":
 
                 extruder = g[gcode.OTHER].strip()
@@ -498,12 +505,11 @@ def parse_gcode_second_pass():
 
                 if g[gcode.COMMAND] is not None and g[gcode.COMMAND].startswith('M'):
                     try:
-                        commandNum = int(g[gcode.COMMAND][1:])
+                        command_num = int(g[gcode.COMMAND][1:])
                     except (ValueError, KeyError):
-                        commandNum = 0
-                        pass
+                        command_num = 0
 
-                    if commandNum in [104, 109]:
+                    if command_num in [104, 109]:
                         if v.process_temp:
                             if current_block_class not in [CLS_TOOL_PURGE, CLS_TOOL_START,
                                                            CLS_TOOL_UNLOAD]:
@@ -525,19 +531,19 @@ def parse_gcode_second_pass():
                                     gcode.move_to_comment(g,
                                                           "--P2PP-- delayed temp drop until after purge {}-->{}".format(v.current_temp,
                                                                                                                         v.new_temp))
-                    elif commandNum == 107:
+                    elif command_num == 107:
                         v.saved_fanspeed = 0
 
-                    elif commandNum == 106:
+                    elif command_num == 106:
                         v.saved_fanspeed = gcode.get_parameter(g, gcode.S, v.saved_fanspeed)
 
-                    elif commandNum == 221:
+                    elif command_num == 221:
                         v.extrusion_multiplier = float(gcode.get_parameter(g, gcode.S, v.extrusion_multiplier * 100.0)) / 100.0
 
-                    elif commandNum == 220:
+                    elif command_num == 220:
                         gcode.move_to_comment(g, "--P2PP-- Feed Rate Adjustments are removed")
 
-                    elif commandNum == 572:
+                    elif command_num == 572:
                         for i in range(1, v.filament_count):
                             g[gcode.OTHER] = g[gcode.OTHER].replace("D{}".format(i), "D0")
 
@@ -741,7 +747,6 @@ def parse_gcode_second_pass():
                     gcode.issue_code("G1 X{}  Y{} F8640 ;P2PP Position XY to avoid tower crash".format(v.current_position_x, v.current_position_y))
                 v.z_correction = "G1 Z{} F10800 ;P2PP correct z-moves".format(v.current_position_z)
 
-
                 v.toolchange_processed = False
                 continue
 
@@ -777,7 +782,6 @@ def parse_gcode_second_pass():
                         purgetower.unretract(v.retraction, -1, ";--- P2PP --- fixup retracts")
                     g = gcode.create_command(";P2PP END Z/E alignment processing")
 
-
         # --------------------- PING PROCESSING
 
         if v.accessory_mode and g[gcode.EXTRUDE]:
@@ -797,6 +801,8 @@ def parse_gcode_second_pass():
 
 # -- MAIN ROUTINE --- GLUES ALL THE PROCESSING ROUTINED
 # -- FILE READING / FIRST PASS / SECOND PASS / FILE WRITING
+
+# section Config
 
 def config_checks():
 
@@ -883,6 +889,7 @@ def config_checks():
 
     return 0
 
+# Section Main
 
 def p2pp_process_file(input_file, output_file):
 
@@ -918,10 +925,10 @@ def p2pp_process_file(input_file, output_file):
     gui.setfilename(basename)
 
     # Determine the task name for this print form the filename without any extensions.
-    _taskName = os.path.splitext(mybasename)[0].replace(" ", "_")
-    _taskName = _taskName.replace(".mcfx", "")
-    _taskName = _taskName.replace(".mcf", "")
-    _taskName = _taskName.replace(".gcode", "")
+    _task_name = os.path.splitext(mybasename)[0].replace(" ", "_")
+    _task_name = _task_name.replace(".mcfx", "")
+    _task_name = _task_name.replace(".mcf", "")
+    _task_name = _task_name.replace(".gcode", "")
 
     gui.app.sync()
 
@@ -966,7 +973,7 @@ def p2pp_process_file(input_file, output_file):
 
     v.processtime = time.time() - starttime
 
-    omega_result = header_generate_omega(_taskName)
+    omega_result = header_generate_omega(_task_name)
     header = omega_result['header'] + omega_result['summary'] + omega_result['warnings']
 
     # write the output file

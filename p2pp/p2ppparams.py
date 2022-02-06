@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2022, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -10,6 +10,7 @@ __email__ = 'P2PP@pandora.be'
 import p2pp.gui as gui
 import p2pp.variables as v
 
+# SECTION Helper functions
 
 def floatparameter(s):
     try:
@@ -28,6 +29,9 @@ def intparameter(s):
 def check_splice_table():
     if len(v.splice_algorithm_table) > 0:
         gui.log_warning("Algorithm definitions should appear AFTER Palette Model selection (PALETTE3/PALETTE3_PRO/ACCESSORYMODE_MAF/ACCESSORYMODE_MSF)")
+
+
+# SECTION P2PP Parameter parsing
 
 
 def check_config_parameters(keyword, value):

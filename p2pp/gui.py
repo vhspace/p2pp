@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2022, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -20,6 +20,9 @@ import os
 import traceback
 
 last_pct = -10
+
+ui_file = "p2pp.ui"
+
 
 def logexception(e):
     create_emptyline()
@@ -141,17 +144,19 @@ def log_warning(text):
     create_logitem(text, "#FF0000")
 
 
+# SECTION MAIN Routine
+
 if sys.platform == 'darwin':
     if len(os.path.dirname(sys.argv[0])) > 0:
-        ui = "{}/p2pp.ui".format(os.path.dirname(sys.argv[0]))
+        ui = "{}/{}".format(os.path.dirname(sys.argv[0]), ui_file)
     else:
-        ui = "p2pp.ui"
+        ui = ui_file
 else:
     ui = "p2pp.ui"
     if len(os.path.dirname(sys.argv[0])) > 0:
-        ui = "{}\\p2pp.ui".format(os.path.dirname(sys.argv[0]))
+        ui = "{}\\{}".format(os.path.dirname(sys.argv[0]), ui_file)
     else:
-        ui = "p2pp.ui"
+        ui = ui_file
 
 app = QApplication([])
 Form, Window = uic.loadUiType(ui)

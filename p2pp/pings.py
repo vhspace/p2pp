@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2022, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -11,9 +11,13 @@ import p2pp.gcode as gcode
 import p2pp.variables as v
 from p2pp.formatnumbers import hexify_float
 
+# SECTION PPLUS PING GCODE
+
 acc_first_pause = ";PING PAUSE 1 START\nG4 P4000\nG1\nG4 P4000\nG1\nG4 P4000\nG1\nG4 P1000\nG1\n;PING PAUSE 1 END\n"
 acc_second_pause = ";PING PAUSE 2 START\nG4 P4000\nG1\nG4 P3000\nG1\n;PING PAUSE 2 END\n"
 
+
+# SECTION PING chk ACC/CONN
 
 def check_first_ping_condition():
     return (v.total_material_extruded - v.last_ping_extruder_position) > v.ping_interval
@@ -40,6 +44,7 @@ def check_connected_ping():
 
         gcode.issue_code("; --- P2PP - END PING CODE", True)
 
+# SECTION ACC MODE PING 1 and 2
 
 def check_accessorymode_first():
     if v.accessory_mode and check_first_ping_condition():

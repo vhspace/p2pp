@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2022, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -13,6 +13,8 @@ MASTER = "https://github.com/tomvandeneede/p2pp/raw/master/version.py"
 
 _p = platform.python_version().strip()
 python_version = _p[0]
+
+# SECTION get_version
 
 
 def get_version(_url_):

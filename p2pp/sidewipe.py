@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2022, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -14,8 +14,7 @@ import p2pp.manualswap as swap
 import p2pp.gui as gui
 
 
-#
-# to be implemented - Big Brain 3D purge mechanism support
+# SECTION BB3D Helper Code
 #
 
 def setfanspeed(n):
@@ -72,6 +71,7 @@ def generate_blob(length, count):
             v.bigbrain3d_x_position))  # takes 2.5 seconds
         issue_code("G1 X{:.3f} F10800  ; WHACKAAAAA!!!!".format(v.bigbrain3d_x_position - v.bigbrain3d_left * 20))
 
+# SECTION SideWipe BB3D
 
 def create_sidewipe_bb3d(length):
 
@@ -159,6 +159,8 @@ def create_sidewipe_bb3d(length):
     v.processed_gcode.append("\nM907 X{}           ; reset motor power".format(v.bigbrain3d_motorpower_normal))
     issue_code("\n;-------------------------------\n", True)
 
+
+# SECTION SideWipe - Generic
 
 def create_side_wipe(length=0):
 

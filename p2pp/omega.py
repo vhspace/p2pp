@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2022, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -15,9 +15,8 @@ import json
 import p2pp.purgetower as purgetower
 
 
-# ################################################################
-# ######################### ALGORITHM PROCESSING ################
-# ################################################################
+# SECTION Algorithm Processing
+
 def algorithm_create_process_string(heating, compression, cooling):
     if v.palette_plus:
         if int(cooling) != 0:  # cooling parameter functions as a forward/reverse
@@ -98,6 +97,45 @@ def algorithm_create_table():
                 v.splice_algorithm_table.append("D{} {}".format(algo_key, algo))
 
 
+# SECTION Summary
+
+
+def generatesummary():
+    summary = [";Splice Information:\n", ";-------------------\n",
+               ";       Splice Offset = {:-8.2f}mm\n".format(v.splice_offset),
+               ";       Autoloading Offset = {:-8.2f}mm\n\n".format(v.autoloadingoffset)]
+
+    for i in range(len(v.splice_extruder_position)):
+        if i == 0:
+            pos = 0
+        else:
+            pos = v.splice_extruder_position[i - 1]
+
+        summary.append(";{:04}   Input: {}  Location: {:-8.2f}mm   length {:-8.2f}mm \n"
+                       .format(i + 1,
+                               v.splice_used_tool[i] + 1,
+                               pos,
+                               v.splice_length[i]
+                               )
+                       )
+
+    summary.append("\n")
+    summary.append(";Ping Information:\n")
+    summary.append(";-----------------\n")
+
+    for i in range(len(v.ping_extruder_position)):
+        pingtext = ";Ping {:04} at {:-8.2f}mm\n".format(i + 1, v.ping_extruder_position[i])
+        summary.append(pingtext)
+
+    if v.side_wipe and v.side_wipe_loc == "" and not v.bigbrain3d_purge_enabled:
+        gui.log_warning("Using sidewipe with undefined SIDEWIPELOC!!!")
+
+    return summary
+
+
+
+# Section Warnings
+
 def generatewarnings():
     warnings = ["\n",
                 ";------------------------:\n",
@@ -115,6 +153,7 @@ def generatewarnings():
 
     return warnings
 
+# Section Generate-OMEGA
 
 ############################################################################
 # Generate the Omega - Header that drives the Palette to p2pp_process_file filament
@@ -141,6 +180,8 @@ def header_generate_omega(job_name):
     else:
         return header_generate_omega_paletteplus()
 
+
+# Section OMEGA - PPLUS
 
 def header_generate_omega_paletteplus():
     header = ["MSF1.4\n"]
@@ -183,6 +224,8 @@ def header_generate_omega_paletteplus():
 
     return {'header': header, 'summary': summary, 'warnings': warnings}
 
+
+# SECTION OMEGA - P2
 
 def header_generate_omega_palette2(job_name):
     header = []
@@ -277,40 +320,9 @@ def header_generate_omega_palette2(job_name):
     return {'header': header, 'summary': summary, 'warnings': warnings}
 
 
-def generatesummary():
-    summary = [";Splice Information:\n", ";-------------------\n",
-               ";       Splice Offset = {:-8.2f}mm\n".format(v.splice_offset),
-               ";       Autoloading Offset = {:-8.2f}mm\n\n".format(v.autoloadingoffset)]
-
-    for i in range(len(v.splice_extruder_position)):
-        if i == 0:
-            pos = 0
-        else:
-            pos = v.splice_extruder_position[i - 1]
-
-        summary.append(";{:04}   Input: {}  Location: {:-8.2f}mm   length {:-8.2f}mm \n"
-                       .format(i + 1,
-                               v.splice_used_tool[i] + 1,
-                               pos,
-                               v.splice_length[i]
-                               )
-                       )
-
-    summary.append("\n")
-    summary.append(";Ping Information:\n")
-    summary.append(";-----------------\n")
-
-    for i in range(len(v.ping_extruder_position)):
-        pingtext = ";Ping {:04} at {:-8.2f}mm\n".format(i + 1, v.ping_extruder_position[i])
-        summary.append(pingtext)
-
-    if v.side_wipe and v.side_wipe_loc == "" and not v.bigbrain3d_purge_enabled:
-        gui.log_warning("Using sidewipe with undefined SIDEWIPELOC!!!")
-
-    return summary
 
 
-# PALETTE 3
+# SECTION OMEGA - P3
 
 def generate_meta():
     fila = []
@@ -432,11 +444,11 @@ def generate_palette():
 
         for i in range(v.colors):
 
-            fIdx = 0
+            f_idx = 0
             if v.palette_inputs_used[i]:
-                fIdx = i + 1
+                f_idx = i + 1
 
-            palette["drives"].append(fIdx)
+            palette["drives"].append(f_idx)
 
             for j in range(v.colors):
                 if i == j:

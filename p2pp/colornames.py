@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2022, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -7,6 +7,7 @@ __license__ = 'GPLv3'
 __maintainer__ = 'Tom Van den Eede'
 __email__ = 'P2PP@pandora.be'
 
+# section HTML color names
 # HTML COLORS - see https://en.wikipedia.org/wiki/Web_colors
 color_names_sorted = ["White", "Snow", "GhostWhite", "Azure", "Ivory", "MintCream", "FloralWhite", "AliceBlue",
                       "LavenderBlush", "SeaShell", "HoneyDew", "WhiteSmoke", "LightCyan", "LightYellow", "OldLace",
@@ -44,6 +45,8 @@ color_values_hex = ["#FFFFFF", "#FFFAFA", "#F8F8FF", "#F0FFFF", "#FFFFF0", "#F5F
                     "#483D8B", "#2E8B57", "#808000", "#800080", "#008080", "#0000FF", "#00FF00", "#FF0000", "#A52A2A",
                     "#B22222", "#556B2F", "#8B4513", "#228B22", "#2F4F4F", "#4B0082", "#0000CD", "#191970", "#00008B",
                     "#8B0000", "#008000", "#800000", "#000080", "#006400", "#000000"]
+
+# SECTION COLOR CALCULATIONS
 
 
 def colour_dist(r1, g1, b1, r2, g2, b2):

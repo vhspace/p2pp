@@ -1,5 +1,5 @@
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2022, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -10,6 +10,8 @@ __email__ = 'P2PP@pandora.be'
 import p2pp.variables as v
 import p2pp.bedprojection as bp
 import p2pp.genpreview as gp
+
+# SECTION STORAGE/CONSTANTS
 
 X = 0
 Y = 1
@@ -37,6 +39,7 @@ parmidx = [-1, -1, -1, -1, 3, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 # S = 32
 # Other values are not used!!!
 
+# SECTION String -> GCODE
 
 def create_command(gcode_line, is_comment=False, userclass=0):
 
@@ -88,6 +91,7 @@ def create_command(gcode_line, is_comment=False, userclass=0):
 
     return return_value
 
+# SECTION GCODE -> String
 
 def create_commandstring(gcode_tupple):
     if gcode_tupple[COMMAND]:
@@ -133,6 +137,7 @@ def create_commandstring(gcode_tupple):
 
     return p
 
+# SECTION Move to Comment
 
 def move_to_comment(gcode_tupple, text):
     if gcode_tupple[COMMAND]:
@@ -154,11 +159,14 @@ def move_to_comment(gcode_tupple, text):
     gcode_tupple[MOVEMENT] = 0
 
 
+# SECTION get_parameter
+
 def get_parameter(gcode_tupple, pv, defaultvalue=0):
     if gcode_tupple[pv] is not None:
         return gcode_tupple[pv]
     return defaultvalue
 
+# SECTION GCODE -> OutputBuffer
 
 def issue_command(gcode_tupple, speed=0):
 

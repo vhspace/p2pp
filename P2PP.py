@@ -1,6 +1,6 @@
 #!/usr/bin/pythonw
 __author__ = 'Tom Van den Eede'
-__copyright__ = 'Copyright 2018-2021, Palette2 Splicer Post Processing Project'
+__copyright__ = 'Copyright 2018-2022, Palette2 Splicer Post Processing Project'
 __credits__ = ['Tom Van den Eede',
                'Tim Brookman'
                ]
@@ -43,7 +43,7 @@ if len(sys.argv) == 1:
                 v.version = "Version Check: Current version {} (Version up to date)".format(ver.Version)
                 color = "green"
 
-            gui.create_logitem(v.version, color, True)
+            gui.create_logitem(v.version, color)
         gui.app.sync()
         gui.create_emptyline()
         gui.create_logitem("Line to be used in PrusaSlicer [Print Settings][Output Options][Post Processing Script]",
@@ -51,7 +51,7 @@ if len(sys.argv) == 1:
         gui.create_emptyline()
         gui.app.sync()
         if platformD == 'Darwin':
-            gui.create_logitem("<b>open -W -a P2PP.app --args<b>".format(os.path.dirname(sys.argv[0])), "red")
+            gui.create_logitem("<b>open -W -a P2PP.app --args<b>", "red")
         elif platformD == 'Windows':
             pathname = os.path.dirname(sys.argv[0])
             pathname = pathname.replace(" ", "! ")
