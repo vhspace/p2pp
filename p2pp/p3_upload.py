@@ -56,7 +56,7 @@ def uploadfile(localfile, p3file):
                 # tgtName = "http://{}:5000".format(v.p3_hostname)
 
                 tgtName = "http://{}:5000".format("0PLM-P3P")
-                webform.webBrowser.load(QtCore.QUrl("http://192.168.3.201:5000"))
+                webform.webBrowser.load(QtCore.QUrl(tgtName))
                 webwindow.show()
                 gui.app.exec()
 

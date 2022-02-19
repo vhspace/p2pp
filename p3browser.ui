@@ -26,20 +26,24 @@
     <string>Close</string>
    </property>
   </widget>
-  <widget class="QWebEngineView" name="webBrowser" native="true">
+  <widget class="QWebEngineView" name="widget" native="true">
    <property name="geometry">
     <rect>
-     <x>5</x>
-     <y>5</y>
-     <width>800</width>
-     <height>501</height>
+     <x>0</x>
+     <y>0</y>
+     <width>821</width>
+     <height>511</height>
     </rect>
-   </property>
-   <property name="focusPolicy">
-    <enum>Qt::StrongFocus</enum>
    </property>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QWebEngineView</class>
+   <extends>QWidget</extends>
+   <header>qwebengineview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
