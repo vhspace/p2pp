@@ -1061,6 +1061,7 @@ def p2pp_process_file(input_file, output_file):
         os.remove(im_file)
 
         if v.uploadfile:
+
             try:  # get the correct output filename from the PS environment variable
                 filename = os.path.basename(os.environ["SLIC3R_PP_OUTPUT_NAME"])
                 if filename.endswith(".gcode"):

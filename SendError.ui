@@ -10,6 +10,9 @@
     <height>264</height>
    </rect>
   </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::NoContextMenu</enum>
+  </property>
   <property name="windowTitle">
    <string>P2PP - File Transfer Error Dialog</string>
   </property>
