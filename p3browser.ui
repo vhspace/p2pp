@@ -26,7 +26,7 @@
     <string>Close</string>
    </property>
   </widget>
-  <widget class="QWebEngineView" name="widget" native="true">
+  <widget class="QWebEngineView" name="webBrowser" native="true">
    <property name="geometry">
     <rect>
      <x>0</x>

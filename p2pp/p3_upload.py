@@ -11,12 +11,15 @@ import requests
 import p2pp.variables as v
 import p2pp.gui as gui
 from PyQt5 import uic, QtCore
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 
 
 def uploadfile(localfile, p3file):
     _error = None
 
     v.retry_state = True
+
+    # read file
 
     while v.p3_hostname == "":
         form.label_5.setText("Please specify hostname or IP.\nP3_HOSTNAME config parameter missing.")
@@ -33,11 +36,12 @@ def uploadfile(localfile, p3file):
     gui.app.sync()
     while v.retry_state:
         try:
+
             with open(localfile, "rb") as mcfx_file:
                 gui.create_logitem("Uploading {}".format(p3file), "blue", True)
-                upload_dict = {p3file: mcfx_file}
-                url = "http://{}:3000/print-file".format(v.p3_hostname)
-                response = requests.post(url, files=upload_dict)
+                data = {'printFile': (p3file, mcfx_file, "application/octet-stream")}
+                url = "http://{}:5000/print-file".format(v.p3_hostname)
+                response = requests.post(url,  files=data)
                 if response.ok:
                     _error = None
                     v.retry_state = False
@@ -53,9 +57,7 @@ def uploadfile(localfile, p3file):
         if v.showwebbrowser:
             try:
                 # todo - change to supplied hostname:5000
-                # tgtName = "http://{}:5000".format(v.p3_hostname)
-
-                tgtName = "http://{}:5000".format("0PLM-P3P")
+                tgtName = "http://{}:5000".format(v.p3_hostname)
                 webform.webBrowser.load(QtCore.QUrl(tgtName))
                 webwindow.show()
                 gui.app.exec()

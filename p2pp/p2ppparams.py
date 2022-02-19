@@ -110,6 +110,9 @@ def check_config_parameters(keyword, value):
     if keyword == "P3_UPLOADFILE":
         v.uploadfile = True
 
+    if keyword == "P3_SHOWPRINTERPAGE":
+        v.showwebbrowser = True
+
     # toggles Palette 2 accessory mode
     if keyword == "ACCESSORYMODE_MAF":
         v.accessory_mode = True
