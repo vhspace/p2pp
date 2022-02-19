@@ -11,8 +11,6 @@ import requests
 import p2pp.variables as v
 import p2pp.gui as gui
 from PyQt5 import uic, QtCore
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 
 def uploadfile(localfile, p3file):
@@ -77,13 +75,13 @@ def uploadfile(localfile, p3file):
 def on_clickretry():
     v.retry_state = True
     window.hide()
-    # webwindow.hide()
+    webwindow.hide()
     gui.app.quit()
 
 
 def on_clickclose():
     webwindow.hide()
-    # webwindow.hide()
+
     gui.close_button_enable()
 
 
@@ -91,6 +89,7 @@ def on_clickabort():
     v.retry_state = False
     gui.create_logitem("Upload aborted by user")
     window.hide()
+    webwindow.hide()
     gui.app.quit()
 
 # LOAD FORM
@@ -132,8 +131,6 @@ else:
     else:
         ui = "p3browser.ui"
 
-
-
 WebForm, WebWindow = uic.loadUiType(ui)
 webwindow = WebWindow()
 
@@ -144,11 +141,3 @@ webform = WebForm()
 
 webform.setupUi(webwindow)
 webform.closeButton.clicked.connect(on_clickclose)
-
-
-# dummy stuff to get
-class WebEngineTestWindow(QMainWindow):
-
-    def __init__(self):
-        self.webview = QWebEngineView(self)
-
