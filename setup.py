@@ -35,7 +35,7 @@ else:
 
     includefiles = ["p2pp.ui", 'p2ppconf.ui', "icons/icon.ico", "SendError.ui", "p3browser.ui"]
     excludes = ["tkinter"]
-    includes = ['PyQt5.QtWidgets', 'PyQt5.QtGui', 'PyQt5.Qt', 'PyQt5', 'PyQt5.QtCore', 'PyQt5.QWebEngineWidgets']
+    includes = ['PyQt5.QtWidgets', 'PyQt5.QtGui', 'PyQt5.Qt', 'PyQt5', 'PyQt5.QtCore', 'PyQt5.QtWebEngineWidgets']
 
     build_exe_options = {"packages": ["os"], 'include_files': includefiles, "excludes": excludes, "includes": includes}
 
