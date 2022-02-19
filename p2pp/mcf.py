@@ -22,9 +22,9 @@ import p2pp.manualswap as swap
 import base64
 import version
 import zipfile
+
 import p2pp.p3_upload as upload
 
-# import p2pp.genpreview as gp
 
 # GCODE BLOCK CLASSES
 CLS_UNDEFINED = 0
@@ -315,9 +315,11 @@ def parse_gcode_first_pass():
                 elif v.p3_thumbnail:
                     v.p3_thumbnail_data += line
 
+            # extract the main gcode building blocks
             if line.startswith('; CP'):  # code block assignment, based on Prusa Slicer injected CP comments
                 update_class(hash(line[5:]))
 
+            # determine the layerheight at which we're printing
             elif line.startswith(';LAYERHEIGHT'):  # Layer instructions, used to calculate the layer number
                 fields = line.split(' ')
                 try:
@@ -334,7 +336,7 @@ def parse_gcode_first_pass():
 
             try:
                 if line[0] == 'T':
-                    if v.set_tool == -1:
+                    if v.set_tool == -1:  # ignore the first tool setting for purging
                         v.block_classification = CLS_NORMAL
                     else:
                         v.block_classification = CLS_TOOL_PURGE
@@ -342,7 +344,7 @@ def parse_gcode_first_pass():
                     v.set_tool = cur_tool
             except (TypeError, ValueError):
                 gui.log_warning("Unknown T-command: {}".format(line))
-            except IndexError:
+            except IndexError:   # in case there is an empty line there will be no line[0]
                 pass
 
         code = gcode.create_command(line, is_comment, v.block_classification)
@@ -690,8 +692,8 @@ def parse_gcode_second_pass():
             if not v.towerskipped and current_block_class == CLS_EMPTY and v.current_layer_is_skippable:
                 v.towerskipped = (g[gcode.MOVEMENT] & gcode.INTOWER) == gcode.INTOWER
 
-            if v.towerskipped or current_block_class in [CLS_BRIM, CLS_ENDGRID, CLS_EMPTY]:
-                gcode.move_to_comment(g, "--P2PP-- full purge skipped")
+            if v.towerskipped or current_block_class in [CLS_BRIM, CLS_ENDGRID]:
+                gcode.move_to_comment(g, "--P2PP-- full purge skipped [Excluded]")
                 gcode.issue_command(g)
                 continue
 
@@ -699,7 +701,7 @@ def parse_gcode_second_pass():
                 if purge:
                     if g[gcode.EXTRUDE]:
                         v.side_wipe_length += g[gcode.E]
-                    gcode.move_to_comment(g, "--P2PP-- full purge skipped ")
+                    gcode.move_to_comment(g, "--P2PP-- full purge skipped [Included]")
                 gcode.issue_command(g)
                 continue
 

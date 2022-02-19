@@ -7,11 +7,12 @@ __email__ = 'P2PP@pandora.be'
 
 import sys
 import os
-import ftplib
+import requests
 import p2pp.variables as v
 import p2pp.gui as gui
 from PyQt5 import uic, QtCore
-# from PyQt5 import QtWebEngineWidgets
+
+#from PyQt5 import QtWebEngineWidgets
 
 
 def uploadfile(localfile, p3file):
@@ -28,57 +29,48 @@ def uploadfile(localfile, p3file):
 
     form.RetryButton.setText("Retry")
 
-
-
     gui.create_logitem("Sending file {}  to P3 ({})".format(p3file, v.p3_hostname), "blue")
     gui.app.sync()
     while v.retry_state:
         try:
 
-            ftp = ftplib.FTP(v.p3_hostname, timeout=10)
-            ftp.login()
-
-            gui.create_logitem("Logged in to :{} ".format(v.p3_hostname))
-            gui.app.sync()
-
-            try:
-                zipfile = open(localfile, "rb")
+            with open(localfile, "rb") as mcfx_file:
                 gui.create_logitem("Uploading {}".format(p3file))
-                ftp.storbinary("STOR {}".format(p3file), zipfile)
-                gui.create_logitem("Upload Completed")
-                v.retry_state = False
-
-            except ftplib.all_errors:
-
-                gui.log_warning("Could not send file ({}) to P3 ({})".format(p3file, v.p3_hostname))
-                gui.app.sync()
-                _error = "Connected to Device but Failed to send file to P3\nFilename: {}".format(p3file)
-
-            except IOError:
-                gui.log_warning("Could not send file ({}) to P3 ({})".format(p3file, v.p3_hostname))
-                gui.app.sync()
-                _error = "Could not open local output file"
-
-            ftp.quit()
-
-            # if v.showwebbrowser:
-            #     try:
-            #         # todo - change to supplied hostname:5000
-            #         # tgtName = "http://{}:5000".format(v.p3_hostname)
-            #
-            #         tgtName = "http://{}:5000".format("0PLM-P3P")
-            #         webform.webBrowser.load(QtCore.QUrl("http://192.168.3.201:5000"))
-            #         webwindow.show()
-            #         gui.app.exec()
-            #
-            #     except Exception as e:
-            #         gui.logexception(e)
-
-        except ftplib.all_errors:
-            gui.log_warning("Could not connect to P3 ({})".format(v.p3_hostname))
-            gui.log_warning("Make sure P3 is turned on and connected to the Netwoek")
+                upload_dict = {p3file, mcfx_file}
+                url = "http://{}:5000/print-file".format(v.p3_hostname)
+                response = requests.post(url, files=upload_dict)
+        except IOError:
+            gui.log_warning("Could not send file ({}) to P3 ({})".format(p3file, v.p3_hostname))
             gui.app.sync()
-            _error = "Cound not connect to P3 ({})\nMake Sure the P3 is turned on and connected to the network".format(v.p3_hostname)
+            _error = "Could not open local output file"
+
+        except requests.exceptions.Timeout:
+            gui.log_warning("Could not send file ({}) to P3 ({})\nConnection Timeout".format(p3file, v.p3_hostname))
+            gui.app.sync()
+            _error = "Connection Timeoute"
+
+        except requests.exceptions.TooManyRedirects:
+            gui.log_warning("Could not send file ({}) to P3 ({})\nToo Many Redirects".format(p3file, v.p3_hostname))
+            gui.app.sync()
+            _error = "Cound not connect to P3 ({})\nToo Many Redirections".format(v.p3_hostname)
+
+        except requests.exceptions.RequestException as e:
+            gui.log_warning("Could not send file ({}) to P3 ({}) - Too Many Redirects".format(p3file, v.p3_hostname))
+            gui.app.sync()
+            _error = "Cound not connect to P3 ({})".format(v.p3_hostname)
+
+        # if v.showwebbrowser:
+        #     try:
+        #         # todo - change to supplied hostname:5000
+        #         # tgtName = "http://{}:5000".format(v.p3_hostname)
+        #
+        #         tgtName = "http://{}:5000".format("0PLM-P3P")
+        #         webform.webBrowser.load(QtCore.QUrl("http://192.168.3.201:5000"))
+        #         webwindow.show()
+        #         gui.app.exec()
+        #
+        #     except Exception as e:
+        #         gui.logexception(e)
 
         if _error is not None:
             form.label_5.setText(_error)
@@ -89,7 +81,6 @@ def uploadfile(localfile, p3file):
             v.p3_hostname = form.hostname.text()
 
     gui.close_button_enable()
-
 
 
 def on_clickretry():
@@ -109,7 +100,6 @@ def on_clickabort():
     gui.create_logitem("Upload aborted by user")
     gui.close_button_enable()
     window.hide()
-
 
 
 # LOAD FORM
@@ -154,6 +144,3 @@ form.RetryButton.clicked.connect(on_clickretry)
 # webform = WebForm()
 # webform.setupUi(webwindow)
 # webform.closeButton.clicked.connect(on_clickclose)
-
-
-

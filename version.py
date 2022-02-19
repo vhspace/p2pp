@@ -141,13 +141,14 @@ releaseinfo = {
     "8.0.15": "Correct Z height after in PS2.4 in case of empty after purge.",
     "8.0.16": "Corrected project name for P2 output.",
     "8.0.17": "Corrected order of gcode inserted to avoid blob.",
+    "8.0.18": "Correction for removal of empty grid in full purge where actual purge was needed.",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 17
+Build = 18
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 

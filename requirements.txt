@@ -1,2 +1,4 @@
 PyQt5~=5.15.2
 setuptools~=50.3.2
+requests~=2.22.0
+
