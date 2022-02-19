@@ -11,8 +11,8 @@ import requests
 import p2pp.variables as v
 import p2pp.gui as gui
 from PyQt5 import uic, QtCore
-
-from PyQt5 import QtWebEngineWidgets
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 
 def uploadfile(localfile, p3file):
@@ -132,6 +132,8 @@ else:
     else:
         ui = "p3browser.ui"
 
+
+
 WebForm, WebWindow = uic.loadUiType(ui)
 webwindow = WebWindow()
 
@@ -139,5 +141,14 @@ webwindow.setWindowFlags(webwindow.windowFlags() | QtCore.Qt.CustomizeWindowHint
 webwindow.setWindowFlags(webwindow.windowFlags() & ~QtCore.Qt.WindowCloseButtonHint)
 
 webform = WebForm()
+
 webform.setupUi(webwindow)
 webform.closeButton.clicked.connect(on_clickclose)
+
+
+# dummy stuff to get
+class WebEngineTestWindow(QMainWindow):
+
+    def __init__(self):
+        self.webview = QWebEngineView(self)
+
