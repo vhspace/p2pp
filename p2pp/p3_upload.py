@@ -138,8 +138,6 @@ webwindow = WebWindow()
 
 webwindow.setWindowFlags(webwindow.windowFlags() | QtCore.Qt.CustomizeWindowHint)
 webwindow.setWindowFlags(webwindow.windowFlags() & ~QtCore.Qt.WindowCloseButtonHint)
-
 webform = WebForm()
-
 webform.setupUi(webwindow)
 webform.closeButton.clicked.connect(on_clickclose)
