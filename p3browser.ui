@@ -41,7 +41,7 @@
   <customwidget>
    <class>QWebEngineView</class>
    <extends>QWidget</extends>
-   <header>PyQt5.QWebEngineWidgets</header>
+   <header>PyQt5.QtWebEngineWidgets</header>
   </customwidget>
  </customwidgets>
  <resources/>
