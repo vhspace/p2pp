@@ -142,13 +142,14 @@ releaseinfo = {
     "8.0.16": "Corrected project name for P2 output.",
     "8.0.17": "Corrected order of gcode inserted to avoid blob.",
     "8.0.18": "Correction for removal of empty grid in full purge where actual purge was needed.",
+    "8.0.19": "Added web browser",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 18
+Build = 19
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
