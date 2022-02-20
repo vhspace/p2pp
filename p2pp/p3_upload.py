@@ -36,7 +36,6 @@ def uploadfile(localfile, p3file):
     gui.app.sync()
     while v.retry_state:
         try:
-
             with open(localfile, "rb") as mcfx_file:
                 gui.create_logitem("Uploading {}".format(p3file), "blue", True)
                 data = {'printFile': (p3file, mcfx_file, "application/octet-stream")}
@@ -54,9 +53,8 @@ def uploadfile(localfile, p3file):
             gui.app.sync()
             _error = "Connection Error occurred!"
 
-        if v.showwebbrowser:
+        if v.showwebbrowser and _error is None:
             try:
-                # todo - change to supplied hostname:5000
                 tgtName = "http://{}:5000".format(v.p3_hostname)
                 webform.webBrowser.load(QtCore.QUrl(tgtName))
                 webwindow.show()
