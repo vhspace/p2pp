@@ -18,10 +18,11 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 total_bytes = 0
 
+# SECTION CALLBACK PROGRESS
 
 def callback(monitor):
     pct = min(int(50*monitor.bytes_read / (total_bytes+1))+1, 50)
-    newline = "|" + '#'*pct + '-'*(50-pct)+"| {}/{}Kb [{:3}%]".format(int(monitor.bytes_read/1024),int(total_bytes/1024), pct*2)
+    newline = "|" + '█'*pct + '-'*(50-pct)+"| {}/{}Kb [{:3}%]".format(int(monitor.bytes_read/1024),int(total_bytes/1024), pct*2)
     cur = gui.form.textBrowser.textCursor()
     gui.form.textBrowser.moveCursor(QTextCursor.End, QTextCursor.MoveAnchor)
     gui.form.textBrowser.moveCursor(QTextCursor.StartOfLine, QTextCursor.MoveAnchor)
@@ -31,7 +32,7 @@ def callback(monitor):
     gui.form.textBrowser.setTextCursor(cur)
     gui.create_logitem(newline, "blue", True)
 
-
+# SECTION UPLOAD ROUTINE
 
 def uploadfile(localfile, p3file):
     global total_bytes
@@ -99,6 +100,7 @@ def uploadfile(localfile, p3file):
 
     gui.close_button_enable()
 
+# SECTION EVENT HANDLING
 
 def on_clickretry():
     v.retry_state = True
@@ -109,7 +111,6 @@ def on_clickretry():
 
 def on_clickclose():
     webwindow.hide()
-
     gui.close_button_enable()
 
 
@@ -120,7 +121,7 @@ def on_clickabort():
     webwindow.hide()
     gui.app.quit()
 
-# LOAD FORM
+# SECTION ERROR WINDOWS
 
 if sys.platform == 'darwin':
     if len(os.path.dirname(sys.argv[0])) > 0:
@@ -146,6 +147,8 @@ window.setWindowFlag(QtCore.Qt.WindowMinMaxButtonsHint, False)
 form.AbortButton.clicked.connect(on_clickabort)
 form.RetryButton.clicked.connect(on_clickretry)
 
+
+# SECTION BROWSER
 
 if sys.platform == 'darwin':
     if len(os.path.dirname(sys.argv[0])) > 0:

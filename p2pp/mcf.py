@@ -1060,18 +1060,6 @@ def p2pp_process_file(input_file, output_file):
         os.remove(os.path.join(path, "print.gcode"))
         os.remove(im_file)
 
-        if v.uploadfile:
-
-            try:  # get the correct output filename from the PS environment variable
-                filename = os.path.basename(os.environ["SLIC3R_PP_OUTPUT_NAME"])
-                if filename.endswith(".gcode"):
-                    filename = filename.replace(".gcode", ".mcfx")
-
-                filename = filename.replace(" ", "_")
-            except (TypeError, KeyError):  # regardsless of the error, use this filename
-                filename = "output.mcfx"
-
-            upload.uploadfile(output_file, filename)
 
     if v.accessory_mode:
 
@@ -1099,14 +1087,27 @@ def p2pp_process_file(input_file, output_file):
 
     gui.progress_string(101)
 
-    if (len(v.process_warnings) > 0 and not v.ignore_warnings) or v.consolewait:
+    if v.palette3:
+        gui.create_logitem(
+            "===========================================================================================", "green")
+        gui.create_logitem(
+            "Go to https://github.com/tomvandeneede/p2pp/wiki for more information on P2PP Configuration", "green")
+        gui.create_logitem(
+            "===========================================================================================", "green")
 
-        if v.palette3:
-            gui.create_logitem(
-                "===========================================================================================", "green")
-            gui.create_logitem(
-                "Go to https://github.com/tomvandeneede/p2pp/wiki for more information on P2PP Configuration", "green")
-            gui.create_logitem(
-                "===========================================================================================", "green")
+    if v.uploadfile:
+
+        try:  # get the correct output filename from the PS environment variable
+            filename = os.path.basename(os.environ["SLIC3R_PP_OUTPUT_NAME"])
+            if filename.endswith(".gcode"):
+                filename = filename.replace(".gcode", ".mcfx")
+
+            filename = filename.replace(" ", "_")
+        except (TypeError, KeyError):  # regardsless of the error, use this filename
+            filename = "output.mcfx"
+
+        upload.uploadfile(output_file, filename)
+
+    if (len(v.process_warnings) > 0 and not v.ignore_warnings) or v.consolewait:
 
         gui.close_button_enable()
