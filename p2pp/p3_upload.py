@@ -7,14 +7,33 @@ __email__ = 'P2PP@pandora.be'
 
 import sys
 import os
+from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
 import requests
+
 import p2pp.variables as v
 import p2pp.gui as gui
 from PyQt5 import uic, QtCore
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
+from PyQt5.QtGui import QTextCursor
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+
+total_bytes = 0
+
+def callback(monitor):
+    pct = min(int(50*monitor.bytes_read / (total_bytes+1))+1, 50)
+    newline = "|" + '#'*pct + '-'*(50-pct)+"| [{:3}%]".format(pct*2)
+    cur = gui.form.textBrowser.textCursor()
+    gui.form.textBrowser.moveCursor(QTextCursor.End, QTextCursor.MoveAnchor)
+    gui.form.textBrowser.moveCursor(QTextCursor.StartOfLine, QTextCursor.MoveAnchor)
+    gui.form.textBrowser.moveCursor(QTextCursor.End, QTextCursor.KeepAnchor)
+    gui.form.textBrowser.textCursor().removeSelectedText()
+    gui.form.textBrowser.textCursor().deletePreviousChar()
+    gui.form.textBrowser.setTextCursor(cur)
+    gui.create_logitem(newline, "blue", True)
+
 
 
 def uploadfile(localfile, p3file):
+    global total_bytes
     _error = None
 
     v.retry_state = True
@@ -38,9 +57,16 @@ def uploadfile(localfile, p3file):
         try:
             with open(localfile, "rb") as mcfx_file:
                 gui.create_logitem("Uploading {}".format(p3file), "blue", True)
-                data = {'printFile': (p3file, mcfx_file, "application/octet-stream")}
+                encoder = MultipartEncoder({
+                    'printFile': (p3file, mcfx_file, "application/octet-stream"),
+                })
+                data = MultipartEncoderMonitor(encoder, callback)
+                gui.create_logitem("|" + '.'*50 + "|", "blue", True)
+                total_bytes = encoder.len
+                # data = {'printFile': (p3file, mcfx_file, "application/octet-stream")}
                 url = "http://{}:5000/print-file".format(v.p3_hostname)
-                response = requests.post(url,  files=data)
+
+                response = requests.post(url,  data=data, headers={'Content-Type': data.content_type})
                 if response.ok:
                     _error = None
                     v.retry_state = False
@@ -49,6 +75,7 @@ def uploadfile(localfile, p3file):
                     _error = "Error [{}] {} ".format(response.status_code, response.reason)
 
         except Exception as e:
+            print(e)
             gui.log_warning("Could not send file ({}) to P3 ({})".format(p3file, v.p3_hostname))
             gui.app.sync()
             _error = "Connection Error occurred!"
