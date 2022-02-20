@@ -18,6 +18,7 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 total_bytes = 0
 
+
 def callback(monitor):
     pct = min(int(50*monitor.bytes_read / (total_bytes+1))+1, 50)
     newline = "|" + '#'*pct + '-'*(50-pct)+"| [{:3}%]".format(pct*2)
