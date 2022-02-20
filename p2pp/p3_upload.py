@@ -21,7 +21,7 @@ total_bytes = 0
 
 def callback(monitor):
     pct = min(int(50*monitor.bytes_read / (total_bytes+1))+1, 50)
-    newline = "|" + '#'*pct + '-'*(50-pct)+"| [{:3}%]".format(pct*2)
+    newline = "|" + '#'*pct + '-'*(50-pct)+"| {}/{}Kb [{:3}%]".format(int(monitor.bytes_read/1024),int(total_bytes/1024), pct*2)
     cur = gui.form.textBrowser.textCursor()
     gui.form.textBrowser.moveCursor(QTextCursor.End, QTextCursor.MoveAnchor)
     gui.form.textBrowser.moveCursor(QTextCursor.StartOfLine, QTextCursor.MoveAnchor)
