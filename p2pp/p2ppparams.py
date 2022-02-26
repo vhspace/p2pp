@@ -328,7 +328,7 @@ def check_config_parameters(keyword, value):
         fields = value.split(",")
         for i in fields:
             try:
-                v.blobster_advanced_fan.append(abs(int(i)))
+                v.blobster_advanced_fan.append(int(min(abs(int(i)), 100)*2.55))
             except ValueError:
                 gui.log_warning("BLOBSTER_ADVANCED_FAN parameter accepts a list of interger values (percentage 0-100)")
         return
