@@ -674,7 +674,7 @@ def parse_gcode_second_pass():
             # before first extrusion prime the nozzle
             if not v.bb3d_hasprimed and g[gcode.EXTRUDE]:
                 if v.bigbrain3d_purge_enabled:
-                    create_side_wipe(v.bigbrain3d_prime * v.bigbrain3d_blob_size)
+                    create_side_wipe(v.bigbrain3d_prime * v.mechpurge_blob_size)
                 v.bb3d_hasprimed = True
 
         # --------------------- FULL PURGE PROCESSING
@@ -698,10 +698,11 @@ def parse_gcode_second_pass():
                 continue
 
             if current_block_class in [CLS_TOOL_PURGE, CLS_ENDPURGE, CLS_EMPTY]:
-                if purge:
-                    if g[gcode.EXTRUDE]:
-                        v.side_wipe_length += g[gcode.E]
+                if purge and g[gcode.EXTRUDE]:
+                    v.side_wipe_length += g[gcode.E]
                     gcode.move_to_comment(g, "--P2PP-- full purge skipped [Included]")
+                else:
+                    gcode.move_to_comment(g, "--P2PP-- full purge skipped [Excluded]")
                 gcode.issue_command(g)
                 continue
 
@@ -995,7 +996,7 @@ def p2pp_process_file(input_file, output_file):
 
     path, _ = os.path.split(output_file)
 
-    if v.palette3:
+    if v.palette3 and not v.accessory_mode:
         opf = open(os.path.join(path, "print.gcode"), "wb")
         gui.create_logitem("Generating MCFX file: " + output_file)
     else:
@@ -1030,7 +1031,12 @@ def p2pp_process_file(input_file, output_file):
         meta_file = os.path.join(path, "meta.json")
         palette_file = os.path.join(path, "palette.json")
         im_file = os.path.join(path, "thumbnail.png")
-        gcode_file = os.path.join(path, "print.gcode")
+
+        # 22/02/2022 added accessory mode for palette 3
+        if v.accessory_mode:
+            gcode_file = os.path.join(path, output_file)
+        else:
+            gcode_file = os.path.join(path, "print.gcode")
 
         gui.create_logitem("Generating Palette 3 output files")
         mf = open(meta_file, 'wb')
@@ -1048,20 +1054,31 @@ def p2pp_process_file(input_file, output_file):
         im.write(base64.b64decode(v.p3_thumbnail_data))
         im.close()
 
-        zipf = zipfile.ZipFile(output_file, 'w', zipfile.ZIP_DEFLATED)
-        zipf.write(meta_file, "meta.json")
-        zipf.write(palette_file, "palette.json")
-        zipf.write(gcode_file, "print.gcode")
-        zipf.write(im_file, "thumbnail.png")
-        zipf.close()
+        # 22/02/2022 added accessory mode for palette 3
+        if v.accessory_mode:
+            maffile = maffile + ".mafx"
+
+            gui.create_logitem("Generating PALETTE MAFX file: " + maffile)
+            zipf = zipfile.ZipFile(maffile, 'w', zipfile.ZIP_DEFLATED)
+            zipf.write(meta_file, "meta.json")
+            zipf.write(palette_file, "palette.json")
+            zipf.write(im_file, "thumbnail.png")
+            zipf.close()
+        else:
+            zipf = zipfile.ZipFile(output_file, 'w', zipfile.ZIP_DEFLATED)
+            zipf.write(meta_file, "meta.json")
+            zipf.write(palette_file, "palette.json")
+            zipf.write(gcode_file, "print.gcode")
+            zipf.write(im_file, "thumbnail.png")
+            zipf.close()
+            os.remove(os.path.join(path, "print.gcode"))
 
         os.remove(meta_file)
         os.remove(palette_file)
-        os.remove(os.path.join(path, "print.gcode"))
         os.remove(im_file)
 
-
-    if v.accessory_mode:
+    # 22/02/2022 added accessory mode for palette 3
+    if v.accessory_mode and not v.palette3:
 
         pre, ext = os.path.splitext(maffile)
         if v.palette_plus:

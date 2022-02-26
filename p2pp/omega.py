@@ -36,18 +36,38 @@ def algorithm_create_process_string(heating, compression, cooling):
 
 
 def algorithm_process_material_configuration(splice_info):
+
+    # 22/02/2022 - Added check for correctness of the parameters
+    error = True
+
     fields = splice_info.split("_")
     if fields[0] == "DEFAULT" and len(fields) == 4:
-        v.default_splice_algorithm = algorithm_create_process_string(fields[1],
-                                                                     fields[2],
-                                                                     fields[3])
+        try:
+            check = float(fields[1]) + float(fields[2]) + float(fields[3])
+            v.default_splice_algorithm = algorithm_create_process_string(fields[1],
+                                                                         fields[2],
+                                                                         fields[3])
+            error = False
+        except ValueError:
+            pass
+
 
     if len(fields) == 5:
         key = "{}{}".format(fields[0],
                             fields[1])
-        v.splice_algorithm_dictionary[key] = algorithm_create_process_string(fields[2],
-                                                                             fields[3],
-                                                                             fields[4])
+        try:
+            check = float(fields[2]) + float(fields[3]) + float(fields[4])
+            error = False
+            v.splice_algorithm_dictionary[key] = algorithm_create_process_string(fields[2],
+                                                                                 fields[3],
+                                                                                 fields[4])
+        except ValueError:
+            pass
+
+    if error:
+        gui.log_warning("Error splice info: {}".format(splice_info))
+
+
 
 
 def algorithm_transition_used(from_input, to_input):
@@ -127,7 +147,7 @@ def generatesummary():
         pingtext = ";Ping {:04} at {:-8.2f}mm\n".format(i + 1, v.ping_extruder_position[i])
         summary.append(pingtext)
 
-    if v.side_wipe and v.side_wipe_loc == "" and not v.bigbrain3d_purge_enabled:
+    if v.side_wipe and v.side_wipe_loc == "" and not v.bigbrain3d_purge_enabled and not v.blobster_purge_enabled:
         gui.log_warning("Using sidewipe with undefined SIDEWIPELOC!!!")
 
     return summary

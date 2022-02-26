@@ -12,6 +12,7 @@ import p2pp.variables as v
 
 # SECTION Helper functions
 
+
 def floatparameter(s):
     try:
         return float(s)
@@ -113,6 +114,12 @@ def check_config_parameters(keyword, value):
     if keyword == "P3_SHOWPRINTERPAGE":
         v.showwebbrowser = True
 
+    # toggles Palette 3 accessory mode = added 22/02/2022
+    if keyword == "ACCESSORYMODE_MAFX":
+        v.accessory_mode = True
+        gui.create_logitem("Config: Palette3 Accessory Mode Selected")
+        return
+
     # toggles Palette 2 accessory mode
     if keyword == "ACCESSORYMODE_MAF":
         v.accessory_mode = True
@@ -205,9 +212,16 @@ def check_config_parameters(keyword, value):
             gui.log_warning("Minimal first slice length adjusted to 100mm")
         return
 
-    # BB3D config parm
-    if keyword == "BIGBRAIN3D_BLOBSIZE":
-        v.bigbrain3d_blob_size = intparameter(value)
+    # SECTION BLOBSTER and BB3D
+
+    # BB3D/BLOBSTER config parm
+    if keyword in ["BIGBRAIN3D_BLOBSIZE", "BLOBSTER_BLOBSIZE" ]:
+        v.mechpurge_blob_size = intparameter(value)
+        return
+
+    # BLOBSTER config parm
+    if keyword in ["BLOBSTER_ENGAGETIME"]:
+        v.blobster_engagetime = intparameter(value)
         return
 
     # BB3D config parm
@@ -215,19 +229,19 @@ def check_config_parameters(keyword, value):
         v.single_blob = True
         return
 
-    # BB3D config parm
-    if keyword == "BIGBRAIN3D_BLOBSPEED":
-        v.bigbrain3d_blob_speed = intparameter(value)
+    # BB3D/blobster config parm
+    if keyword in ["BIGBRAIN3D_BLOBSPEED", "BLOBSTER_BLOBSPEED"]:
+        v.mechpurge_blob_speed = intparameter(value)
         return
 
-    # BB3D config parm
-    if keyword == "BIGBRAIN3D_COOLINGTIME":
-        v.bigbrain3d_blob_cooling_time = intparameter(value)
+    # BB3D/blobster config parm
+    if keyword in ["BIGBRAIN3D_COOLINGTIME", "BLOBSTER_COOLINGTIME"]:
+        v.mechpurge_blob_cooling_time = intparameter(value)
         return
 
-    # BB3D config parm
-    if keyword == "BIGBRAIN3D_PURGEPOSITION":
-        v.bigbrain3d_x_position = floatparameter(value)
+    # BB3D/blobster config parm
+    if keyword in ["BIGBRAIN3D_PURGEPOSITION", "BLOBSTER_PURGEPOSITION"]:
+        v.mechpurge_x_position = floatparameter(value)
         return
 
     # BB3D config parm
@@ -265,17 +279,17 @@ def check_config_parameters(keyword, value):
         v.bigbrain3d_left = -1
         return
 
-    # BB3D config parm
-    if keyword == "BIGBRAIN3D_CLEARANCE_MM":
-        v.bigbrain3d_minimalclearenceheight = floatparameter(value)
+    # BB3D/BLOBSTER config parm
+    if keyword in ["BIGBRAIN3D_CLEARANCE_MM", "BLOBSTER_CLEARANCE_MM"]:
+        v.mechpurge_minimalclearenceheight = floatparameter(value)
         return
 
-    # BB3D config parm
-    if keyword == "BIGBRAIN3D_RETRACT":
-        v.bigbrain3d_retract = floatparameter(value)
+    # BB3D/BLBSTER config parm
+    if keyword in ["BIGBRAIN3D_RETRACT", "BLOBSTER_RETRACT"]:
+        v.mechpurge_retract = floatparameter(value)
         return
 
-    # BB3D config parm
+    # BB3D/BLOBSTER config parm
     if keyword == "BIGBRAIN3D_ENABLE":
         if not v.wipe_remove_sparse_layers:
             v.bigbrain3d_purge_enabled = True
@@ -284,10 +298,25 @@ def check_config_parameters(keyword, value):
             gui.log_warning("<b>BIGBRAIN3D mode not compatible with sparse wipe tower in PS</b>")
         return
 
-    # BB3D config parm
-    if keyword == "BIGBRAIN3D_SMARTFAN":
-        v.bigbrain3d_smartfan = True
+    # BB3D/BLOBSTER config parm
+    if keyword == "BLOBSTER_ENABLE":
+        if not v.wipe_remove_sparse_layers:
+            v.blobster_purge_enabled = True
+            v.mechpurge_blob_size = 180
+            v.mechpurge_minimalclearenceheight = 30
+            v.mechpurge_blob_cooling_time = 60
+
+            gui.create_logitem("<b>BLOBSTER Will only work with installed hardware on a Prusa Printer</b>")
+        else:
+            gui.log_warning("<b>BLOBSTER mode not compatible with sparse wipe tower in PS</b>")
         return
+
+    # BB3D/BLOBSTER config parm
+    if keyword in ["BIGBRAIN3D_SMARTFAN", "BLOBSTER_SMARTFAN"]:
+        v.mechpurge_smartfan = True
+        return
+
+
 
     # defines the minimal splice length ( this is the safe length to make sure a splice is only heated once (70/90 for P2/P3 resp)
     if keyword == "MINSPLICE":

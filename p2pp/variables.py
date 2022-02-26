@@ -230,25 +230,29 @@ backpassed = False
 post_tower = False
 
 # prusa side wipe contraption
-bigbrain3d_x_position = 256.5
+mechpurge_x_position = 256.5
 bigbrain3d_y_position = None
-bigbrain3d_blob_cooling_time = 12
-bigbrain3d_blob_size = 40
-bigbrain3d_blob_speed = 200
+mechpurge_blob_cooling_time = 12
+mechpurge_blob_size = 40
+mechpurge_blob_speed = 200
 bigbrain3d_purge_enabled = False
-bigbrain3d_smartfan = False
+mechpurge_smartfan = False
 bigbrain3d_motorpower_high = 450
 bigbrain3d_motorpower_normal = 300
-bigbrain3d_retract = 3.0
+mechpurge_retract = 3.0
 bigbrain3d_whacks = 1
 bigbrain3d_fanoffdelay = 0
 bigbrain3d_left = 1
 bigbrain3d_prime = 0
-bigbrain3d_minimalclearenceheight = 20
+mechpurge_minimalclearenceheight = 20
 single_blob = False
 bigbrain3d_last_toolchange = -99
 bigbrain3d_matrix_blobs = False
 bb3d_hasprimed = False
+blobster_engagetime = 1000
+
+## BLOBSTER SPECIFIC
+blobster_purge_enabled = False
 
 tower_measure = False
 tower_measured = False
