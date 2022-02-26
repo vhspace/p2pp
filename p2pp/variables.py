@@ -250,6 +250,11 @@ bigbrain3d_last_toolchange = -99
 bigbrain3d_matrix_blobs = False
 bb3d_hasprimed = False
 blobster_engagetime = 1000
+blobster_advanced = False
+blobster_advanced_speed = []
+blobster_advanced_length = []
+blobster_advanced_fan = []
+blobsterwarning = False
 
 ## BLOBSTER SPECIFIC
 blobster_purge_enabled = False

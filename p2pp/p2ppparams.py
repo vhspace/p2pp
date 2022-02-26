@@ -298,6 +298,42 @@ def check_config_parameters(keyword, value):
             gui.log_warning("<b>BIGBRAIN3D mode not compatible with sparse wipe tower in PS</b>")
         return
 
+    if keyword == "BLOBSTER_ADVANCED":
+        v.blobster_advanced = True
+        gui.create_logitem("<b>BLOBSTER ADVANCED MODE ENABLED</b>")
+        return
+
+    if keyword == "BLOBSTER_ADVANCED_LENGTH":
+        v.blobster_advanced_length = []
+        fields = value.split(",")
+        for i in fields:
+            try:
+                v.blobster_advanced_length.append(abs(int(i)))
+            except ValueError:
+                gui.log_warning("BLOBSTER_ADVANCED_LENGTH parameter accepts a list of interger values (length in mm)")
+        return
+
+    if keyword == "BLOBSTER_ADVANCED_SPEED":
+        v.blobster_advanced_speed = []
+        fields = value.split(",")
+        for i in fields:
+            try:
+                v.blobster_advanced_speed.append(abs(int(i)))
+            except ValueError:
+                gui.log_warning("BLOBSTER_ADVANCED_SPEEDH parameter accepts a list of interger values (length in mm)")
+        return
+
+    if keyword == "BLOBSTER_ADVANCED_FAN":
+        v.blobster_advanced_fan = []
+        fields = value.split(",")
+        for i in fields:
+            try:
+                v.blobster_advanced_fan.append(abs(int(i)))
+            except ValueError:
+                gui.log_warning("BLOBSTER_ADVANCED_FAN parameter accepts a list of interger values (percentage 0-100)")
+        return
+
+
     # BB3D/BLOBSTER config parm
     if keyword == "BLOBSTER_ENABLE":
         if not v.wipe_remove_sparse_layers:

@@ -349,6 +349,17 @@ def parse_config_parameters():
                     else:
                         parameters.check_config_parameters(m.group(1), m.group(2))
 
+            if v.blobster_advanced:
+                if len(v.blobster_advanced_speed) == 0:
+                    gui.log_warning("BLOBSTER - Advanced mode required BLOBSTER_ADVANCED_SPEED parameter")
+                if len(v.blobster_advanced_fan) == 0:
+                    gui.log_warning("BLOBSTER - Advanced mode required BLOBSTER_ADVANCED_FAN parameter")
+                if len(v.blobster_advanced_length) == 0:
+                    gui.log_warning("BLOBSTER - Advanced mode required BLOBSTER_ADVANCED_LENGTH parameter")
+
+                if len(v.blobster_advanced_speed) != len(v.blobster_advanced_fan) or len(v.blobster_advanced_speed) != len(v.blobster_advanced_length):
+                    gui.log_warning("BLOBSTER - Advanced mode - BLOBSTER_ADVANCED_LENGTH/FAN/SPEED parameter must have same number of parameters")
+
         if gcode_line.startswith("; extruder_colour") or gcode_line.startswith("; filament_colour"):
             filament_colour = ''
             parameter_start = gcode_line.find("=")

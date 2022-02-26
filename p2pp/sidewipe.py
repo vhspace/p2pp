@@ -193,6 +193,37 @@ def generate_blobster_blob(length, count):
     issue_code("G1 X{:.3f} F10800  ; activate flicker".format(v.mechpurge_x_position - v.bigbrain3d_left * 30))
 
 
+def generate_blobster_advanced_blob(count):
+    issue_code("\n;---- BLOBSTER ADVANCED BLOB {}".format(count + 1), True)
+
+    setfanspeed(0)
+    issue_code(
+        "G1 X{:.3f} F1000   ; go to the actual wiping position".format(v.mechpurge_x_position))  # takes 2.5 seconds
+    issue_code(
+        "G4 P{}  ; Wait for Blobster to engage before purging".format(v.blobster_engagetime))
+
+    if v.retraction < 0:
+        purgetower.largeunretract()
+
+    try:
+        for i in range(len(v.blobster_advanced_speed)):
+            setfanspeed(v.blobster_advanced_fan[i])
+            issue_code("G1 E{:6.3f} F{}     ; Purge Part {} ".format(v.blobster_advanced_length[i],v.blobster_advanced_speed[i], i+1))
+    except IndexError:
+        if not v.blobsterwarning:
+            gui.log_warning("BLOBSTER ERROR: THIS FILE WILL NOT PRING AS EXPECTED!!!")
+            v.blobsterwarning = True
+
+    purgetower.largeretract(v.mechpurge_retract)
+
+    setfanspeed(255)
+    issue_code(
+        "G4 S{0:.0f}              ; blob {0}s cooling time".format(v.mechpurge_blob_cooling_time))
+    issue_code("G1 X{:.3f} F10800  ; activate flicker".format(v.mechpurge_x_position - v.bigbrain3d_left * 30))
+
+
+
+
 def create_sidewipe_blobster(length):
 
     # purge blobs should all be same size
@@ -248,7 +279,10 @@ def create_sidewipe_blobster(length):
     issue_code("; -- P2PP -- Generating {} blobs for {}mm of purge".format(purgeblobs, length), True)
 
     for i in range(purgeblobs):
-        generate_blobster_blob(v.mechpurge_blob_size, i)
+        if v.blobster_advanced:
+            generate_blobster_advanced_blob(i)
+        else:
+            generate_blobster_blob(v.mechpurge_blob_size, i)
 
     if not v.retraction < 0:
         purgetower.retract(v.current_tool)

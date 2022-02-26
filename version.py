@@ -143,14 +143,15 @@ releaseinfo = {
     "8.0.17": "Corrected order of gcode inserted to avoid blob.",
     "8.0.18": "Correction for removal of empty grid in full purge where actual purge was needed.",
     "8.0.19": "Added web browser",
-    "8.0.20": "Added initial BLOBSTER support[BETA]/ Correction FULLPURGEREDUCTION",
+    "8.0.20": "Added initial BLOBSTER support[very BETA]/ Correction FULLPURGEREDUCTION",
+    "8.0.21": "Added BLOBSTER_ADVANCED mode [very BETA]",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 20
+Build = 21
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
