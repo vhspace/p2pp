@@ -145,13 +145,14 @@ releaseinfo = {
     "8.0.19": "Added web browser",
     "8.0.20": "Added initial BLOBSTER support[very BETA]/ Correction FULLPURGEREDUCTION",
     "8.0.21": "Added BLOBSTER_ADVANCED mode [very BETA]",
+    "8.0.22": "Removed Z-Lift requirement",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 21
+Build = 22
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 

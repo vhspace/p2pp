@@ -31,7 +31,7 @@ filament_color_code = ["-"] * 20
 filament_short = [0, 0, 0, 0, 0, 0, 0, 0]
 
 retraction = 0.0
-retract_lift = [0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6]
+# retract_lift = [0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6]
 retract_length = [0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8]
 filament_diameter = [1.75, 1.75, 1.75, 1.75, 1.75, 1.75, 1.75, 1.75]
 filament_ids = []
