@@ -43,11 +43,11 @@ def check_config_parameters(keyword, value):
 
     # allows for delaying the change of temperature until after the putge block
     # not sure if this should stay in future releases.   To be evaluated
-    #  low complexity, but it add a waiting position calculation which moves off the regular path.
+    #  low complexity, but it adds a waiting position calculation which moves off the regular path.
     if keyword == "TEMPERATURECONTROL":
         v.process_temp = True
 
-    # saves the unprocessed file so it can be send for processing simulation in case of errors
+    # saves the unprocessed file, so it can be sent for processing simulation in case of errors
     if keyword == "SAVEUNPROCESSED":
         v.save_unprocessed = True
 
@@ -148,7 +148,7 @@ def check_config_parameters(keyword, value):
         return
 
     # Splice offset defines how much the start of the toolchange is located after the position of the toolchange.
-    # in general you want this value as small as possible BUT this value is the buffer you need when material is consumed
+    # in general, you want this value as small as possible BUT this value is the buffer you need when material is consumed
     # at a too high rate, so putting it very low may result in early transition
     if keyword == "SPLICEOFFSET":
         v.splice_offset = floatparameter(value)
@@ -194,8 +194,8 @@ def check_config_parameters(keyword, value):
         v.autoaddsplice = True
         return
 
-    # special reauest feature - not documents - allows for pings shorter than 300mm
-    if keyword == "POWERCHAOS":   # Special feature request to allow sub 300mm pings
+    # special reauest feature - not documents - allows for pings shorter than 300 mm
+    if keyword == "POWERCHAOS":   # Special feature request to allow sub 300 mm pings
         v.powerchaos = True
         return
 
@@ -215,7 +215,7 @@ def check_config_parameters(keyword, value):
     # SECTION BLOBSTER and BB3D
 
     # BB3D/BLOBSTER config parm
-    if keyword in ["BIGBRAIN3D_BLOBSIZE", "BLOBSTER_BLOBSIZE" ]:
+    if keyword in ["BIGBRAIN3D_BLOBSIZE", "BLOBSTER_BLOBSIZE"]:
         v.mechpurge_blob_size = intparameter(value)
         return
 
@@ -333,7 +333,6 @@ def check_config_parameters(keyword, value):
                 gui.log_warning("BLOBSTER_ADVANCED_FAN parameter accepts a list of interger values (percentage 0-100)")
         return
 
-
     # BB3D/BLOBSTER config parm
     if keyword == "BLOBSTER_ENABLE":
         if not v.wipe_remove_sparse_layers:
@@ -351,8 +350,6 @@ def check_config_parameters(keyword, value):
     if keyword in ["BIGBRAIN3D_SMARTFAN", "BLOBSTER_SMARTFAN"]:
         v.mechpurge_smartfan = True
         return
-
-
 
     # defines the minimal splice length ( this is the safe length to make sure a splice is only heated once (70/90 for P2/P3 resp)
     if keyword == "MINSPLICE":

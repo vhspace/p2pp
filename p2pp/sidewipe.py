@@ -73,6 +73,7 @@ def generate_bb3d_blob(length, count):
 
 # SECTION SideWipe BB3D
 
+
 def create_sidewipe_bb3d(length):
 
     # purge blobs should all be same size
@@ -80,7 +81,6 @@ def create_sidewipe_bb3d(length):
         filin = int(v.bigbrain3d_last_toolchange / 10)
         filout = v.bigbrain3d_last_toolchange % 10
         matidx = filin * v.colors + filout
-        purgeleft = 0
         purgeblobs = int(v.wiping_info[matidx])
         correction = 0
         length = purgeblobs * v.mechpurge_blob_size
@@ -160,11 +160,12 @@ def create_sidewipe_bb3d(length):
     issue_code("\n;-------------------------------\n", True)
 
 
-
 def generate_blobster_blob(length, count):
     issue_code("\n;---- BLOBSTER SIDEWIPE BLOB {} -- purge {:.3f}mm".format(count + 1, length), True)
 
     setfanspeed(0)
+    if count > 0:
+        issue_code("G4 P2000  ; Interblob wait")
     issue_code(
         "G1 X{:.3f} F1000   ; go to the actual wiping position".format(v.mechpurge_x_position))  # takes 2.5 seconds
     issue_code(
@@ -197,6 +198,8 @@ def generate_blobster_advanced_blob(count):
     issue_code("\n;---- BLOBSTER ADVANCED BLOB {}".format(count + 1), True)
 
     setfanspeed(0)
+    if count > 0:
+        issue_code("G4 P2000  ; Interblob wait")
     issue_code(
         "G1 X{:.3f} F1000   ; go to the actual wiping position".format(v.mechpurge_x_position))  # takes 2.5 seconds
     issue_code(
@@ -208,7 +211,7 @@ def generate_blobster_advanced_blob(count):
     try:
         for i in range(len(v.blobster_advanced_speed)):
             setfanspeed(v.blobster_advanced_fan[i])
-            issue_code("G1 E{:6.3f} F{}     ; Purge Part {} ".format(v.blobster_advanced_length[i],v.blobster_advanced_speed[i], i+1))
+            issue_code("G1 E{:6.3f} F{}     ; Purge Part {} ".format(v.blobster_advanced_length[i], v.blobster_advanced_speed[i], i+1))
     except IndexError:
         if not v.blobsterwarning:
             gui.log_warning("BLOBSTER ERROR: THIS FILE WILL NOT PRING AS EXPECTED!!!")
@@ -222,8 +225,6 @@ def generate_blobster_advanced_blob(count):
     issue_code("G1 X{:.3f} F10800  ; activate flicker".format(v.mechpurge_x_position - v.bigbrain3d_left * 30))
 
 
-
-
 def create_sidewipe_blobster(length):
 
     # purge blobs should all be same size
@@ -231,7 +232,6 @@ def create_sidewipe_blobster(length):
         filin = int(v.bigbrain3d_last_toolchange / 10)
         filout = v.bigbrain3d_last_toolchange % 10
         matidx = filin * v.colors + filout
-        purgeleft = 0
         purgeblobs = int(v.wiping_info[matidx])
         correction = 0
         length = purgeblobs * v.mechpurge_blob_size

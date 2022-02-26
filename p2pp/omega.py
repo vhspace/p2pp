@@ -152,9 +152,8 @@ def generatesummary():
 
     return summary
 
-
-
 # Section Warnings
+
 
 def generatewarnings():
     warnings = ["\n",
