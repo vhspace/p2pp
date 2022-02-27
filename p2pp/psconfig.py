@@ -391,22 +391,6 @@ def parse_config_parameters():
                 v.used_filament_types = list(set(filament_string))
             continue
 
-        # if gcode_line.startswith("; retract_lift = "):
-        #     lift_error = False
-        #     parameter_start = gcode_line.find("=")
-        #     if parameter_start != -1:
-        #         retracts = gcode_line[parameter_start + 1:].strip(" ").split(",")
-        #         v.retract_lift = [0.6] * max(len(retracts), v.colors)
-        #         for i in range(len(retracts)):
-        #             v.retract_lift[i] = float(retracts[i])
-        #             if v.retract_lift[i] == 0:
-        #                 lift_error = True
-        #                 gui.log_warning(
-        #                     "[Printer Settings]->[Extruders 1 -> {}]->[Retraction]->[Lift Z] should not be set to zero.".format(i))
-        #         if lift_error:
-        #             gui.log_warning("Generated file might not print correctly")
-        #     continue
-
         if gcode_line.startswith("; retract_length = "):
             retract_error = False
             parameter_start = gcode_line.find("=")
@@ -467,7 +451,7 @@ def parse_config_parameters():
                 header = "<table><tr><th>From\\To</th>"
                 data = ""
                 for i in range(color_table_size):
-                    header = header +"<th>  Input {}  </th>".format(i)
+                    header = header + "<th>  Input {}  </th>".format(i)
                     data = data + "<tr><th>Input {}   </th>".format(i)
                     for j in range(color_table_size):
                           data = data + ("<td align=center>{}</td>".format(int(wiping_info[j*color_table_size + i])))

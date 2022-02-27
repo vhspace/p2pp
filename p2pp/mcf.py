@@ -98,6 +98,10 @@ def gcode_process_toolchange(new_tool):
 
         v.bigbrain3d_last_toolchange = -abs(v.bigbrain3d_last_toolchange)
 
+        location += v.extra_runout_filament
+        v.material_extruded_per_color[v.current_tool] += v.extra_runout_filament
+        v.total_material_extruded += v.extra_runout_filament
+
         filldiff = v.minimaltotal_filament - v.total_material_extruded
         if filldiff > 0:
             gui.log_warning("Minimum print size not met - adding {:-5.2f}.. of filament".format(filldiff))
@@ -105,9 +109,6 @@ def gcode_process_toolchange(new_tool):
             v.material_extruded_per_color[v.current_tool] += filldiff
             v.total_material_extruded += filldiff
 
-        location += v.extra_runout_filament
-        v.material_extruded_per_color[v.current_tool] += v.extra_runout_filament
-        v.total_material_extruded += v.extra_runout_filament
 
     else:
         v.palette_inputs_used[new_tool] = True

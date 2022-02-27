@@ -146,13 +146,14 @@ releaseinfo = {
     "8.0.20": "Added initial BLOBSTER support[very BETA]/ Correction FULLPURGEREDUCTION",
     "8.0.21": "Added BLOBSTER_ADVANCED mode [very BETA]",
     "8.0.22": "Removed Z-Lift requirement",
+    "8.0.23": "Corrected minimal print length check for P3 ",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 22
+Build = 23
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
