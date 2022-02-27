@@ -265,8 +265,8 @@ def check_config_parameters(keyword, value):
         return
 
     # BB3D config parm
-    if keyword == "BIGBRAIN3D_PRIME_BLOBS":
-        v.bigbrain3d_prime = intparameter(value)
+    if keyword in ["BIGBRAIN3D_PRIME_BLOBS", "BLOBSTER_PRIME_BLOBS"]:
+        v.mechpurge_prime_blobs = intparameter(value)
         return
 
     # BB3D config parm

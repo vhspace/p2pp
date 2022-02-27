@@ -673,10 +673,10 @@ def parse_gcode_second_pass():
 
             # for PS2.4
             # before first extrusion prime the nozzle
-            if not v.bb3d_hasprimed and g[gcode.EXTRUDE]:
-                if v.bigbrain3d_purge_enabled:
-                    create_side_wipe(v.bigbrain3d_prime * v.mechpurge_blob_size)
-                v.bb3d_hasprimed = True
+            if not v.mechpurge_hasprimed and g[gcode.EXTRUDE]:
+                if v.bigbrain3d_purge_enabled or v.blobster_purge_enabled:
+                    create_side_wipe(v.mechpurge_prime_blobs * v.mechpurge_blob_size)
+                v.mechpurge_hasprimed = True
 
         # --------------------- FULL PURGE PROCESSING
         elif v.full_purge_reduction:
