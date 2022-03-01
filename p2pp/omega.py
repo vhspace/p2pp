@@ -428,12 +428,22 @@ def generate_meta():
 
 
 def generate_palette():
-    palette = {"version": "3.0",
+    if v.accessory_mode:
+        palette = {"version": "3.0",
+               "drives": [],
+               "splices": [],
+               "pings": [],
+               "pingCount": len(v.ping_extruder_position),
+               "algorithms": []
+               }
+    else:
+        palette = {"version": "3.0",
                "drives": [],
                "splices": [],
                "pingCount": len(v.ping_extruder_position),
                "algorithms": []
                }
+
     if len(v.splice_extruder_position) < 2:
         try:
             drive_used = v.splice_used_tool[0]+1
@@ -508,6 +518,16 @@ def generate_palette():
                     "compression": algo[1],
                     "cooling": algo[2]
                 })
+
+    if v.accessory_mode:
+        for i in range(len(v.splice_extruder_position)):
+            palette["pings"].append({
+                "length": v.ping_extruder_position[i],
+                "extrusion": v.ping_extrusion_between_pause[i]
+            })
+
+
+
 
     return json.dumps(palette, indent=2)
 

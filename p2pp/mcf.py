@@ -1058,7 +1058,7 @@ def p2pp_process_file(input_file, output_file):
         # 22/02/2022 added accessory mode for palette 3
         if v.accessory_mode:
             maffile = maffile + ".mafx"
-
+            maffile = maffile.replace(".gcode", "")
             gui.create_logitem("Generating PALETTE MAFX file: " + maffile)
             zipf = zipfile.ZipFile(maffile, 'w', zipfile.ZIP_DEFLATED)
             zipf.write(meta_file, "meta.json")
