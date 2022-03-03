@@ -212,6 +212,11 @@ def check_config_parameters(keyword, value):
             gui.log_warning("Minimal first slice length adjusted to 100mm")
         return
 
+    # firmware purge support
+    if keyword == "FIRMWARE_PURGE_LENGTH":
+        v.firmwarepurge = intparameter(value)
+        return
+
     # SECTION BLOBSTER and BB3D
 
     # BB3D/BLOBSTER config parm

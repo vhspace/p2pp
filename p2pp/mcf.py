@@ -407,6 +407,10 @@ def parse_gcode_second_pass():
     v.last_parsed_layer = -1
     v.previous_block_classification = v.parsed_gcode[0][gcode.CLASS]
 
+    # include firmware purge length accounting
+    v.total_material_extruded = v.firmwarepurge
+    v.material_extruded_per_color[v.current_tool] = v.firmwarepurge
+
     for process_line_count in range(total_line_count):
 
         try:
