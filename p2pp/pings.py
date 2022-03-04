@@ -20,7 +20,7 @@ acc_second_pause = ";PING PAUSE 2 START\nG4 P4000\nG1\nG4 P3000\nG1\n;PING PAUSE
 # SECTION PING chk ACC/CONN
 
 def check_first_ping_condition():
-    return (v.total_material_extruded - v.last_ping_extruder_position) > v.ping_interval
+    return (v.total_material_extruded - v.last_ping_extruder_position) > (v.ping_interval-19.0)
 
 
 def check_connected_ping():

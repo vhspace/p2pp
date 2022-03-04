@@ -743,7 +743,7 @@ def parse_gcode_second_pass():
 
             if classupdate:
 
-                if current_block_class in [CLS_TOOL_PURGE, CLS_EMPTY]:
+                if current_block_class in [CLS_TOOL_PURGE, CLS_EMPTY] and g[gcode.E]:
                     if v.acc_ping_left <= 0:
                         pings.check_accessorymode_first()
                     v.enterpurge = True

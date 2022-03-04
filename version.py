@@ -150,13 +150,14 @@ releaseinfo = {
     "8.0.24": "Added prime blobs for blobster",
     "8.0.25": "BUGFix P3/P3Pro accessory mode",
     "8.0.26": "Added parameter FIRMWARE_PURGE_LENGTH",
+    "8.0.27": "Correction for accessory mode pings",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 26
+Build = 27
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
