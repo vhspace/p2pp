@@ -34,6 +34,7 @@ def callback(monitor):
 
 # SECTION UPLOAD ROUTINE
 
+
 def uploadfile(localfile, p3file):
     global total_bytes
     _error = None
@@ -41,6 +42,18 @@ def uploadfile(localfile, p3file):
     v.retry_state = True
 
     # read file
+
+    # check the size of the file to be sent:
+    try:
+        file_size = os.path.getsize(localfile)
+        if file_size > 1 << 30:   #1GB
+            gui.log_warning("Filesize ({}) exceeds 1GB.  This file cannot be uploaded.".format(file_size))
+            gui.log_warning("Please use a memory stick to transfer files >1GB.")
+            return
+    except OSError:
+        gui.log_warning("Upload file does not seems to be ready for uploading (does not exists of is inaccessible)")
+        gui.log_warning("Please try uploading using a  memory stick.")
+        return
 
     while v.p3_hostname == "":
         form.label_5.setText("Please specify hostname or IP.\nP3_HOSTNAME config parameter missing.")
