@@ -349,7 +349,6 @@ def generate_meta():
     vola = {}
     inputsused = 0
 
-
     if v.palette3 and len(v.splice_extruder_position) < 2:
         try:
             drive_used = v.splice_used_tool[0]+1
@@ -520,7 +519,7 @@ def generate_palette():
                 })
 
     if v.accessory_mode:
-        for i in range(len(v.splice_extruder_position)):
+        for i in range(len(v.ping_extruder_position)):
             palette["pings"].append({
                 "length": v.ping_extruder_position[i],
                 "extrusion": v.ping_extrusion_between_pause[i]
