@@ -28,7 +28,26 @@ if sys.platform == "darwin":
         setup_requires=['py2app']
     )
 
-else:
+if sys.platform == "linux":
+    import sys
+    import version
+    from cx_Freeze import setup, Executable
+
+    includefiles = ["p2pp.ui", 'p2ppconf.ui', "icons/icon.ico", "SendError.ui", "p3browser.ui"]
+    excludes = ["tkinter"]
+    includes = ['PyQt5.QtWidgets', 'PyQt5.QtGui', 'PyQt5.Qt', 'PyQt5', 'PyQt5.QtCore', 'PyQt5.QtWebEngineWidgets']
+
+    build_exe_options = {"packages": ["os"], 'include_files': includefiles, "excludes": excludes, "includes": includes}
+
+    setup(name="p2pp",
+          version=version.Version,
+          description="P2PP - Palette 2 Post Processing tool for Prusa Slicer",
+          options={"build_exe": build_exe_options},
+          executables=[Executable("p2pp.py", base=None, icon="icons/icon.ico")]
+          )
+
+
+if sys.platform == "win32":
     import sys
     import version
     from cx_Freeze import setup, Executable
