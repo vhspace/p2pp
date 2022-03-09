@@ -146,7 +146,7 @@ def log_warning(text):
 
 # SECTION MAIN Routine
 
-if sys.platform == 'darwin':
+if sys.platform == 'darwin' or sys.platform == 'linux':
     if len(os.path.dirname(sys.argv[0])) > 0:
         ui = "{}/{}".format(os.path.dirname(sys.argv[0]), ui_file)
     else:

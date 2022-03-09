@@ -136,7 +136,8 @@ def on_clickabort():
 
 # SECTION ERROR WINDOWS
 
-if sys.platform == 'darwin':
+
+if sys.platform == 'darwin' or sys.platform == "linux":
     if len(os.path.dirname(sys.argv[0])) > 0:
         ui = "{}/SendError.ui".format(os.path.dirname(sys.argv[0]))
     else:
@@ -163,7 +164,7 @@ form.RetryButton.clicked.connect(on_clickretry)
 
 # SECTION BROWSER
 
-if sys.platform == 'darwin':
+if sys.platform == 'darwin' or sys.platform == 'linux':
     if len(os.path.dirname(sys.argv[0])) > 0:
         ui = "{}/p3browser.ui".format(os.path.dirname(sys.argv[0]))
     else:

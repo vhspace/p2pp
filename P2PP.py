@@ -52,6 +52,10 @@ if len(sys.argv) == 1:
         gui.app.sync()
         if platformD == 'Darwin':
             gui.create_logitem("<b>open -W -a P2PP.app --args<b>", "red")
+        elif platformD == 'linux':
+            pathname = os.path.dirname(sys.argv[0])
+            pathname = pathname.replace(" ", "! ")
+            gui.create_logitem("<b>{}/P2PP</b>".format(os.path.dirname(sys.argv[0]).replace(" ", "! ")), "red")
         elif platformD == 'Windows':
             pathname = os.path.dirname(sys.argv[0])
             pathname = pathname.replace(" ", "! ")
