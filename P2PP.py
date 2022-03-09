@@ -50,16 +50,20 @@ if len(sys.argv) == 1:
                            "blue")
         gui.create_emptyline()
         gui.app.sync()
+
         if platformD == 'Darwin':
             gui.create_logitem("<b>open -W -a P2PP.app --args<b>", "red")
-        elif platformD == 'linux':
+
+        if platformD == 'linux':
             pathname = os.path.dirname(sys.argv[0])
             pathname = pathname.replace(" ", "! ")
             gui.create_logitem("<b>{}/P2PP</b>".format(os.path.dirname(sys.argv[0]).replace(" ", "! ")), "red")
-        elif platformD == 'Windows':
+
+        if platformD == 'Windows':
             pathname = os.path.dirname(sys.argv[0])
             pathname = pathname.replace(" ", "! ")
             gui.create_logitem("<b>{}\\p2pp.exe</b>".format(os.path.dirname(sys.argv[0]).replace(" ", "! ")), "red")
+
         gui.app.sync()
         gui.create_emptyline()
         gui.create_logitem("This requires ADVANCED/EXPERT settings to be visible", "blue")
