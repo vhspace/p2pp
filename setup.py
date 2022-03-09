@@ -43,7 +43,7 @@ if sys.platform == "linux":
           version=version.Version,
           description="P2PP - Palette 2 Post Processing tool for Prusa Slicer",
           options={"build_exe": build_exe_options},
-          executables=[Executable("p2pp.py", base=None, icon="icons/icon.ico")]
+          executables=[Executable("P2PP.py", base=None, icon="icons/icon.ico")]
           )
 
 
