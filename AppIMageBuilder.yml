@@ -2,10 +2,12 @@ version: 1
 script:
   - rm -rf AppDir  | true
   - mkdir -p AppDir/usr/src
+  - mkdir -p AppDir/share/icons
   - cd AppDir/usr/src
   - git clone --branch master git://github.com/tomvandeneede/p2pp.git
   - cd ../../..
   - cp AppDir/usr/src/requirements.txt .
+  - cp AppDir/usr/src/icon.ico /Appdir/share/icons
   - python3 -m pip install --ignore-installed --prefix=/usr --root=AppDir -r ./requirements.txt
 
 
@@ -15,7 +17,7 @@ AppDir:
   app_info:
     id: org.tomvandeneede.P2PP
     name: P2PP Prusa Slicer Post Processor
-    icon: icon.icn
+    icon: /AppDir/usr/share/icons/icon.icn
     version: 0.1.0
     # Set the python executable as entry point
     exec: usr/bin/python3
@@ -48,5 +50,6 @@ AppDir:
       PYTHONPATH: '${APPDIR}/usr/lib/python3.8/site-packages'
 
 AppImage:
+  arch: amd64
   update-information: 'gh-releases-zsync|AppImageCrafters|python-appimage-example|latest|python-appimage-*x86_64.AppImage.zsync'
   sign-key: None
