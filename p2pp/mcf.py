@@ -401,6 +401,7 @@ def parse_gcode_first_pass():
 
 def parse_gcode_second_pass():
     idx = 0
+    intower = False
     purge = False
     total_line_count = len(v.parsed_gcode)
     v.retraction = 0
@@ -685,6 +686,9 @@ def parse_gcode_second_pass():
         # --------------------- FULL PURGE PROCESSING
         elif v.full_purge_reduction:
 
+            if (g[gcode.MOVEMENT] & 3) > 0:  # if there is a movement
+                intower = (g[gcode.MOVEMENT] & gcode.INTOWER) == gcode.INTOWER
+
             if classupdate:
 
                 if current_block_class == CLS_NORMAL:
@@ -711,9 +715,9 @@ def parse_gcode_second_pass():
                 gcode.issue_command(g)
                 continue
 
+
             if v.toolchange_processed and current_block_class == CLS_NORMAL:
-                if v.side_wipe_length and (g[gcode.MOVEMENT] & 3) == 3 and not (g[
-                                                                                    gcode.MOVEMENT] & gcode.INTOWER) == gcode.INTOWER:
+                if v.side_wipe_length and (g[gcode.MOVEMENT] & 3) == 3 and not (g[gcode.MOVEMENT] & gcode.INTOWER) == gcode.INTOWER:
                     purgetower.purge_generate_sequence()
                     v.toolchange_processed = False
                     # do not issue code here as the next code might require further processing such as retractioncorrection
@@ -737,6 +741,11 @@ def parse_gcode_second_pass():
                     gcode.move_to_comment(g, "--P2PP-- Double Retract")
                 else:
                     v.retraction += g[gcode.E]
+
+            if intower:
+                gcode.move_to_comment(g, "--P2PP-- full purge skipped [Excluded]")
+                gcode.issue_command(g)
+                continue
 
         # --------------------- NO TOWER PROCESSING
         else:
