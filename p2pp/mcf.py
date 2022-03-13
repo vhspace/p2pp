@@ -750,11 +750,9 @@ def parse_gcode_second_pass():
         # --------------------- NO TOWER PROCESSING
         else:
 
-            if classupdate:
-
-                if current_block_class in [CLS_TOOL_PURGE, CLS_EMPTY] and g[gcode.E]:
-                    if v.acc_ping_left <= 0:
-                        pings.check_accessorymode_first()
+            if current_block_class in [CLS_TOOL_PURGE, CLS_EMPTY] and g[gcode.E]:
+                if v.acc_ping_left <= 0:
+                    pings.check_accessorymode_first()
                     v.enterpurge = True
 
             # TOEE - Added to limit the speed of the extrusions during purge to defined WIPEFEEDRATE
