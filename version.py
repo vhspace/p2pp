@@ -155,13 +155,14 @@ releaseinfo = {
     "8.0.29": "BUGFix P3/P3Pro accessory mode",
     "8.0.30": "BUGFix Full Purge Mode",
     "8.0.31": "BUGFix Accessory Mode Pings in Empty Grids",
+    "8.0.32": "BUGFix MAFX file",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 31
+Build = 32
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 

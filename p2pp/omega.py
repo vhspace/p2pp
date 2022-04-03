@@ -521,7 +521,7 @@ def generate_palette():
     if v.accessory_mode:
         for i in range(len(v.ping_extruder_position)):
             palette["pings"].append({
-                "length": v.ping_extruder_position[i],
+                "length": float(int(v.ping_extruder_position[i]*100)/100.0),
                 "extrusion": v.ping_extrusion_between_pause[i]
             })
 
