@@ -116,12 +116,21 @@ def check_config_parameters(keyword, value):
 
     # toggles Palette 3 accessory mode = added 22/02/2022
     if keyword == "ACCESSORYMODE_MAFX":
+        if not v.palette3:
+            gui.log_warning("ACCESSORYMODE_MAFX can only be used with Palette 3!")
+            gui.log_warning("This file may not print correctly")
+
         v.accessory_mode = True
         gui.create_logitem("Config: Palette3 Accessory Mode Selected")
         return
 
     # toggles Palette 2 accessory mode
     if keyword == "ACCESSORYMODE_MAF":
+        if v.palette3:
+            gui.log_warning("For Palette3 use ACCESSORYMODE_MAFX instead of ACCESSORYMODE_MAF")
+            gui.log_warning("This file may not print correctly")
+
+
         v.accessory_mode = True
         v.colors = 4
         gui.create_logitem("Config: Palette2 Accessory Mode Selected")
@@ -130,6 +139,10 @@ def check_config_parameters(keyword, value):
 
     # toggles Palette + Accessory Mode
     if keyword == "ACCESSORYMODE_MSF":
+        if v.palette3:
+            gui.log_warning("For Palette3 use ACCESSORYMODE_MAFX instead of ACCESSORYMODE_MSF")
+            gui.log_warning("This file may not print correctly")
+
         v.accessory_mode = True
         v.palette_plus = True
         v.colors = 4
