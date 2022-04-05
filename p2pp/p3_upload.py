@@ -13,10 +13,12 @@ import requests
 import p2pp.variables as v
 import p2pp.gui as gui
 from PyQt5 import uic, QtCore
-from PyQt5.QtGui import QTextCursor
+from PyQt5.QtGui import QTextCursor, QTransform
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 total_bytes = 0
+
+
 
 # SECTION CALLBACK PROGRESS
 
@@ -36,6 +38,7 @@ def callback(monitor):
 
 
 def uploadfile(localfile, p3file):
+
     global total_bytes
     _error = None
 
@@ -95,10 +98,38 @@ def uploadfile(localfile, p3file):
             gui.app.sync()
             _error = "Connection Error occurred!"
 
-        if v.showwebbrowser and _error is None:
+        if v.p3_showwebbrowser and _error is None:
+            tgtName = "http://{}:5000".format(v.p3_hostname)
+            rotatedpage = """
+            <html>
+            <head>
+            <style>
+            div {{
+              width: 800px;
+              height: 500px;
+              border: 1px solid black;
+            }}
+
+            div#rotDiv {{
+              transform: rotate(180deg);
+              transform-origin: center center;
+
+            }}
+            </style>
+            </head>
+            <body>
+            <div id="rotDiv">
+
+            <iframe src="{}" style="display: flex; width: 100%; height: 100%;"></iframe>
+            </div>
+            </html>     
+                """.format(tgtName)
             try:
-                tgtName = "http://{}:5000".format(v.p3_hostname)
-                webform.webBrowser.load(QtCore.QUrl(tgtName))
+
+                if v.p3_upside_down:
+                    webform.webBrowser.setHtml(tgtName)
+                else:
+                    webform.webBrowser.load(QtCore.QUrl(tgtName))
                 webwindow.show()
                 gui.app.exec()
 
@@ -185,3 +216,5 @@ webform = WebForm()
 webform.webBrowser = QWebEngineView()
 webform.setupUi(webwindow)
 webform.closeButton.clicked.connect(on_clickclose)
+
+

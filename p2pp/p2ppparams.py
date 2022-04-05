@@ -55,6 +55,10 @@ def check_config_parameters(keyword, value):
     if keyword == "P3_PROCESSPREHEAT":
         v.p3_process_preheat = True
 
+    # enable the preheat function on the Palette 3
+    if keyword == "P3_ROTATEINTERFACE":
+        v.p3_upside_down = True
+
     # defines the printer profile for config storage on the Palette hardware
     if keyword == "PRINTERPROFILE":
         value = value.strip(" ")
@@ -109,10 +113,10 @@ def check_config_parameters(keyword, value):
         v.p3_printername = value
 
     if keyword == "P3_UPLOADFILE":
-        v.uploadfile = True
+        v.p3_uploadfile = True
 
     if keyword == "P3_SHOWPRINTERPAGE":
-        v.showwebbrowser = True
+        v.p3_showwebbrowser = True
 
     # toggles Palette 3 accessory mode = added 22/02/2022
     if keyword == "ACCESSORYMODE_MAFX":

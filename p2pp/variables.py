@@ -347,6 +347,7 @@ printing_time = 0.0
 
 p3_process_preheat = False
 
+
 p3_printtemp = []
 p3_bedtemp = []
 
@@ -364,13 +365,14 @@ bb_maxz = -100000
 p3_hostname = ""
 
 # upload the file to the device (future development)
-uploadfile = False
+p3_uploadfile = False
 
 # retry connecting to the davice for uploading
 retry_state = True
 
 # show the webbrowser after uploading
-showwebbrowser = False
+p3_showwebbrowser = False
+p3_upside_down = False
 
 # use M400 to finish moves instead of G4 P0 or G4 S0
 finish_moves = "G4 S0"
