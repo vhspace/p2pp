@@ -156,13 +156,14 @@ releaseinfo = {
     "8.0.30": "BUGFix Full Purge Mode",
     "8.0.31": "BUGFix Accessory Mode Pings in Empty Grids",
     "8.0.32": "BUGFix MAFX file",
+    "8.0.33": "Support for webprevies of rotated screen on P3",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 32
+Build = 33
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
