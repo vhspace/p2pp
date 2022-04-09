@@ -13,8 +13,31 @@ from p2pp.formatnumbers import hexify_float
 
 # SECTION PPLUS PING GCODE
 
-acc_first_pause = ";PING PAUSE 1 START\nG4 P4000\nG1\nG4 P4000\nG1\nG4 P4000\nG1\nG4 P1000\nG1\n;PING PAUSE 1 END\n"
-acc_second_pause = ";PING PAUSE 2 START\nG4 P4000\nG1\nG4 P3000\nG1\n;PING PAUSE 2 END\n"
+acc_first_pause = """
+;PING PAUSE 1 START
+{}
+G4 S0
+G4 P4000
+G1
+G4 P4000
+G1
+G4 P4000
+G1
+G4 P1000
+G1
+;PING PAUSE 1 END
+{}
+"""
+acc_second_pause = """
+;PING PAUSE 2 START
+{}
+G4 S0
+G4 P4000
+G1
+G4 P3000
+G1
+{}
+;PING PAUSE 2 END"""
 
 
 # SECTION PING chk ACC/CONN
@@ -46,12 +69,21 @@ def check_connected_ping():
 
 # SECTION ACC MODE PING 1 and 2
 
+def get_ping_retract_code():
+    if v.absolute_extruder:
+        return "G1 E{} F7200".format(v.absolute_counter-3), "G1 E{} F7200".format(v.absolute_counter)
+    else:
+        return "G1 E-3.000 F7200", "G1 E3.000 F7200"
+
 def check_accessorymode_first():
     if v.accessory_mode and check_first_ping_condition():
+
+        rt, urt = get_ping_retract_code()
+
         v.acc_ping_left = 20
         gcode.issue_code("; ------------------------------------", True)
         gcode.issue_code("; --- P2PP - ACCESSORY MODE PING PART 1", True)
-        gcode.issue_code(acc_first_pause)
+        gcode.issue_code(acc_first_pause.format(rt,urt))
         gcode.issue_code("; -------------------------------------", True)
 
 
@@ -82,7 +114,8 @@ def check_accessorymode_second(e):
         if v.acc_ping_left <= 0.1:
             gcode.issue_code("; -------------------------------------", True)
             gcode.issue_code("; --- P2PP - ACCESSORY MODE PING PART 2", True)
-            gcode.issue_code(acc_second_pause)
+            rt, urt = get_ping_retract_code()
+            gcode.issue_code(acc_second_pause.format(rt, urt))
             gcode.issue_code("; -------------------------------------", True)
             v.ping_interval = v.ping_interval * v.ping_length_multiplier
             v.ping_interval = min(v.max_ping_interval, v.ping_interval)

@@ -457,6 +457,8 @@ def parse_gcode_second_pass():
                     gcode.issue_code(
                         "G1 X{:0.3f} Y{:0.3f} F8640 ; P2PP positional alignment".format(v.current_position_x,
                                                                                         v.current_position_y))
+                    gcode.issue_code(
+                        "G1 Z{:0.3f} F8640 ; P2PP positional alignment".format(v.current_position_z))
         # BLOCK END
 
         # ---- SECOND SECTION HANDLES COMMENTS AND NONE-MOVEMENT COMMANDS ----
@@ -1066,6 +1068,7 @@ def p2pp_process_file(input_file, output_file):
         im.write(base64.b64decode(v.p3_thumbnail_data))
         im.close()
 
+        maffile = ""
         # 22/02/2022 added accessory mode for palette 3
         if v.accessory_mode:
             maffile = maffile + ".mafx"
@@ -1124,18 +1127,25 @@ def p2pp_process_file(input_file, output_file):
         gui.create_logitem(
             "===========================================================================================", "green")
 
-    if v.p3_uploadfile:
+        if v.p3_uploadfile:
 
-        try:  # get the correct output filename from the PS environment variable
-            filename = os.path.basename(os.environ["SLIC3R_PP_OUTPUT_NAME"])
-            if filename.endswith(".gcode"):
-                filename = filename.replace(".gcode", ".mcfx")
+            if v.accessory_mode:
+                tgtsuffix = ".mafx"
+                localfile = maffile
+            else:
+                tgtsuffix = ".mcfx"
+                localfile = output_file
 
-            filename = filename.replace(" ", "_")
-        except (TypeError, KeyError):  # regardsless of the error, use this filename
-            filename = "output.mcfx"
+            try:  # get the correct output filename from the PS environment variable
+                filename = os.path.basename(os.environ["SLIC3R_PP_OUTPUT_NAME"])
+                if filename.endswith(".gcode"):
+                    filename = filename.replace(".gcode", tgtsuffix)
 
-        upload.uploadfile(output_file, filename)
+                filename = filename.replace(" ", "_")
+            except (TypeError, KeyError):  # regardsless of the error, use this filename
+                filename = "output" + tgtsuffix
+
+            upload.uploadfile(localfile, filename)
 
     if (len(v.process_warnings) > 0 and not v.ignore_warnings) or v.consolewait:
 
