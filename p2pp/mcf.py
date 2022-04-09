@@ -956,6 +956,7 @@ def p2pp_process_file(input_file, output_file):
     # Determine the task name for this print form the filename without any extensions.
     _task_name = os.path.splitext(mybasename)[0].replace(" ", "_")
     _task_name = _task_name.replace(".mcfx", "")
+    _task_name = _task_name.replace(".mafx", "")
     _task_name = _task_name.replace(".mcf", "")
     _task_name = _task_name.replace(".gcode", "")
 
@@ -1068,10 +1069,9 @@ def p2pp_process_file(input_file, output_file):
         im.write(base64.b64decode(v.p3_thumbnail_data))
         im.close()
 
-        maffile = ""
         # 22/02/2022 added accessory mode for palette 3
         if v.accessory_mode:
-            maffile = output_file + ".mafx"
+            maffile = maffile + ".mafx"
             maffile = maffile.replace(".gcode", "")
             maffile = maffile.replace(".mcfx", "")
             gui.create_logitem("Generating PALETTE MAFX file: " + maffile)
