@@ -182,6 +182,7 @@ versioncheck = False
 upgradeprocess = None
 
 full_purge_reduction = False
+full_purge_return_z = False
 purge_first_empty = True
 purgelayer = 0
 

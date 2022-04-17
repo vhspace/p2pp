@@ -310,7 +310,6 @@ def parse_gcode_first_pass():
             # extract thumbnail from gcode file
             if not v.p3_processing_thumbnail_end:
                 if line.startswith("; thumbnail"):
-                    print(index)
                     v.p3_thumbnail = not v.p3_thumbnail
                     if not v.p3_thumbnail:
                         v.p3_processing_thumbnail_end = True
@@ -722,12 +721,19 @@ def parse_gcode_second_pass():
             if v.toolchange_processed and current_block_class == CLS_NORMAL:
                 if v.side_wipe_length and (g[gcode.MOVEMENT] & 3) == 3 and not (g[gcode.MOVEMENT] & gcode.INTOWER) == gcode.INTOWER:
                     purgetower.purge_generate_sequence()
+                    v.full_purge_return_z = True
                     v.toolchange_processed = False
+
                     # do not issue code here as the next code might require further processing such as retractioncorrection
                 else:
                     gcode.move_to_comment(g, "--P2PP-- full purge skipped")
                     gcode.issue_command(g)
                     continue
+
+            if (g[gcode.MOVEMENT] & 11) > 8:  #moving extrusion
+                if v.full_purge_return_z:
+                    v.full_purge_return_z = False
+                    gcode.issue_code("G1 Z{} F10800 ;P2PP correct z-moves".format(v.current_position_z))
 
             if v.expect_retract and (g[gcode.MOVEMENT] & 3):
                 v.expect_retract = False
