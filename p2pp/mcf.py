@@ -82,6 +82,7 @@ def speed_limiter(g_code):
     if g_code[gcode.F] is not None and g_code[gcode.EXTRUDE] and g_code[gcode.F] > v.wipe_feedrate:
         g_code[gcode.COMMENT] = ";-- SLOW DOWN {} --> {}--;".format(g_code[gcode.F], v.wipe_feedrate)
         g_code[gcode.F] = v.wipe_feedrate
+        v.keep_speed = v.wipe_feedrate
 
 
 # SECTION Toolchange
@@ -309,12 +310,12 @@ def parse_gcode_first_pass():
             # extract thumbnail from gcode file
             if not v.p3_processing_thumbnail_end:
                 if line.startswith("; thumbnail"):
+                    print(index)
                     v.p3_thumbnail = not v.p3_thumbnail
                     if not v.p3_thumbnail:
                         v.p3_processing_thumbnail_end = True
-                        v.p3_thumbnail_data = v.p3_thumbnail_data.replace("; ", "")
                 elif v.p3_thumbnail:
-                    v.p3_thumbnail_data += line
+                    v.p3_thumbnail_data += line[2:]
 
             # extract the main gcode building blocks
             if line.startswith('; CP'):  # code block assignment, based on Prusa Slicer injected CP comments
@@ -1065,8 +1066,10 @@ def p2pp_process_file(input_file, output_file):
         im = open(im_file, "wb")
         if len(v.p3_thumbnail_data) == 0:
             gui.log_warning("Thumbnail Info missing (Printer Settings/General/Firmware/G-Code Thumbnail")
-
-        im.write(base64.b64decode(v.p3_thumbnail_data))
+        try:
+            im.write(base64.b64decode(v.p3_thumbnail_data))
+        except:
+            gui.log_warning("Error in Thumbnail... could not generate previed")
         im.close()
 
         # 22/02/2022 added accessory mode for palette 3

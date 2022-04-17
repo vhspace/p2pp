@@ -27,6 +27,7 @@ G4 P1000
 G1
 ;PING PAUSE 1 END
 {}
+G1 F{}
 """
 acc_second_pause = """
 ;PING PAUSE 2 START
@@ -37,6 +38,7 @@ G1
 G4 P3000
 G1
 {}
+G1 F{}
 ;PING PAUSE 2 END"""
 
 
@@ -83,7 +85,7 @@ def check_accessorymode_first():
         v.acc_ping_left = 20
         gcode.issue_code("; ------------------------------------", True)
         gcode.issue_code("; --- P2PP - ACCESSORY MODE PING PART 1", True)
-        gcode.issue_code(acc_first_pause.format(rt,urt))
+        gcode.issue_code(acc_first_pause.format(rt, urt, v.keep_speed))
         gcode.issue_code("; -------------------------------------", True)
 
 
@@ -115,7 +117,7 @@ def check_accessorymode_second(e):
             gcode.issue_code("; -------------------------------------", True)
             gcode.issue_code("; --- P2PP - ACCESSORY MODE PING PART 2", True)
             rt, urt = get_ping_retract_code()
-            gcode.issue_code(acc_second_pause.format(rt, urt))
+            gcode.issue_code(acc_second_pause.format(rt, urt, v.keep_speed))
             gcode.issue_code("; -------------------------------------", True)
             v.ping_interval = v.ping_interval * v.ping_length_multiplier
             v.ping_interval = min(v.max_ping_interval, v.ping_interval)

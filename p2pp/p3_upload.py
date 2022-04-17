@@ -93,7 +93,7 @@ def uploadfile(localfile, p3file):
                     _error = "Error [{}] {} ".format(response.status_code, response.reason)
 
         except Exception as e:
-            print(e)
+            # print(e)
             gui.log_warning("Could not send file ({}) to P3 ({})".format(p3file, v.p3_hostname))
             gui.app.sync()
             _error = "Connection Error occurred!"
@@ -109,7 +109,6 @@ def uploadfile(localfile, p3file):
               height: 500px;
               border: 1px solid black;
             }}
-
             div#rotDiv {{
               transform: rotate(180deg);
               transform-origin: center center;
@@ -119,9 +118,9 @@ def uploadfile(localfile, p3file):
             </head>
             <body>
             <div id="rotDiv">
-
             <iframe src="{}" style="display: flex; width: 100%; height: 100%;"></iframe>
             </div>
+            </body>
             </html>     
                 """.format(tgtName)
             try:

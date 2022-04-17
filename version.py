@@ -158,13 +158,15 @@ releaseinfo = {
     "8.0.32": "BUGFix MAFX file",
     "8.0.33": "Support for webpreview of rotated screen on P3",
     "8.0.34": "Support for accessory file upload to P3, bugfix first purge line tower, retract on ping pauses",
+    "8,0,35": "speedcheck in tower",
+    "8,0,36": "catch error when decoding thumbnail",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 34
+Build = 36
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
