@@ -135,6 +135,30 @@ def gcode_process_toolchange(new_tool):
                 v.side_wipe_length += v.autoadded_purge
                 v.splice_extruder_position[-1] += v.autoadded_purge * v.extrusion_multiplier
                 v.splice_length[-1] += v.autoadded_purge
+            elif v.autoaddsplice and len(v.splice_extruder_position) == 1:
+                offset = -2*v.extrusion_width
+                gcode.issue_code("G1 Z{:.3f}".format(v.first_layer_height + 0.2))
+                gcode.issue_code(
+                    "G1 X{:.3f} Y{:.3f} F86400 ; P2PP AUTOADDPURGE FOR FIRST SPLICE".format(v.wipe_tower_info_minx - offset,
+                                                                                     v.wipe_tower_info_miny - offset))
+                keep_z = v.current_position_z
+
+                gcode.issue_code("G1 Z{:.3f}".format(v.first_layer_height))
+
+                while v.total_material_extruded + v.splice_offset < v.min_start_splice_length:
+                    dx = abs((v.wipe_tower_info_minx-offset) - (v.wipe_tower_info_maxx + offset))
+                    dy = abs((v.wipe_tower_info_miny - offset) - (v.wipe_tower_info_maxy + offset))
+                    gcode.issue_code("G1 X{:.3f} Y{:.3f} ; P2PP AUTOADDPURGE FOR FIRST SPLICE".format(v.wipe_tower_info_minx-offset, v.wipe_tower_info_miny-offset))
+                    gcode.issue_code("G1 X{:.3f} E{:.4f} F{}".format(v.wipe_tower_info_maxx + offset, purgetower.calculate_purge(dx), 1200))
+                    gcode.issue_code("G1 Y{:.3f} E{:.4f} F{}".format(v.wipe_tower_info_maxy + offset, purgetower.calculate_purge(dy), 1200))
+                    gcode.issue_code("G1 X{:.3f} E{:.4f} F{}".format(v.wipe_tower_info_minx - offset, purgetower.calculate_purge(dx), 1200))
+                    gcode.issue_code("G1 Y{:.3f} E{:.4f} F{}".format(v.wipe_tower_info_miny - offset, purgetower.calculate_purge(dy), 1200))
+                    offset += v.extrusion_width
+
+                v.splice_length[-1] = v.total_material_extruded + v.splice_offset
+                v.splice_extruder_position[-1] = v.splice_length[-1]
+                gcode.issue_code("G1 Z{:.3f}".format(keep_z))
+
             else:
                 gui.log_warning(gui_format.format(min_length, length, v.last_parsed_layer, v.current_tool + 1))
                 v.filament_short[new_tool] = max(v.filament_short[new_tool],
@@ -905,10 +929,7 @@ def config_checks():
 
     # auto add splice length only works with full purge reeduction / sidewipe
     if v.autoaddsplice:
-        if not v.full_purge_reduction and not v.side_wipe:
-            gui.log_warning("AUTOADDPURGE only works with SIDEWIPE and FULLPURGEREDUCTION")
-        else:
-            gui.create_logitem("Automatic Splice length increase activated", "blue")
+        gui.create_logitem("Automatic Splice length increase activated", "blue")
 
     if len(v.skippable_layer) == 0:
         gui.log_warning("P2PP Layer Configuration is missing!!")

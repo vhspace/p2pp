@@ -161,13 +161,14 @@ releaseinfo = {
     "8,0,35": "speedcheck in tower",
     "8,0,36": "catch error when decoding thumbnail",
     "8,0,37": "updates variable layer warning",
+    "8,0,38": "autoaddsplice extended to support all modes !!! warning - if tower to close to objects, overlp my occur !!!",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 37
+Build = 38
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
