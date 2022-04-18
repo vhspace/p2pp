@@ -328,6 +328,8 @@ def parse_gcode_first_pass():
                     lv = int((lv + 0.001) * 100) - flh
                     if lv % olh == 0:
                         process_layer(int(lv / olh), index)
+                    else:
+                        v.variable_layer_warning = True
                 except (ValueError, IndexError):
                     pass
 
@@ -717,7 +719,6 @@ def parse_gcode_second_pass():
                 gcode.issue_command(g)
                 continue
 
-
             if v.toolchange_processed and current_block_class == CLS_NORMAL:
                 if v.side_wipe_length and (g[gcode.MOVEMENT] & 3) == 3 and not (g[gcode.MOVEMENT] & gcode.INTOWER) == gcode.INTOWER:
                     purgetower.purge_generate_sequence()
@@ -870,7 +871,7 @@ def config_checks():
             v.bed_origin_y <= v.wipe_tower_posy <= v.bed_max_y))
     v.tower_delta = v.max_tower_z_delta > 0
 
-    if (v.tower_delta or v.full_purge_reduction) and v.variable_layer:
+    if (v.tower_delta or v.full_purge_reduction) and v.variable_layer_warning:
         gui.log_warning("Variable layers may cause issues with FULLPURGE / TOWER DELTA")
         gui.log_warning("This warning could be caused by support that will print on variable layer offsets")
 

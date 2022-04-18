@@ -90,6 +90,7 @@ toolchange_start = False
 toolchange_processed = False
 enterpurge = False
 variable_layer = False
+variable_layer_warning = False
 save_unprocessed = False
 
 purge_keep_x = None
