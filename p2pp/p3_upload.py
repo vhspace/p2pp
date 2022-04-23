@@ -124,7 +124,7 @@ def uploadfile(localfile, p3file):
             try:
 
                 if v.p3_upside_down:
-                    webform.webBrowser.setHtml(tgtName)
+                    webform.webBrowser.setHtml(rotatedpage)
                 else:
                     webform.webBrowser.load(QtCore.QUrl(tgtName))
                 webwindow.show()
@@ -213,6 +213,7 @@ webform = WebForm()
 webform.webBrowser = QWebEngineView()
 settings = QWebEngineSettings.defaultSettings()
 settings.setAttribute(settings.LocalContentCanAccessRemoteUrls, True)
+settings.setAttribute(settings.AllowRunningInsecureContent, True)
 webform.setupUi(webwindow)
 webform.closeButton.clicked.connect(on_clickclose)
 

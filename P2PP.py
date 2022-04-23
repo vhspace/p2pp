@@ -17,6 +17,7 @@ os.environ[
         "QTWEBENGINE_CHROMIUM_FLAGS"
     ] = "--disable-web-security"
 
+
 if len(sys.argv) == 2 and sys.argv[1].lower() == "-config":
     import config.config_gui as gui
     gui.init_gui()
