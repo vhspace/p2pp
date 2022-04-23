@@ -163,7 +163,7 @@ releaseinfo = {
     "8,0,37": "updates variable layer warning",
     "8,0,38": "autoaddsplice extended to support all modes !!! warning - if tower to close to objects, overlp my occur !!!",
     "8.0.39": "test rotate screen fix",
-    --- RELEASE INFORMATION': 'END'
+    "--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
