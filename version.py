@@ -167,7 +167,6 @@ releaseinfo = {
     "8.0.41": "autoadd is nof compatible with blob counting",
     '--- RELEASE INFORMATION': 'END'
 }
-
 # general version info
 MajorVersion = 8
 MinorVersion = 0
