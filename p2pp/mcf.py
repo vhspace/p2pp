@@ -130,7 +130,7 @@ def gcode_process_toolchange(new_tool):
             gui_format = "SHORT SPLICE (min {}mm) Length:{:-3.2f} Layer:{} Input:{}"
 
         if v.splice_length[-1] < min_length:
-            if v.autoaddsplice and (v.full_purge_reduction or v.side_wipe):
+            if v.autoaddsplice and (v.full_purge_reduction or (v.side_wipe and not v.bigbrain3d_matrix_blobs)):
                 v.autoadded_purge = v.min_start_splice_length - length
                 v.side_wipe_length += v.autoadded_purge
                 v.splice_extruder_position[-1] += v.autoadded_purge * v.extrusion_multiplier
