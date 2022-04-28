@@ -163,13 +163,14 @@ releaseinfo = {
     "8,0,37": "updates variable layer warning",
     "8,0,38": "autoaddsplice extended to support all modes !!! warning - if tower to close to objects, overlp my occur !!!",
     "8.0.39": "test rotate screen fix",
+    "8.0.40": "fix extrusion in smart fan mode",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 8
-MinorVersion = 0
-Build = 39
+MinorVersion = 0˚
+Build = 40
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 

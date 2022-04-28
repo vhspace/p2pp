@@ -45,15 +45,15 @@ def generate_bb3d_blob(length, count):
         purgetower.largeunretract()
 
     if v.mechpurge_smartfan:
-        issue_code("G1 E{:6.3f} F{}     ; Purge FAN OFF ".format(length / 4, v.mechpurge_blob_speed))
+        issue_code("G1 E{:3f} F{}     ; Purge FAN OFF ".format(length / 4, v.mechpurge_blob_speed))
         setfanspeed(32)
-        issue_code("G1 E{:6.3f} F{}     ; Purge FAN 12% ".format(length / 4, v.mechpurge_blob_speed))
+        issue_code("G1 E{:3f} F{}     ; Purge FAN 12% ".format(length / 4, v.mechpurge_blob_speed))
         setfanspeed(64)
-        issue_code("G1 E{:6.3f} F{}     ; Purge FAN 25% ".format(length / 4, v.mechpurge_blob_speed))
+        issue_code("G1 E{:3f} F{}     ; Purge FAN 25% ".format(length / 4, v.mechpurge_blob_speed))
         setfanspeed(96)
-        issue_code("G1 E{:6.3f} F{}     ; Purge FAN 37% ".format(length / 4, v.mechpurge_blob_speed))
+        issue_code("G1 E{:3f} F{}     ; Purge FAN 37% ".format(length / 4, v.mechpurge_blob_speed))
     else:
-        issue_code("G1 E{:6.3f} F{}     ; Purge Part 1 ".format(length - 8, v.mechpurge_blob_speed))
+        issue_code("G1 E{:3f} F{}     ; Purge Part 1 ".format(length - 8, v.mechpurge_blob_speed))
         issue_code("G1 E8.000 F{}     ; Purge Part 2 ".format(v.mechpurge_blob_speed / 2))
 
     purgetower.largeretract(v.mechpurge_retract)
@@ -175,15 +175,15 @@ def generate_blobster_blob(length, count):
         purgetower.largeunretract()
 
     if v.mechpurge_smartfan:
-        issue_code("G1 E{:6.3f} F{}     ; Purge FAN OFF ".format(length / 4, v.mechpurge_blob_speed))
+        issue_code("G1 E{:.3f} F{}     ; Purge FAN OFF ".format(length / 4, v.mechpurge_blob_speed))
         setfanspeed(32)
-        issue_code("G1 E{:6.3f} F{}     ; Purge FAN 12% ".format(length / 4, v.mechpurge_blob_speed))
+        issue_code("G1 E{:.3f} F{}     ; Purge FAN 12% ".format(length / 4, v.mechpurge_blob_speed))
         setfanspeed(64)
-        issue_code("G1 E{:6.3f} F{}     ; Purge FAN 25% ".format(length / 4, v.mechpurge_blob_speed))
+        issue_code("G1 E{:.3f} F{}     ; Purge FAN 25% ".format(length / 4, v.mechpurge_blob_speed))
         setfanspeed(96)
-        issue_code("G1 E{:6.3f} F{}     ; Purge FAN 37% ".format(length / 4, v.mechpurge_blob_speed))
+        issue_code("G1 E{:.3f} F{}     ; Purge FAN 37% ".format(length / 4, v.mechpurge_blob_speed))
     else:
-        issue_code("G1 E{:6.3f} F{}     ; Purge Part 1 ".format(length - 8, v.mechpurge_blob_speed))
+        issue_code("G1 E{:.3f} F{}     ; Purge Part 1 ".format(length - 8, v.mechpurge_blob_speed))
         issue_code("G1 E8.000 F{}     ; Purge Part 2 ".format(v.mechpurge_blob_speed / 2))
 
     purgetower.largeretract(v.mechpurge_retract)
@@ -211,7 +211,7 @@ def generate_blobster_advanced_blob(count):
     try:
         for i in range(len(v.blobster_advanced_speed)):
             setfanspeed(v.blobster_advanced_fan[i])
-            issue_code("G1 E{:6.3f} F{}     ; Purge Part {} ".format(v.blobster_advanced_length[i], v.blobster_advanced_speed[i], i+1))
+            issue_code("G1 E{:.3f} F{}     ; Purge Part {} ".format(v.blobster_advanced_length[i], v.blobster_advanced_speed[i], i+1))
     except IndexError:
         if not v.blobsterwarning:
             gui.log_warning("BLOBSTER ERROR: THIS FILE WILL NOT PRING AS EXPECTED!!!")
