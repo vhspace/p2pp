@@ -164,13 +164,15 @@ releaseinfo = {
     "8,0,38": "autoaddsplice extended to support all modes !!! warning - if tower to close to objects, overlp my occur !!!",
     "8.0.39": "test rotate screen fix",
     "8.0.40": "fix extrusion in smart fan mode",
-    "8.0.41": "autoadd is nof compatible with blob counting",
+    "8.0.41": "autoadd is not compatible with blob counting",
+    "8.0.42": "Z-HOP during the purge pauses",
+    "8.0.43": "Speed in tower test",
     '--- RELEASE INFORMATION': 'END'
 }
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 41
+Build = 43
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
