@@ -846,7 +846,6 @@ def parse_gcode_second_pass():
                     gcode.issue_code("G1 F{} ; P2PP Correct for speed, top to PURGETOPSPEED".format(min(v.purgetopspeed, v.keep_speed)))
                     g = gcode.create_command(";P2PP END Z/E alignment processing")
 
-
         # --------------------- PING PROCESSING
 
         if v.accessory_mode and g[gcode.EXTRUDE]:
