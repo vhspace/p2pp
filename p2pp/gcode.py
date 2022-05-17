@@ -122,7 +122,11 @@ def create_commandstring(gcode_tupple):
         if gcode_tupple[F] is not None:
             p = p + " F{}".format(int(gcode_tupple[F]))
         if gcode_tupple[S] is not None:
-            p = p + " S{}".format(int(gcode_tupple[S]))
+            tmpv = float(gcode_tupple[S])
+            if tmpv == int(tmpv):
+                p = p + " S{}".format(int(gcode_tupple[S]))
+            else:
+                p = p + " S{}".format(float(gcode_tupple[S]))
         p = p + gcode_tupple[OTHER]
         if gcode_tupple[COMMENT] != "":
             p = p + " " + gcode_tupple[COMMENT]
@@ -170,51 +174,52 @@ def get_parameter(gcode_tupple, pv, defaultvalue=0):
 
 def issue_command(gcode_tupple, speed=0):
 
-    if gcode_tupple[MOVEMENT]:
+    if not v.mapphysical or v.current_tool != v.mapphysicalfrom:
+        if gcode_tupple[MOVEMENT]:
 
-        # preview simulatrion -- Z Height
-        if gcode_tupple[MOVEMENT] & 4:
-            gp.z = gcode_tupple[Z]
-        # end preview simulation
-
-        if gcode_tupple[MOVEMENT] & 8:  # movement WITH extrusion
-            extrusion = gcode_tupple[E] * v.extrusion_multiplier
-            v.total_material_extruded += extrusion
-            v.material_extruded_per_color[v.current_tool] += extrusion
-
-            # preview simulation in this case there is Extruder movement
-            tmp = gcode_tupple[MOVEMENT] & 3
-            if tmp:
-                if tmp == 1:
-                    gp.add_extrusion(gcode_tupple[X], gp.prevy, v.current_tool, gcode_tupple[E])
-                elif tmp == 2:
-                    gp.add_extrusion(gp.prevx, gcode_tupple[Y], v.current_tool, gcode_tupple[E])
-                else:
-                    gp.add_extrusion(gcode_tupple[X], gcode_tupple[Y], v.current_tool, gcode_tupple[E])
+            # preview simulatrion -- Z Height
+            if gcode_tupple[MOVEMENT] & 4:
+                gp.z = gcode_tupple[Z]
             # end preview simulation
 
-            if v.absolute_extruder:
-                # debug absolute mode: gcode_tupple[COMMENT] += '"; AE = {}'.format(gcode_tupple[E])
-                if v.absolute_counter == -9999 or v.absolute_counter > 3000:
-                    v.processed_gcode.append("G92 E0.00  ; Extruder counter reset")
-                    v.absolute_counter = 0
-                v.absolute_counter += gcode_tupple[E]
-                gcode_tupple[E] = v.absolute_counter
-        else:
+            if gcode_tupple[MOVEMENT] & 8:  # movement WITH extrusion
+                extrusion = gcode_tupple[E] * v.extrusion_multiplier
+                v.total_material_extruded += extrusion
+                v.material_extruded_per_color[v.current_tool] += extrusion
 
-            # preview simulation in this case there is NO Extruder movement
-            if gcode_tupple[MOVEMENT] & 1:
-                gp.prevx = gcode_tupple[X]
-            if gcode_tupple[MOVEMENT] & 2:
-                gp.prevy = gcode_tupple[Y]
-            # end preview_simulation
+                # preview simulation in this case there is Extruder movement
+                tmp = gcode_tupple[MOVEMENT] & 3
+                if tmp:
+                    if tmp == 1:
+                        gp.add_extrusion(gcode_tupple[X], gp.prevy, v.current_tool, gcode_tupple[E])
+                    elif tmp == 2:
+                        gp.add_extrusion(gp.prevx, gcode_tupple[Y], v.current_tool, gcode_tupple[E])
+                    else:
+                        gp.add_extrusion(gcode_tupple[X], gcode_tupple[Y], v.current_tool, gcode_tupple[E])
+                # end preview simulation
 
-    elif v.absolute_extruder:
-        if gcode_tupple[COMMAND] == "M83":
-            gcode_tupple[COMMAND] = "M82"
-        if gcode_tupple[COMMAND] == "G92":
-            if gcode_tupple[E] is not None:
-                v.absolute_counter = gcode_tupple[E]
+                if v.absolute_extruder:
+                    # debug absolute mode: gcode_tupple[COMMENT] += '"; AE = {}'.format(gcode_tupple[E])
+                    if v.absolute_counter == -9999 or v.absolute_counter > 3000:
+                        v.processed_gcode.append("G92 E0.00  ; Extruder counter reset")
+                        v.absolute_counter = 0
+                    v.absolute_counter += gcode_tupple[E]
+                    gcode_tupple[E] = v.absolute_counter
+            else:
+
+                # preview simulation in this case there is NO Extruder movement
+                if gcode_tupple[MOVEMENT] & 1:
+                    gp.prevx = gcode_tupple[X]
+                if gcode_tupple[MOVEMENT] & 2:
+                    gp.prevy = gcode_tupple[Y]
+                # end preview_simulation
+
+        elif v.absolute_extruder:
+            if gcode_tupple[COMMAND] == "M83":
+                gcode_tupple[COMMAND] = "M82"
+            if gcode_tupple[COMMAND] == "G92":
+                if gcode_tupple[E] is not None:
+                    v.absolute_counter = gcode_tupple[E]
 
     s = create_commandstring(gcode_tupple)
     if speed:

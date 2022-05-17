@@ -167,12 +167,13 @@ releaseinfo = {
     "8.0.41": "autoadd is not compatible with blob counting",
     "8.0.42": "Z-HOP during the purge pauses",
     "8.0.43": "Speed in tower test",
+    "8.0.44": "Correction M572 S float parameter on duet",
     '--- RELEASE INFORMATION': 'END'
 }
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 43
+Build = 44
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 

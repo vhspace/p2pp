@@ -382,3 +382,9 @@ replace_G4S0 = False
 
 # firmware purge
 firmwarepurge = 0
+
+
+# physical secondary extruder
+mapphysical = False
+mapphysicalfrom = -1
+mapphysicalto = -1

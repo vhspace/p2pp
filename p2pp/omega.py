@@ -525,11 +525,17 @@ def generate_palette():
                 "extrusion": v.ping_extrusion_between_pause[i]
             })
 
-
-
-
     return json.dumps(palette, indent=2)
 
+
+def generate_print_algo_table():
+    information_table = ""
+    try:
+        pass
+    except (KeyError, IndexError):
+        pass
+
+    return information_table
 
 def header_generate_omega_palette3(job_name):
     return generate_meta(), generate_palette()

@@ -386,6 +386,17 @@ def check_config_parameters(keyword, value):
             gui.log_warning("Minimal slice length adjusted to 70mm")
         return
 
+    # IDEX secondary extruder
+    if keyword == "MAPPHYSICALEXTRUDER":
+        try:
+            fields = value.split(",")
+            v.mapphysical = True
+            v.mapphysicalfrom=int(floatparameter(fields[0]))
+            v.mapphysicalto = int(floatparameter(fields[1]))
+        except (IndexError, ValueError):
+            gui.log_warning("MAPPHYSICALEXTRUDER - ERROR in parameters {}, should be source,target".format(value))
+            v.mapphysical = False
+
     # LINEAR PING removed
 
     # set the distance between pings (same length every time), instead of increasing ping lengths
