@@ -807,7 +807,7 @@ def parse_gcode_second_pass():
                     gcode.issue_code(
                         "G1 X{}  Y{} F8640 ;P2PP Position XY to avoid tower crash".format(v.current_position_x,
                                                                                           v.current_position_y))
-                v.z_correction = "G1 Z{} F10800 ;P2PP correct z-moves".format(v.current_position_z)
+                v.z_correction = "G1 Z{} ;P2PP correct z-moves".format(v.current_position_z)
 
                 v.toolchange_processed = False
                 continue
