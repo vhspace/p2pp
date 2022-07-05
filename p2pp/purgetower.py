@@ -327,7 +327,7 @@ def purge_generate_sequence():
         _purge_update_sequence_index()
 
     # return to print height
-    retract(v.current_tool)
+    retract(v.current_tool, 2000 )
     if v.retraction == 0:
         v.expect_retract = True
 

@@ -169,12 +169,13 @@ releaseinfo = {
     "8.0.43": "Speed in tower test",
     "8.0.44": "Correction M572 S float parameter on duet",
     "8.0.45": "Superslicer Z-correction",
+    "8.0.46": "End of purge tower retract speed",
     '--- RELEASE INFORMATION': 'END'
 }
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 45
+Build = 46
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
