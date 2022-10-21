@@ -171,12 +171,13 @@ releaseinfo = {
     "8.0.45": "Superslicer Z-correction",
     "8.0.46": "End of purge tower retract speed",
     "8.0.47": "layer config check altered",
+    "8.0.48": "check for Tc and Tx command for MMU2 and filter them out",
     '--- RELEASE INFORMATION': 'END'
 }
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 47
+Build = 48
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 

@@ -511,7 +511,11 @@ def parse_gcode_second_pass():
                     swap.swap_pause("M25")
                     swap.swap_unpause()
 
-                gcode_process_toolchange(int(g[gcode.COMMAND][1:]))
+                try:
+                    gcode_process_toolchange(int(g[gcode.COMMAND][1:]))
+                except ValueError:
+                    gui.log_warning("Command {} cound not be processed".format(g[gcode.COMMAND]))
+
                 if not v.debug_leaveToolCommands:
                     gcode.move_to_comment(g, "--P2PP-- Color Change")
 
