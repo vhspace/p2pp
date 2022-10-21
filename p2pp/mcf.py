@@ -933,7 +933,7 @@ def config_checks():
     if v.autoaddsplice:
         gui.create_logitem("Automatic Splice length increase activated", "blue")
 
-    if len(v.skippable_layer) == 0:
+    if v.last_parsed_layer == -1:
         gui.log_warning("P2PP Layer Configuration is missing!!")
         return -1
 
