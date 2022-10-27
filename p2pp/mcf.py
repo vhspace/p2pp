@@ -666,6 +666,8 @@ def parse_gcode_second_pass():
                 speed_limiter(g)
 
             if current_block_class == CLS_TOOL_PURGE:
+                if g[gcode.F] is not None:
+                    g[gcode.F] = int(g[gcode.F] * 1.0 * v.purgespeedmultiplier)
                 if g[gcode.F] is not None and g[gcode.F] > v.purgetopspeed and g[gcode.E]:
                     g[gcode.F] = v.purgetopspeed
                     g[gcode.COMMENT] += " prugespeed topped"

@@ -206,6 +206,11 @@ def check_config_parameters(keyword, value):
         v.autoloadingoffset = floatparameter(value)
         return
 
+    if keyword == "PURGESPEEDADJUST":
+        v.purgespeedmultiplier = floatparameter(value)/100.0
+        # 10 % trhough 500%
+        v.purgespeedmultiplier = min(max(v.purgespeedmultiplier, 0.1), 5.0)
+
     # autmoaticall adds purge in case of short splices when fullpruereduction is applied
     if keyword == "AUTOADDPURGE":
         v.autoaddsplice = True

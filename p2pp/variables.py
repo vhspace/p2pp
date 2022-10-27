@@ -269,6 +269,7 @@ expect_retract = False
 keep_speed = 0
 
 purgetopspeed = 99999
+purgespeedmultiplier = 1.0
 wipe_remove_sparse_layers = False
 
 ps_version = "No version info detected"

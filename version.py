@@ -172,12 +172,13 @@ releaseinfo = {
     "8.0.46": "End of purge tower retract speed",
     "8.0.47": "layer config check altered",
     "8.0.48": "check for Tc and Tx command for MMU2 and filter them out",
+    "8.0.49": "extra parameter to tune purging speed",
     '--- RELEASE INFORMATION': 'END'
 }
 # general version info
 MajorVersion = 8
 MinorVersion = 0
-Build = 48
+Build = 49
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
