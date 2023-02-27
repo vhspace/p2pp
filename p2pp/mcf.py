@@ -623,6 +623,7 @@ def parse_gcode_second_pass():
                 continue
             else:
                 v.current_position_z = g[gcode.Z]
+                g[gcode.COMMENT]= ";recorded Z={}".format(v.current_position_z)
 
         if g[gcode.MOVEMENT] & 16:
             v.keep_speed = g[gcode.F]
@@ -764,7 +765,7 @@ def parse_gcode_second_pass():
             if (g[gcode.MOVEMENT] & 11) > 8:  #moving extrusion
                 if v.full_purge_return_z:
                     v.full_purge_return_z = False
-                    gcode.issue_code("G1 Z{} F10800 ;P2PP correct z-moves".format(v.current_position_z))
+                    gcode.issue_code("G1 Z{} F10800 ;<P2PP correct z-moves>".format(v.current_position_z))
 
             if v.expect_retract and (g[gcode.MOVEMENT] & 3):
                 v.expect_retract = False
@@ -813,7 +814,7 @@ def parse_gcode_second_pass():
                     gcode.issue_code(
                         "G1 X{}  Y{} F8640 ;P2PP Position XY to avoid tower crash".format(v.current_position_x,
                                                                                           v.current_position_y))
-                v.z_correction = "G1 Z{} ;P2PP correct z-moves".format(v.current_position_z)
+                v.z_correction = v.current_position_z
 
                 v.toolchange_processed = False
                 continue
@@ -834,10 +835,11 @@ def parse_gcode_second_pass():
             v.retraction += g[gcode.E]
         elif (g[gcode.MOVEMENT] & 3) and g[gcode.EXTRUDE]:
             if v.z_correction is not None or v.retraction < -0.01:
+                z_cor = "G1 Z{} ;>P2PP correct z-moves<".format(min(v.current_position_z, v.z_correction))
                 if current_block_class != CLS_TOOL_START:
                     gcode.issue_code(";P2PP START Z/E alignment processing")
                     if v.z_correction is not None:
-                        gcode.issue_code(v.z_correction)
+                        gcode.issue_code(z_cor)
                         v.z_correction = None
                     if v.retraction < -0.01:
                         purgetower.unretract(v.retraction, -1, ";--- P2PP --- fixup retracts")
@@ -847,7 +849,7 @@ def parse_gcode_second_pass():
                     gcode.issue_command(g)
                     gcode.issue_code(";P2PP START Z/E alignment processing")
                     if v.z_correction is not None:
-                        gcode.issue_code(v.z_correction)
+                        gcode.issue_code(z_cor)
                         v.z_correction = None
                     if v.retraction < -0.01:
                         purgetower.unretract(v.retraction, -1, ";--- P2PP --- fixup retracts")

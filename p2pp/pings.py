@@ -49,7 +49,8 @@ def check_first_ping_condition():
 
 
 def check_connected_ping():
-    if not v.accessory_mode and check_first_ping_condition():
+
+    if (not v.accessory_mode or v.connected_accessory_mode) and check_first_ping_condition():
         v.ping_interval = v.ping_interval * v.ping_length_multiplier
         v.ping_interval = min(v.max_ping_interval, v.ping_interval)
         v.last_ping_extruder_position = v.total_material_extruded
@@ -61,9 +62,15 @@ def check_connected_ping():
         # wait for the planning buffer to clear
         gcode.issue_code(v.finish_moves)
 
+
         # insert O31 commands format depending on device
         if v.palette3:
-            gcode.issue_code("O31 L{:.2f} mm".format(v.last_ping_extruder_position + v.autoloadingoffset))
+            if v.connected_accessory_mode:
+                gcode.issue_code("; --- P2PP - The next line requires Octoprint printing with the P3PING plugin!!")
+                gcode.issue_code("O40 L{:.2f} mm".format(v.last_ping_extruder_position + v.autoloadingoffset))
+                #O40 will trigger octorpint plugin to send the ping command onto the P3 Directly
+            else:
+                gcode.issue_code("O31 L{:.2f} mm".format(v.last_ping_extruder_position + v.autoloadingoffset))
         else:
             gcode.issue_code("O31 {}".format(hexify_float(v.last_ping_extruder_position + v.autoloadingoffset)))
 
@@ -78,7 +85,7 @@ def get_ping_retract_code():
         return "G1 E-3.000 F7200", "G1 E3.000 F7200"
 
 def check_accessorymode_first():
-    if v.accessory_mode and check_first_ping_condition():
+    if (v.accessory_mode and not v.connected_accessory_mode) and check_first_ping_condition():
 
         rt, urt = get_ping_retract_code()
 
@@ -99,7 +106,7 @@ def interpollate(_from, _to, _part):
 def check_accessorymode_second(e):
     nextline = None
     rval = False
-    if v.accessory_mode and (v.acc_ping_left > 0):
+    if (v.accessory_mode and not v.connected_accessory_mode) and (v.acc_ping_left > 0):
 
         if v.acc_ping_left >= e:
             v.acc_ping_left -= e

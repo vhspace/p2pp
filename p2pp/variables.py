@@ -39,6 +39,7 @@ nozzle_diameter = 0.4
 
 wiping_info = []
 accessory_mode = False  # type Bool
+connected_accessory_mode = False   # type Bool
 
 palette_plus = False
 palette_plus_loading_offset = -9

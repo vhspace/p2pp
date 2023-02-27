@@ -173,12 +173,13 @@ releaseinfo = {
     "8.0.47": "layer config check altered",
     "8.0.48": "check for Tc and Tx command for MMU2 and filter them out",
     "8.0.49": "extra parameter to tune purging speed",
+    "9.0.00": "Anomaly Z-correction on version PS 2.6.0",
     '--- RELEASE INFORMATION': 'END'
 }
 # general version info
-MajorVersion = 8
+MajorVersion = 9
 MinorVersion = 0
-Build = 49
+Build = 0
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
