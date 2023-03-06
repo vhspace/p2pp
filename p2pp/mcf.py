@@ -835,7 +835,11 @@ def parse_gcode_second_pass():
             v.retraction += g[gcode.E]
         elif (g[gcode.MOVEMENT] & 3) and g[gcode.EXTRUDE]:
             if v.z_correction is not None or v.retraction < -0.01:
+
+                if v.z_correction is None:
+                    v.z_correction = v.current_position_z
                 z_cor = "G1 Z{} ;>P2PP correct z-moves<".format(min(v.current_position_z, v.z_correction))
+
                 if current_block_class != CLS_TOOL_START:
                     gcode.issue_code(";P2PP START Z/E alignment processing")
                     if v.z_correction is not None:

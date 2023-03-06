@@ -174,12 +174,13 @@ releaseinfo = {
     "8.0.48": "check for Tc and Tx command for MMU2 and filter them out",
     "8.0.49": "extra parameter to tune purging speed",
     "9.0.00": "Anomaly Z-correction on version PS 2.6.0",
+    "9.0.01": "Anomaly Z-correction on version PS 2.6.0 - bugfix",
     '--- RELEASE INFORMATION': 'END'
 }
 # general version info
 MajorVersion = 9
 MinorVersion = 0
-Build = 0
+Build = 1
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
