@@ -177,6 +177,7 @@ releaseinfo = {
     "9.0.01": "Anomaly Z-correction on version PS 2.6.0 - bugfix",
     '--- RELEASE INFORMATION': 'END'
 }
+
 # general version info
 MajorVersion = 9
 MinorVersion = 0
