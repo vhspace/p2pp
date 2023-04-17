@@ -176,6 +176,7 @@ releaseinfo = {
     "9.0.00": "Anomaly Z-correction on version PS 2.6.0",
     "9.0.01": "Anomaly Z-correction on version PS 2.6.0 - bugfix",
     "9.0.02": "Increased resolution of layer heights",
+
     '--- RELEASE INFORMATION': 'END'
 }
 
