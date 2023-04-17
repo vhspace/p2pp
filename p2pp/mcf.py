@@ -173,7 +173,7 @@ def gcode_process_toolchange(new_tool):
 # SECTION Tower
 
 def entertower(layer_hght):
-    purgeheight = layer_hght - v.cur_tower_z_delta
+    purgeheight = int((layer_hght - v.cur_tower_z_delta+0.0001)* 1000)*1.0/1000
 
     if v.current_position_z != purgeheight:
         v.max_tower_delta = max(v.cur_tower_z_delta, v.max_tower_delta)
@@ -193,6 +193,7 @@ def entertower(layer_hght):
 
         gcode.issue_code("G1 X{} Y{} F8640".format(v.current_position_x, v.current_position_y))
         gcode.issue_code("G1 Z{:.2f} F10810".format(purgeheight))
+        v.current_position_z = purgeheight
 
         if purgeheight <= (v.first_layer_height + 0.02):  # FIRST LAYER PURGES SLOWER
             gcode.issue_code("G1 F{}".format(min(1200, v.wipe_feedrate)))
