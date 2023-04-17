@@ -306,8 +306,8 @@ def parse_gcode_first_pass():
     v.previous_block_classification = CLS_NORMAL
     total_line_count = len(v.input_gcode)
 
-    flh = int(v.first_layer_height * 100)
-    olh = int(v.layer_height * 100)
+    flh = int(v.first_layer_height * 1000)
+    olh = int(v.layer_height * 1000)
 
     backpass_line = -1
     jndex = 0
@@ -349,7 +349,7 @@ def parse_gcode_first_pass():
                 fields = line.split(' ')
                 try:
                     lv = float(fields[1])
-                    lv = int((lv + 0.001) * 100) - flh
+                    lv = int((lv + 0.0001) * 1000) - flh
                     if lv % olh == 0:
                         process_layer(int(lv / olh), index)
                     else:

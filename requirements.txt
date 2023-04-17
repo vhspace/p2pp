@@ -1,4 +1,11 @@
 PyQt5~=5.15.2
+PyQtWebEngine~=5.15.2
 setuptools~=50.3.2
 requests~=2.22.0
 requests-toolbelt~=0.9.1
+certifi~=2019.11.28
+modulegraph~=0.18
+py2app~=0.19
+macholib~=1.14
+altgraph~=0.17
+Pillow~=7.0.0
