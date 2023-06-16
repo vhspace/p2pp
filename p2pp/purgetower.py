@@ -254,7 +254,7 @@ def unretract(tool, speed=-1, comment=""):
 
 
 def getwipespeed():
-    if v.purgelayer == 0:
+    if v.purgelayer == 0 and not v.firsttowerlayerspeedup:
         return min(1200, v.wipe_feedrate)
     else:
         return v.wipe_feedrate
@@ -311,7 +311,7 @@ def purge_generate_sequence():
 
         if v.manual_filament_swap:
             swap.swap_pause("M25")
-            # no need to unpause as the reauired Z-move is part of the remaining sequence
+            # no need to unpause as the required Z-move is part of the remaining sequence
 
     gcode.issue_code("G1 Z{:.2f} F10800".format((v.purgelayer + 1) * v.layer_height))
     unretract(v.current_tool)

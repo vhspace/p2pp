@@ -497,6 +497,10 @@ def check_config_parameters(keyword, value):
             v.full_purge_reduction = False
         return
 
+    if keyword == "FIRSTTOWERLAYERSPEEDUP":
+        v.firsttowerlayerspeedup = True
+        return
+
     # chech the version of P2PP on startup (requires an internet connection)
     if keyword == "CHECKVERSION":
         import p2pp.checkversion as cv
