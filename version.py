@@ -177,13 +177,14 @@ releaseinfo = {
     "9.0.01": "Anomaly Z-correction on version PS 2.6.0 - bugfix",
     "9.0.02": "Increased resolution of layer heights",
     "9.0.03": "Added FIRSTTOWERLAYERSPEEDUP to speed up first tower layer where possible",
+    "9.0.04": "Allow spaces instead of underscores in the splice definition sequences",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 9
 MinorVersion = 0
-Build = 3
+Build = 4
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 

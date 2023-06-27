@@ -38,6 +38,15 @@ def algorithm_create_process_string(heating, compression, cooling):
 def algorithm_process_material_configuration(splice_info):
 
     # 22/02/2022 - Added check for correctness of the parameters
+    # allow for spaces or underscores in the definition string
+    splice_info = splice_info.replace(" ", "_")
+
+    s = ""
+    while s != splice_info:
+        s = splice_info
+        splice_info = s.replace("__", "_")
+
+
     error = True
 
     fields = splice_info.split("_")
@@ -100,6 +109,7 @@ def algorithm_create_table():
 
             try:
                 algo = v.splice_algorithm_dictionary["{}{}".format(v.filament_type[i], v.filament_type[j])]
+
             except (IndexError, KeyError):
                 gui.log_warning("WARNING: No Algorithm defined for transitioning" +
                                 " {} to {}. Using Default".format(v.filament_type[i],
