@@ -129,7 +129,9 @@ def gcode_process_toolchange(new_tool):
             min_length = v.min_splice_length
             gui_format = "SHORT SPLICE (min {}mm) Length:{:-3.2f} Layer:{} Input:{}"
 
+
         if v.splice_length[-1] < min_length:
+
             if v.autoaddsplice and (v.full_purge_reduction or (v.side_wipe and not v.bigbrain3d_matrix_blobs)):
                 v.autoadded_purge = v.min_start_splice_length - length
                 v.side_wipe_length += v.autoadded_purge
@@ -945,8 +947,12 @@ def config_checks():
         gui.create_logitem("FULLPURGEREDUCTION activated", "blue")
 
     # auto add splice length only works with full purge reeduction / sidewipe
-    if v.autoaddsplice:
+    if v.autoaddsplice and (v.full_purge_reduction or (v.side_wipe and not v.bigbrain3d_matrix_blobs)):
         gui.create_logitem("Automatic Splice length increase activated", "blue")
+
+    elif v.autoaddsplice:
+        gui.create_logitem("Automatic Splice length increase NOT activated due to incompatible mode", "red")
+        gui.create_logitem("Automatic Splice length incO works with Full purge reduction and side wipe only", "red")
 
     if v.last_parsed_layer == -1:
         gui.log_warning("P2PP Layer Configuration is missing!!")
