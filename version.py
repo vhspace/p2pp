@@ -179,7 +179,7 @@ releaseinfo = {
     "9.0.03": "Added FIRSTTOWERLAYERSPEEDUP to speed up first tower layer where possible",
     "9.0.04": "Allow spaces instead of underscores in the splice definition sequences",
     "9.0.05": "Automatic splcie increase - error message when in wrong mode",
-    "9.1.00": "Reworked material / filament numbering on P3 output file to present range of consecutive numbers"
+    "9.1.00": "Reworked material / filament numbering on P3 output file to present range of consecutive numbers",
     '--- RELEASE INFORMATION': 'END'
 }
 
