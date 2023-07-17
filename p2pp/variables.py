@@ -49,6 +49,8 @@ palette_plus_ppm = -9
 skippable_layer = []  # type array of bool
 
 used_filament_types = []  # type array of string
+spliced_filament_types = [] # type array of string
+inputs_recalc=[0,0,0,0,0,0,0,0]
 
 default_splice_algorithm = [0, 0, 0]  # type string
 process_warnings = []  # type array of string

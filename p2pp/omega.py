@@ -353,6 +353,14 @@ def header_generate_omega_palette2(job_name):
 
 # SECTION OMEGA - P3
 
+def reduce_filament_types():
+    for i in range(v.colors):
+        if v.palette_inputs_used[i] and not v.filament_type[i] in v.spliced_filament_types:
+            v.spliced_filament_types.append(v.filament_type[i])
+    v.spliced_filament_types.sort()
+
+
+
 def generate_meta():
     fila = []
     lena = {}
@@ -366,11 +374,13 @@ def generate_meta():
             drive_used = 1
         v.palette_inputs_used[drive_used-1] = True
 
+    v.inputs_recalc=[0,0,0,0,0,0,0,0]
     for i in range(v.colors):
         if v.palette_inputs_used[i]:
             inputsused += 1
-            fila.append({"materialId": v.used_filament_types.index(v.filament_type[i]) + 1,
-                         "filamentId": i + 1,
+            v.inputs_recalc[i] = inputsused
+            fila.append({"materialId": v.spliced_filament_types.index(v.filament_type[i]) + 1,
+                         "filamentId": inputsused,
                          "type": v.filament_type[i],
                          "name": find_nearest_colour(v.filament_color_code[i]),
                          "color": "#" + v.filament_color_code[i].strip("\n")
@@ -384,11 +394,11 @@ def generate_meta():
                 add = 0
 
             if v.palette3 and len(v.splice_extruder_position) < 2:
-                lena[str(i + 1)] = int(v.total_material_extruded + 0.5 + v.autoloadingoffset)
-                vola[str(i + 1)] = int(purgetower.volfromlength(v.total_material_extruded + 0.5 + v.autoloadingoffset))
+                lena[str(v.inputs_recalc[i])] = int(v.total_material_extruded + 0.5 + v.autoloadingoffset)
+                vola[str(v.inputs_recalc[i])] = int(purgetower.volfromlength(v.total_material_extruded + 0.5 + v.autoloadingoffset))
             else:
-                lena[str(i + 1)] = int(v.material_extruded_per_color[i] + add)
-                vola[str(i + 1)] = int(purgetower.volfromlength(v.material_extruded_per_color[i] + add))
+                lena[str(v.inputs_recalc[i])] = int(v.material_extruded_per_color[i] + add)
+                vola[str(v.inputs_recalc[i])] = int(purgetower.volfromlength(v.material_extruded_per_color[i] + add))
 
     bounding_box = {"min": [v.bb_minx, v.bb_miny, v.bb_minz], "max": [v.bb_maxx, v.bb_maxy, v.bb_maxz]}
 
@@ -464,6 +474,8 @@ def generate_palette():
             palette["drives"] = [0, 0, 0, 0]
         else:
             palette["drives"] = [0, 0, 0, 0, 0, 0, 0, 0]
+
+
         palette["drives"][drive_used-1] = drive_used
         palette["algorithms"].append({
             "ingoingId": drive_used,
@@ -475,10 +487,10 @@ def generate_palette():
     else:
         for i in range(len(v.splice_extruder_position)):
             palette["splices"].append(
-                {"id": v.splice_used_tool[i] + 1, "length": round(v.splice_extruder_position[i] + v.autoloadingoffset, 4)})
+                {"id": v.inputs_recalc[v.splice_used_tool[i]], "length": round(v.splice_extruder_position[i] + v.autoloadingoffset, 4)})
 
         splice_list = []
-        palette["drives"] = []
+        palette["drives"] = v.inputs_recalc
 
         for i in range(v.colors):
 
@@ -486,7 +498,6 @@ def generate_palette():
             if v.palette_inputs_used[i]:
                 f_idx = i + 1
 
-            palette["drives"].append(f_idx)
 
             for j in range(v.colors):
                 if i == j:
@@ -511,12 +522,14 @@ def generate_palette():
                                     " {} to {}. Using Default Splice Algorithm".format(v.filament_type[i],
                                                                                        v.filament_type[j]))
                 try:
-                    algin = int(algo_key[0])
+                    algin = int(algo_key[0])-1
+                    algin = v.spliced_filament_types.index(v.used_filament_types[algin])+1
                 except ValueError:
                     algin = 0
 
                 try:
-                    algout = int(algo_key[1])
+                    algout = int(algo_key[1])-1
+                    algout = v.spliced_filament_types.index(v.used_filament_types[algout])+1
                 except ValueError:
                     algout = 0
 
@@ -548,4 +561,5 @@ def generate_print_algo_table():
     return information_table
 
 def header_generate_omega_palette3(job_name):
+    reduce_filament_types()
     return generate_meta(), generate_palette()

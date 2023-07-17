@@ -130,15 +130,15 @@ def check_config_parameters(keyword, value):
 
 
     # toggles Palette 3 accessory mode = added 22/12/2022
-    if keyword == "CONNECTED_ACCESSORYMODE_MAFX":
-        if not v.palette3:
-            gui.log_warning("CONNECTED_ACCESSORYMODE_MAFX can only be used with Palette 3!")
-            gui.log_warning("This file may not print correctly")
-        v.accessory_mode = True
-        v.connected_accessory_mode = True
-        gui.create_logitem("Config: Palette3 Connected Accessory Mode Selected")
-        gui.create_logitem("This file will only print with Octoprintn and the P3PING plugin configured and enabled!!")
-        return
+    # if keyword == "CONNECTED_ACCESSORYMODE_MAFX":
+    #     if not v.palette3:
+    #         gui.log_warning("CONNECTED_ACCESSORYMODE_MAFX can only be used with Palette 3!")
+    #         gui.log_warning("This file may not print correctly")
+    #     v.accessory_mode = True
+    #     v.connected_accessory_mode = True
+    #     gui.create_logitem("Config: Palette3 Connected Accessory Mode Selected")
+    #     gui.create_logitem("This file will only print with Octoprintn and the P3PING plugin configured and enabled!!")
+    #     return
 
     # toggles Palette 2 accessory mode
     if keyword == "ACCESSORYMODE_MAF":

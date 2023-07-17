@@ -745,6 +745,7 @@ def parse_gcode_second_pass():
                 continue
 
             if current_block_class in [CLS_TOOL_PURGE, CLS_ENDPURGE, CLS_EMPTY]:
+
                 if purge and g[gcode.EXTRUDE]:
                     v.side_wipe_length += g[gcode.E]
                     gcode.move_to_comment(g, "--P2PP-- full purge skipped [Included]")
@@ -829,7 +830,7 @@ def parse_gcode_second_pass():
                     g[gcode.F] = v.purgetopspeed
                     g[gcode.COMMENT] += " prugespeed topped"
 
-        # --------------------- GLOBAL PROCEDDING
+        # --------------------- GLOBAL PROCESSING
 
         if g[gcode.UNRETRACT]:
             g[gcode.E] = min(-v.retraction, g[gcode.E])
@@ -865,13 +866,16 @@ def parse_gcode_second_pass():
 
         # --------------------- PING PROCESSING
 
-        if v.accessory_mode and g[gcode.EXTRUDE]:
-            if not pings.check_accessorymode_second(g[gcode.E]):
-                gcode.issue_command(g)
+        if v.accessory_mode :
+            if g[gcode.EXTRUDE]:
+                if not pings.check_accessorymode_second(g[gcode.E]):
+                    gcode.issue_command(g)
         else:
+
             gcode.issue_command(g)
-            if g[gcode.EXTRUDE] and v.side_wipe_length == 0:
-                pings.check_connected_ping()
+            if g[gcode.EXTRUDE]:
+                if v.side_wipe_length == 0:
+                    pings.check_connected_ping()
 
         v.previous_position_x = v.current_position_x
         v.previous_position_y = v.current_position_y
@@ -952,7 +956,7 @@ def config_checks():
 
     elif v.autoaddsplice:
         gui.create_logitem("Automatic Splice length increase NOT activated due to incompatible mode", "red")
-        gui.create_logitem("Automatic Splice length incO works with Full purge reduction and side wipe only", "red")
+        gui.create_logitem("Automatic Splice length increase works with Full purge reduction and side wipe only", "red")
 
     if v.last_parsed_layer == -1:
         gui.log_warning("P2PP Layer Configuration is missing!!")
@@ -1109,6 +1113,7 @@ def p2pp_process_file(input_file, output_file):
         mf = open(meta_file, 'wb')
         mf.write(meta.__str__().encode('ascii'))
         mf.close()
+
 
         pa = open(palette_file, 'wb')
         pa.write(palette.__str__().encode('ascii'))

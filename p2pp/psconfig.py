@@ -389,6 +389,7 @@ def parse_config_parameters():
                         filament_string[i] = v.filament_type[i]
                 v.filament_type = filament_string
                 v.used_filament_types = list(set(filament_string))
+
             continue
 
         if gcode_line.startswith("; retract_length = "):
