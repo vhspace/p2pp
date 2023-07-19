@@ -503,8 +503,8 @@ def generate_palette():
                 if i == j:
                     continue
                 try:
-                    algo_key = "{}{}".format(v.used_filament_types.index(v.filament_type[i]) + 1,
-                                             v.used_filament_types.index(v.filament_type[j]) + 1)
+                    algo_key = "{}{}".format(v.used_filament_types.index(v.filament_type[j]) + 1,
+                                             v.used_filament_types.index(v.filament_type[i]) + 1)
                     if algo_key in splice_list:
                         continue
                 except (IndexError, KeyError):

@@ -180,13 +180,14 @@ releaseinfo = {
     "9.0.04": "Allow spaces instead of underscores in the splice definition sequences",
     "9.0.05": "Automatic splcie increase - error message when in wrong mode",
     "9.1.00": "Reworked material / filament numbering on P3 output file to present range of consecutive numbers",
+    "9.1.01": "Reworked material / filament numbering on P3 output file to present range of consecutive numbers",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 9
 MinorVersion = 1
-Build = 0
+Build = 1
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
