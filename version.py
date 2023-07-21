@@ -181,13 +181,14 @@ releaseinfo = {
     "9.0.05": "Automatic splcie increase - error message when in wrong mode",
     "9.1.00": "Reworked material / filament numbering on P3 output file to present range of consecutive numbers",
     "9.1.01": "Reworked material / filament numbering on P3 output file to present range of consecutive numbers",
+    "9.1.02": "undo 9.1.1",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
 MajorVersion = 9
 MinorVersion = 1
-Build = 1
+Build = 2
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
