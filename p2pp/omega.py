@@ -446,7 +446,15 @@ def generate_meta():
     return json.dumps(metafile, indent=2)
 
 
-def generate_algo( algo_key , i, j):
+def gen_algokey(i,j):
+    try:
+        return "{}{}".format(v.used_filament_types.index(v.filament_type[i]) + 1,
+                             v.used_filament_types.index(v.filament_type[j]) + 1)
+    except (IndexError,ValueError):
+        return ""
+
+def generate_algo( i, j):
+    algo_key = gen_algokey(i,j)
     v.splice_list.append(algo_key)
     try:
         algo = v.splice_algorithm_dictionary["{}{}".format(v.filament_type[i], v.filament_type[j])]
@@ -474,6 +482,7 @@ def generate_algo( algo_key , i, j):
         "compression": algo[1],
         "cooling": algo[2]
     }
+
 
 
 def generate_palette():
@@ -522,38 +531,24 @@ def generate_palette():
         v.splice_list = []
         palette["drives"] = v.inputs_recalc
 
+
         for i in range(v.colors):
 
-            f_idx = 0
             if v.palette_inputs_used[i]:
-                f_idx = i + 1
-
-                # add self-transition of material just in case of splicing on filamen trunout
-                alg_self = "{}{}".format(v.used_filament_types.index(v.filament_type[i]) + 1,
-                                             v.used_filament_types.index(v.filament_type[i]) + 1)
-                if not alg_self in v.splice_list:
-                    palette["algorithms"].append(
-                        generate_algo(alg_self, i, i))
-
-
-            for j in range(v.colors):
-                if i == j:
-                    continue
-                try:
-                    algo_key = "{}{}".format(v.used_filament_types.index(v.filament_type[i]) + 1,
-                                             v.used_filament_types.index(v.filament_type[j]) + 1)
-                    if algo_key in v.splice_list:
+                for j in range(v.colors):
+                    if not v.palette_inputs_used[j]:
                         continue
-                except (IndexError, KeyError):
-                    continue
 
-                if not algorithm_transition_used(i, j) and not algorithm_transition_used(j,i):
-                    continue
+                    if gen_algokey(i,j) in v.splice_list:
+                        continue
 
-                palette["algorithms"].append(generate_algo("{}{}".format(v.used_filament_types.index(v.filament_type[i]) + 1,
-                                             v.used_filament_types.index(v.filament_type[j]) + 1),i,j))
-                palette["algorithms"].append(generate_algo("{}{}".format(v.used_filament_types.index(v.filament_type[j]) + 1,
-                                            v.used_filament_types.index(v.filament_type[i]) + 1),j,i))
+                    palette["algorithms"].append(generate_algo(i,j))
+
+                    if i==j:
+                        continue
+
+                    palette["algorithms"].append(generate_algo(j,i))
+
 
     if v.accessory_mode:
         for i in range(len(v.ping_extruder_position)):
