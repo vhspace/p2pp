@@ -528,6 +528,13 @@ def generate_palette():
             if v.palette_inputs_used[i]:
                 f_idx = i + 1
 
+                # add self-transition of material just in case of splicing on filamen trunout
+                alg_self = "{}{}".format(v.used_filament_types.index(v.filament_type[i]) + 1,
+                                             v.used_filament_types.index(v.filament_type[i]) + 1)
+                if not alg_self in v.splice_list:
+                    palette["algorithms"].append(
+                        generate_algo(alg_self, i, i))
+
 
             for j in range(v.colors):
                 if i == j:
