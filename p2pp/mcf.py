@@ -478,7 +478,7 @@ def parse_gcode_second_pass():
             gcode.issue_code(v.temp1_stored_command)
             v.temp1_stored_command = ""
 
-        # BLOCK Added 27/11/2021 - PS2.4 - P3 - showinf lines between print and tower
+        # BLOCK Added 27/11/2021 - PS2.4 - P3 - showing lines between print and tower
         if current_block_class != v.previous_block_classification and not v.side_wipe and not v.full_purge_reduction:
             if v.previous_block_classification == CLS_TOOL_UNLOAD:
                 if v.restore_move_point:
@@ -866,16 +866,13 @@ def parse_gcode_second_pass():
 
         # --------------------- PING PROCESSING
 
-        if v.accessory_mode :
-            if g[gcode.EXTRUDE]:
-                if not pings.check_accessorymode_second(g[gcode.E]):
-                    gcode.issue_command(g)
+        if v.accessory_mode and g[gcode.EXTRUDE]:
+            if not pings.check_accessorymode_second(g[gcode.E]):
+                gcode.issue_command(g)
         else:
-
             gcode.issue_command(g)
-            if g[gcode.EXTRUDE]:
-                if v.side_wipe_length == 0:
-                    pings.check_connected_ping()
+            if g[gcode.EXTRUDE] and v.side_wipe_length == 0:
+                pings.check_connected_ping()
 
         v.previous_position_x = v.current_position_x
         v.previous_position_y = v.current_position_y
