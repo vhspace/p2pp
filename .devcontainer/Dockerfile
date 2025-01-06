@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/devcontainers/python:3.8
 ENV DEBIAN_FRONTEND=noninteractive
 ENV QT_DEBUG_PLUGINS=1
 ENV PYTHONPATH=/workspace
-ENV QT_QPA_PLATFORM=offscreen
+ENV QT_QPA_PLATFORM=xcb
 
 # Update package list and install basic dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
