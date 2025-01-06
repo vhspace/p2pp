@@ -1,2 +1,4 @@
 .idea/
 /tmpfile
+__pycache__/** 
+build/** 
