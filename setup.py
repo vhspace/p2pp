@@ -37,7 +37,7 @@ if sys.platform == "linux":
     excludes = ["tkinter"]
     includes = ['PyQt5.QtWidgets', 'PyQt5.QtGui', 'PyQt5.Qt', 'PyQt5', 'PyQt5.QtCore', 'PyQt5.QtWebEngineWidgets']
 
-    build_exe_options = {"packages": ["os"], 'include_files': includefiles, "excludes": excludes, "includes": includes}
+    build_exe_options = {"packages": ["os", "urllib3", "urllib3.contrib", "urllib3.contrib.appengine"], 'include_files': includefiles, "excludes": excludes, "includes": includes}
 
     setup(name="p2pp",
           version=version.Version,
