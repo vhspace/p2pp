@@ -23,11 +23,17 @@ if sys.platform == "darwin":
             'PyQt5.Qt', 
             'PyQt5', 
             'PyQt5.QtCore',
-            'PyQt5.QtWebEngineWidgets'
+            'PyQt5.QtWebEngineWidgets',
+            'PyQt5.QtWebEngine',
+            'PyQt5.QtWebEngineCore'
         ],
         "excludes": ["tkinter"],
         'packages': ['PyQt5'],
-        'frameworks': [],
+        'qt_plugins': [
+            'PyQt5.QtWebEngineWidgets',
+            'PyQt5.QtWebEngineCore'
+        ],
+        'resources': ['resources'],  # Add if you have any resource files
         'plist': {
             'CFBundleName': 'P2PP',
             'CFBundleDisplayName': 'P2PP',
@@ -35,6 +41,7 @@ if sys.platform == "darwin":
             'CFBundleVersion': "1.0.0",
             'CFBundleShortVersionString': "1.0.0",
             'NSHighResolutionCapable': True,
+            'NSRequiresAquaSystemAppearance': False,  # For dark mode support
         }
     }
 

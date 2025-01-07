@@ -41,13 +41,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         if [ "${{ matrix.os }}" = "macos-latest" ]; then
-          pip install py2app PyQt5 PyQtWebEngine
-        elif [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-          sudo apt-get update
-          sudo apt-get install -y python3-dev
-          pip install cx_Freeze PyQt5 PyQtWebEngine
+          pip install py2app
+          pip install PyQt5 PyQtWebEngine --no-cache-dir
         else
-          pip install cx_Freeze PyQt5 PyQtWebEngine
+          pip install cx_Freeze
         fi
       shell: bash
 
