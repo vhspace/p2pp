@@ -6,6 +6,7 @@ Usage:
 """
 
 import sys
+import os
 
 if sys.platform == "darwin":
     from setuptools import setup
