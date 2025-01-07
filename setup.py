@@ -8,11 +8,25 @@ Usage:
 import sys
 import os
 
-if sys.platform == "darwin":
+iif sys.platform == "darwin":
     from setuptools import setup
     import sysconfig
     import shutil
     import os
+    import py2app.build_app
+
+    # Monkey patch py2app to handle dist-info conflicts
+    def _copy_package(self, pkg, pkg_path, dest_dir):
+        try:
+            return original_copy_package(self, pkg, pkg_path, dest_dir)
+        except OSError as e:
+            if e.errno == 17:  # File exists error
+                print(f"Skipping existing package: {pkg}")
+                return
+            raise
+
+    original_copy_package = py2app.build_app.PythonStandalone._copy_package
+    py2app.build_app.PythonStandalone._copy_package = _copy_package
 
     # Clean build directories if they exist
     if os.path.exists('build'):
