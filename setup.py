@@ -7,26 +7,38 @@ Usage:
 
 import sys
 
-
 if sys.platform == "darwin":
     from setuptools import setup
+    import sysconfig
 
+    python_include = sysconfig.get_path('include')
+    framework_path = sysconfig.get_config_var('PYTHONFRAMEWORK')
+    
     APP = ['P2PP.py']
     DATA_FILES = ['p2pp.ui', 'p2ppconf.ui', "SendError.ui", "p3browser.ui"]
-    OPTIONS = {'argv_emulation': True,
-               "iconfile": "icons/icon.icns",
-               #"includes": ['PyQt5._qt'],
-               "includes": ['PyQt5.QtWidgets','PyQt5.QtGui', 'PyQt5.Qt', 'PyQt5', 'PyQt5.QtCore'],
-               "excludes": ["tkinter"]
-               }
+    OPTIONS = {
+        'argv_emulation': True,
+        "iconfile": "icons/icon.icns",
+        "includes": ['PyQt5.QtWidgets','PyQt5.QtGui', 'PyQt5.Qt', 'PyQt5', 'PyQt5.QtCore'],
+        "excludes": ["tkinter"],
+        'include_dirs': [
+            python_include,
+            os.path.join(python_include, 'internal')
+        ],
+        'extra_compile_args': [
+            '-I' + python_include,
+            '-I' + os.path.join(python_include, 'internal'),
+            '-D_PyMem_RawStrdup=strdup'  # Use standard strdup instead
+        ],
+    }
 
     setup(
         app=APP,
         data_files=DATA_FILES,
         options={'py2app': OPTIONS},
-        install_requires = [],
         setup_requires=['py2app']
     )
+    
 
 if sys.platform == "linux":
     import sys

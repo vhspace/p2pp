@@ -16,6 +16,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.12']  # Specify a stable version
 
     steps:
     - uses: actions/checkout@v3
@@ -23,7 +24,17 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.x'
+        python-version: ${{ matrix.python-version }}
+
+    - name: Create and activate virtual environment
+      run: |
+        python -m venv venv
+        if [ "${{ matrix.os }}" = "windows-latest" ]; then
+          source venv/Scripts/activate
+        else
+          source venv/bin/activate
+        fi
+      shell: bash
 
     - name: Install dependencies
       run: |
