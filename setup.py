@@ -8,7 +8,7 @@ Usage:
 import sys
 import os
 
-iif sys.platform == "darwin":
+if sys.platform == "darwin":
     from setuptools import setup
     import sysconfig
     import shutil
