@@ -23,12 +23,10 @@ if sys.platform == "darwin":
             'PyQt5.Qt', 
             'PyQt5', 
             'PyQt5.QtCore',
-            'PyQt5.QtWebEngineWidgets',
-            'PyQt5.QtWebEngine',
-            'PyQtWebEngine'
+            'PyQt5.QtWebEngineWidgets'
         ],
         "excludes": ["tkinter"],
-        'packages': ['PyQt5', 'PyQtWebEngine'],
+        'packages': ['PyQt5'],
         'frameworks': [],
         'plist': {
             'CFBundleName': 'P2PP',

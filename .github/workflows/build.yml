@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.12']  # Specify a stable version
+        python-version: ['3.12']
 
     steps:
     - uses: actions/checkout@v3
@@ -41,9 +41,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         if [ "${{ matrix.os }}" = "macos-latest" ]; then
-          pip install py2app
+          pip install py2app PyQt5 PyQtWebEngine
+        elif [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+          sudo apt-get update
+          sudo apt-get install -y python3-dev
+          pip install cx_Freeze PyQt5 PyQtWebEngine
         else
-          pip install cx_Freeze
+          pip install cx_Freeze PyQt5 PyQtWebEngine
         fi
       shell: bash
 
@@ -51,6 +55,8 @@ jobs:
       run: |
         if [ "${{ matrix.os }}" = "macos-latest" ]; then
           python setup.py py2app
+        elif [ "${{ matrix.os }}" = "windows-latest" ]; then
+          python setup.py build
         else
           python setup.py build
         fi
@@ -63,3 +69,13 @@ jobs:
         path: |
           dist/
           build/
+
+    - name: Create Release
+      if: github.event_name == 'release' && github.event.action == 'created'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          dist/**
+          build/**
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
