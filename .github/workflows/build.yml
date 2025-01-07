@@ -51,9 +51,10 @@ jobs:
     - name: Build
       run: |
         if [ "${{ matrix.os }}" = "macos-latest" ]; then
-          python setup.py py2app
-        elif [ "${{ matrix.os }}" = "windows-latest" ]; then
-          python setup.py build
+          # Clean build directories first
+          rm -rf build/ dist/
+          # Build with additional flags
+          python setup.py py2app --no-strip --clean
         else
           python setup.py build
         fi
