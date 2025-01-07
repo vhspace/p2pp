@@ -43,7 +43,6 @@ if sys.platform == "darwin":
         'packages': ['PyQt5'],
         'strip': False,
         'optimize': 0,
-        'clean': True,  # Add clean flag
         'plist': {
             'CFBundleName': 'P2PP',
             'CFBundleDisplayName': 'P2PP',
