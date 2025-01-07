@@ -54,7 +54,7 @@ jobs:
           # Clean build directories first
           rm -rf build/ dist/
           # Build with additional flags
-          python setup.py py2app --no-strip --clean
+          python setup.py py2app --no-strip 
         else
           python setup.py build
         fi
