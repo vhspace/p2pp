@@ -17,17 +17,26 @@ if sys.platform == "darwin":
     OPTIONS = {
         'argv_emulation': True,
         "iconfile": "icons/icon.icns",
-        "includes": ['PyQt5.QtWidgets','PyQt5.QtGui', 'PyQt5.Qt', 'PyQt5', 'PyQt5.QtCore'],
+        "includes": [
+            'PyQt5.QtWidgets',
+            'PyQt5.QtGui', 
+            'PyQt5.Qt', 
+            'PyQt5', 
+            'PyQt5.QtCore',
+            'PyQt5.QtWebEngineWidgets',
+            'PyQt5.QtWebEngine',
+            'PyQtWebEngine'
+        ],
         "excludes": ["tkinter"],
-        'packages': ['PyQt5'],
-        'frameworks': [],  # Add any required frameworks here
+        'packages': ['PyQt5', 'PyQtWebEngine'],
+        'frameworks': [],
         'plist': {
             'CFBundleName': 'P2PP',
             'CFBundleDisplayName': 'P2PP',
-            'CFBundleGetInfoString': "P2PP",
             'CFBundleIdentifier': "com.p2pp.app",
             'CFBundleVersion': "1.0.0",
             'CFBundleShortVersionString': "1.0.0",
+            'NSHighResolutionCapable': True,
         }
     }
 
@@ -36,6 +45,10 @@ if sys.platform == "darwin":
         data_files=DATA_FILES,
         options={'py2app': OPTIONS},
         setup_requires=['py2app'],
+        install_requires=[
+            'PyQt5',
+            'PyQtWebEngine'
+        ]
     )
     
 
