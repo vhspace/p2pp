@@ -13,22 +13,13 @@ if sys.platform == "darwin":
     import sysconfig
     import shutil
     import os
-    from py2app.build_app import PythonStandalone
+    import platform
 
     # Clean build directories if they exist
     if os.path.exists('build'):
         shutil.rmtree('build')
     if os.path.exists('dist'):
         shutil.rmtree('dist')
-
-    # Override the copy_file method to handle existing files
-    def _copy_file(src, dst, force=False):
-        try:
-            if os.path.exists(dst):
-                os.remove(dst)
-            shutil.copy2(src, dst)
-        except Exception as e:
-            print(f"Warning: Could not copy {src} to {dst}: {e}")
 
     APP = ['P2PP.py']
     DATA_FILES = ['p2pp.ui', 'p2ppconf.ui', "SendError.ui", "p3browser.ui"]
@@ -53,6 +44,7 @@ if sys.platform == "darwin":
         'packages': ['PyQt5'],
         'strip': False,
         'optimize': 0,
+        'arch': 'arm64' if platform.machine() == 'arm64' else 'x86_64',
         'plist': {
             'CFBundleName': 'P2PP',
             'CFBundleDisplayName': 'P2PP',
@@ -60,23 +52,16 @@ if sys.platform == "darwin":
             'CFBundleVersion': "1.0.0",
             'CFBundleShortVersionString': "1.0.0",
             'NSHighResolutionCapable': True,
+            'LSMinimumSystemVersion': '11.0',
         }
     }
 
-    # Patch shutil.copy2 temporarily for the build
-    original_copy2 = shutil.copy2
-    shutil.copy2 = _copy_file
-
-    try:
-        setup(
-            app=APP,
-            data_files=DATA_FILES,
-            options={'py2app': OPTIONS},
-            setup_requires=['py2app']
-        )
-    finally:
-        # Restore original copy2
-        shutil.copy2 = original_copy2
+    setup(
+        app=APP,
+        data_files=DATA_FILES,
+        options={'py2app': OPTIONS},
+        setup_requires=['py2app']
+    )
     
 
 if sys.platform == "linux":
