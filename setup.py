@@ -6,37 +6,54 @@ Usage:
 """
 
 import sys
+import os
 
 if sys.platform == "darwin":
     from setuptools import setup
     import sysconfig
 
-    python_include = sysconfig.get_path('include')
-    framework_path = sysconfig.get_config_var('PYTHONFRAMEWORK')
-    
     APP = ['P2PP.py']
     DATA_FILES = ['p2pp.ui', 'p2ppconf.ui', "SendError.ui", "p3browser.ui"]
     OPTIONS = {
         'argv_emulation': True,
         "iconfile": "icons/icon.icns",
-        "includes": ['PyQt5.QtWidgets','PyQt5.QtGui', 'PyQt5.Qt', 'PyQt5', 'PyQt5.QtCore'],
+        "includes": [
+            'PyQt5.QtWidgets',
+            'PyQt5.QtGui', 
+            'PyQt5.Qt', 
+            'PyQt5', 
+            'PyQt5.QtCore',
+            'PyQt5.QtWebEngineWidgets',
+            'PyQt5.QtWebEngine',
+            'PyQt5.QtWebEngineCore'
+        ],
         "excludes": ["tkinter"],
-        'include_dirs': [
-            python_include,
-            os.path.join(python_include, 'internal')
+        'packages': ['PyQt5'],
+        'qt_plugins': [
+            'PyQt5.QtWebEngineWidgets',
+            'PyQt5.QtWebEngineCore'
         ],
-        'extra_compile_args': [
-            '-I' + python_include,
-            '-I' + os.path.join(python_include, 'internal'),
-            '-D_PyMem_RawStrdup=strdup'  # Use standard strdup instead
-        ],
+        'resources': ['resources'],  # Add if you have any resource files
+        'plist': {
+            'CFBundleName': 'P2PP',
+            'CFBundleDisplayName': 'P2PP',
+            'CFBundleIdentifier': "com.p2pp.app",
+            'CFBundleVersion': "1.0.0",
+            'CFBundleShortVersionString': "1.0.0",
+            'NSHighResolutionCapable': True,
+            'NSRequiresAquaSystemAppearance': False,  # For dark mode support
+        }
     }
 
     setup(
         app=APP,
         data_files=DATA_FILES,
         options={'py2app': OPTIONS},
-        setup_requires=['py2app']
+        setup_requires=['py2app'],
+        install_requires=[
+            'PyQt5',
+            'PyQtWebEngine'
+        ]
     )
     
 
