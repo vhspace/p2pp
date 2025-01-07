@@ -13,26 +13,22 @@ if sys.platform == "darwin":
     import sysconfig
     import shutil
     import os
-    import py2app.build_app
-
-    # Monkey patch py2app to handle dist-info conflicts
-    def _copy_package(self, pkg, pkg_path, dest_dir):
-        try:
-            return original_copy_package(self, pkg, pkg_path, dest_dir)
-        except OSError as e:
-            if e.errno == 17:  # File exists error
-                print(f"Skipping existing package: {pkg}")
-                return
-            raise
-
-    original_copy_package = py2app.build_app.PythonStandalone._copy_package
-    py2app.build_app.PythonStandalone._copy_package = _copy_package
+    from py2app.build_app import PythonStandalone
 
     # Clean build directories if they exist
     if os.path.exists('build'):
         shutil.rmtree('build')
     if os.path.exists('dist'):
         shutil.rmtree('dist')
+
+    # Override the copy_file method to handle existing files
+    def _copy_file(src, dst, force=False):
+        try:
+            if os.path.exists(dst):
+                os.remove(dst)
+            shutil.copy2(src, dst)
+        except Exception as e:
+            print(f"Warning: Could not copy {src} to {dst}: {e}")
 
     APP = ['P2PP.py']
     DATA_FILES = ['p2pp.ui', 'p2ppconf.ui', "SendError.ui", "p3browser.ui"]
@@ -67,12 +63,20 @@ if sys.platform == "darwin":
         }
     }
 
-    setup(
-        app=APP,
-        data_files=DATA_FILES,
-        options={'py2app': OPTIONS},
-        setup_requires=['py2app']
-    )
+    # Patch shutil.copy2 temporarily for the build
+    original_copy2 = shutil.copy2
+    shutil.copy2 = _copy_file
+
+    try:
+        setup(
+            app=APP,
+            data_files=DATA_FILES,
+            options={'py2app': OPTIONS},
+            setup_requires=['py2app']
+        )
+    finally:
+        # Restore original copy2
+        shutil.copy2 = original_copy2
     
 
 if sys.platform == "linux":
