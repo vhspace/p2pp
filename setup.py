@@ -11,6 +11,15 @@ import os
 if sys.platform == "darwin":
     from setuptools import setup
     import sysconfig
+    import shutil
+    import os
+    import platform
+
+    # Clean build directories if they exist
+    if os.path.exists('build'):
+        shutil.rmtree('build')
+    if os.path.exists('dist'):
+        shutil.rmtree('dist')
 
     APP = ['P2PP.py']
     DATA_FILES = ['p2pp.ui', 'p2ppconf.ui', "SendError.ui", "p3browser.ui"]
@@ -20,20 +29,22 @@ if sys.platform == "darwin":
         "includes": [
             'PyQt5.QtWidgets',
             'PyQt5.QtGui', 
-            'PyQt5.Qt', 
-            'PyQt5', 
             'PyQt5.QtCore',
             'PyQt5.QtWebEngineWidgets',
             'PyQt5.QtWebEngine',
             'PyQt5.QtWebEngineCore'
         ],
-        "excludes": ["tkinter"],
-        'packages': ['PyQt5'],
-        'qt_plugins': [
-            'PyQt5.QtWebEngineWidgets',
-            'PyQt5.QtWebEngineCore'
+        "excludes": [
+            "tkinter",
+            "matplotlib",
+            "numpy",
+            "_tkinter",
+            "PIL"
         ],
-        'resources': ['resources'],  # Add if you have any resource files
+        'packages': ['PyQt5'],
+        'strip': False,
+        'optimize': 0,
+        'arch': ['arm64', 'x86_64'],
         'plist': {
             'CFBundleName': 'P2PP',
             'CFBundleDisplayName': 'P2PP',
@@ -41,7 +52,8 @@ if sys.platform == "darwin":
             'CFBundleVersion': "1.0.0",
             'CFBundleShortVersionString': "1.0.0",
             'NSHighResolutionCapable': True,
-            'NSRequiresAquaSystemAppearance': False,  # For dark mode support
+            'LSMinimumSystemVersion': '11.0',
+            'LSArchitecturePriority': ['arm64', 'x86_64']
         }
     }
 
@@ -49,11 +61,7 @@ if sys.platform == "darwin":
         app=APP,
         data_files=DATA_FILES,
         options={'py2app': OPTIONS},
-        setup_requires=['py2app'],
-        install_requires=[
-            'PyQt5',
-            'PyQtWebEngine'
-        ]
+        setup_requires=['py2app']
     )
     
 

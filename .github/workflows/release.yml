@@ -1,0 +1,57 @@
+name: Build and Release macOS App
+
+on:
+  push:
+    tags:
+      - 'v*' # Triggers on version tags like v1.0.0
+
+jobs:
+  build-and-release:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.13'
+        
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install setuptools==70.3.0
+        pip install py2app --no-deps
+        pip install -r requirements.txt
+        brew install create-dmg
+        
+    - name: Build Universal App
+      run: |
+        source venv/bin/activate
+        rm -rf build dist
+        python setup.py py2app --arch=arm64,x86_64
+        
+    - name: Create DMG
+      run: |
+        create-dmg \
+          --volname "P2PP" \
+          --window-pos 200 120 \
+          --window-size 600 400 \
+          --icon-size 100 \
+          --icon "P2PP.app" 175 120 \
+          --hide-extension "P2PP.app" \
+          --app-drop-link 425 120 \
+          "P2PP.dmg" \
+          "dist/P2PP.app"
+          
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: P2PP.dmg
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
