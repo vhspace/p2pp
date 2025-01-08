@@ -58,12 +58,6 @@ jobs:
         fi
       shell: bash
 
-    - name: Setup tmate session for debugging
-      if: failure() && matrix.os == 'macos-latest'
-      uses: mxschmitt/action-tmate@v3
-      with:
-        limit-access-to-actor: true
-
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
