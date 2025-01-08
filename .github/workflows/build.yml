@@ -3,9 +3,9 @@ name: Build Multi-Platform Binaries
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
   release:
     types: [created]
 

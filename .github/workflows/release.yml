@@ -71,42 +71,21 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pyinstaller
-        
-    - name: Install NSIS
-      run: |
-        choco install nsis -y
+        pip install cx_Freeze
+      
         
     - name: Build Windows Executable
       run: |
-        pyinstaller --name P2PP --windowed --icon=icons/icon.ico --add-data "icons;icons" p2pp.py
+        python setup.py build
         
     - name: Create Installer
       run: |
-        # Create NSIS script
-        echo '!include "MUI2.nsh"' > installer.nsi
-        echo 'Name "P2PP"' >> installer.nsi
-        echo 'OutFile "P2PP_Setup.exe"' >> installer.nsi
-        echo 'InstallDir "$PROGRAMFILES\P2PP"' >> installer.nsi
-        echo 'RequestExecutionLevel admin' >> installer.nsi
-        echo '!insertmacro MUI_PAGE_DIRECTORY' >> installer.nsi
-        echo '!insertmacro MUI_PAGE_INSTFILES' >> installer.nsi
-        echo '!insertmacro MUI_LANGUAGE "English"' >> installer.nsi
-        echo 'Section' >> installer.nsi
-        echo '  SetOutPath "$INSTDIR"' >> installer.nsi
-        echo '  File /r "dist\P2PP\*.*"' >> installer.nsi
-        echo '  CreateShortCut "$DESKTOP\P2PP.lnk" "$INSTDIR\P2PP.exe"' >> installer.nsi
-        echo '  CreateDirectory "$SMPROGRAMS\P2PP"' >> installer.nsi
-        echo '  CreateShortCut "$SMPROGRAMS\P2PP\P2PP.lnk" "$INSTDIR\P2PP.exe"' >> installer.nsi
-        echo 'SectionEnd' >> installer.nsi
-        
-        # Build installer
-        makensis installer.nsi
+        python setup.py bdist_msi
         
     - name: Upload Windows Installer
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        files: P2PP_Setup.exe
+        files: dist/*.msi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
