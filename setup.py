@@ -95,13 +95,27 @@ if sys.platform == "win32":
 
     build_exe_options = {"packages": ["os"], 'include_files': includefiles, "excludes": excludes, "includes": includes}
 
+    # Add MSI options
+    bdist_msi_options = {
+    "upgrade_code": "{2E1D0F3B-768A-4E44-9D1C-85A4F8673C80}",  # Generated UUID for P2PP
+    "add_to_path": False,
+    "initial_target_dir": r"[ProgramFilesFolder]\P2PP",
+    "install_icon": "icons/icon.ico",
+    "target_name": "P2PP",
+    "shortcut_name": "P2PP",
+    "shortcut_dir": r"[ProgramMenuFolder]\P2PP"
+    }
+
     setup(name="p2pp",
           version=version.Version,
           description="P2PP - Palette 2 Post Processing tool for Prusa Slicer",
-          options={"build_exe": build_exe_options},
-          executables=[Executable("p2pp.py", base="Win32GUI", icon="icons/icon.ico")]
+          options={
+              "build_exe": build_exe_options,
+              "bdist_msi": bdist_msi_options
+          },
+          executables=[Executable("p2pp.py", 
+                                base="Win32GUI", 
+                                icon="icons/icon.ico",
+                                shortcut_name="P2PP",
+                                shortcut_dir="P2PP")]
           )
-
-
-
-
