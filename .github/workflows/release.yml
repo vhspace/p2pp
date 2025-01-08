@@ -1,4 +1,4 @@
-name: Build and Release macOS App
+name: Build and Release
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - 'v*' # Triggers on version tags like v1.0.0
 
 jobs:
-  build-and-release:
+  build-macos:
     runs-on: macos-latest
     
     steps:
@@ -21,7 +21,6 @@ jobs:
       run: |
         python -m venv venv
         source venv/bin/activate
-        pip install setuptools==70.3.0
         pip install py2app --no-deps
         pip install -r requirements.txt
         brew install create-dmg
@@ -30,7 +29,7 @@ jobs:
       run: |
         source venv/bin/activate
         rm -rf build dist
-        python setup.py py2app --arch=arm64,x86_64
+        python setup.py py2app
         
     - name: Create DMG
       run: |
@@ -53,5 +52,59 @@ jobs:
         draft: false
         prerelease: false
         generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.13'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+        
+    - name: Install NSIS
+      run: |
+        choco install nsis -y
+        
+    - name: Build Windows Executable
+      run: |
+        pyinstaller --name P2PP --windowed --icon=icons/icon.ico --add-data "icons;icons" your_main_script.py
+        
+    - name: Create Installer
+      run: |
+        # Create NSIS script
+        echo '!include "MUI2.nsh"' > installer.nsi
+        echo 'Name "P2PP"' >> installer.nsi
+        echo 'OutFile "P2PP_Setup.exe"' >> installer.nsi
+        echo 'InstallDir "$PROGRAMFILES\P2PP"' >> installer.nsi
+        echo 'RequestExecutionLevel admin' >> installer.nsi
+        echo '!insertmacro MUI_PAGE_DIRECTORY' >> installer.nsi
+        echo '!insertmacro MUI_PAGE_INSTFILES' >> installer.nsi
+        echo '!insertmacro MUI_LANGUAGE "English"' >> installer.nsi
+        echo 'Section' >> installer.nsi
+        echo '  SetOutPath "$INSTDIR"' >> installer.nsi
+        echo '  File /r "dist\P2PP\*.*"' >> installer.nsi
+        echo '  CreateShortCut "$DESKTOP\P2PP.lnk" "$INSTDIR\P2PP.exe"' >> installer.nsi
+        echo '  CreateDirectory "$SMPROGRAMS\P2PP"' >> installer.nsi
+        echo '  CreateShortCut "$SMPROGRAMS\P2PP\P2PP.lnk" "$INSTDIR\P2PP.exe"' >> installer.nsi
+        echo 'SectionEnd' >> installer.nsi
+        
+        # Build installer
+        makensis installer.nsi
+        
+    - name: Upload Windows Installer
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: P2PP_Setup.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
