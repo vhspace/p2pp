@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.12']
+        python-version: ['3.13']
 
     steps:
     - uses: actions/checkout@v3
@@ -41,8 +41,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         if [ "${{ matrix.os }}" = "macos-latest" ]; then
-          pip install py2app
-          pip install PyQt5 PyQtWebEngine --no-cache-dir
+          pip install py2app --no-deps
         else
           pip install cx_Freeze
         fi
@@ -53,8 +52,7 @@ jobs:
         if [ "${{ matrix.os }}" = "macos-latest" ]; then
           # Clean build directories first
           rm -rf build/ dist/
-          # Build with additional flags
-          python setup.py py2app --no-strip 
+          python setup.py py2app
         else
           python setup.py build
         fi
@@ -64,7 +62,6 @@ jobs:
       if: failure() && matrix.os == 'macos-latest'
       uses: mxschmitt/action-tmate@v3
       with:
-        timeout-minutes: 15
         limit-access-to-actor: true
 
     - name: Upload artifacts

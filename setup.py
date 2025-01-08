@@ -44,7 +44,7 @@ if sys.platform == "darwin":
         'packages': ['PyQt5'],
         'strip': False,
         'optimize': 0,
-        'arch': ['arm64', 'x86_64'],
+        'arch': 'universal2',
         'plist': {
             'CFBundleName': 'P2PP',
             'CFBundleDisplayName': 'P2PP',
