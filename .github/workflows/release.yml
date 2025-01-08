@@ -21,6 +21,7 @@ jobs:
       run: |
         python -m venv venv
         source venv/bin/activate
+        pip install packaging
         pip install py2app --no-deps
         pip install -r requirements.txt
         brew install create-dmg
