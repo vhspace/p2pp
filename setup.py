@@ -44,7 +44,7 @@ if sys.platform == "darwin":
         'packages': ['PyQt5'],
         'strip': False,
         'optimize': 0,
-        'arch': 'arm64' if platform.machine() == 'arm64' else 'x86_64',
+        'arch': ['arm64', 'x86_64'],
         'plist': {
             'CFBundleName': 'P2PP',
             'CFBundleDisplayName': 'P2PP',
@@ -53,6 +53,7 @@ if sys.platform == "darwin":
             'CFBundleShortVersionString': "1.0.0",
             'NSHighResolutionCapable': True,
             'LSMinimumSystemVersion': '11.0',
+            'LSArchitecturePriority': ['arm64', 'x86_64']
         }
     }
 
