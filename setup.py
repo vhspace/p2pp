@@ -52,8 +52,7 @@ if sys.platform == "darwin":
             'CFBundleVersion': "1.0.0",
             'CFBundleShortVersionString': "1.0.0",
             'NSHighResolutionCapable': True,
-            'LSMinimumSystemVersion': '11.0',
-            'LSArchitecturePriority': ['arm64', 'x86_64']
+            'LSMinimumSystemVersion': '11.0'
         }
     }
 
