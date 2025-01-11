@@ -67,15 +67,19 @@ if sys.platform == "darwin":
     
 
 if sys.platform.startswith('linux'):
-    from setuptools import setup
+    from setuptools import setup, find_packages  # Add find_packages
 
     setup(
         name="p2pp",
         version=Version,
         description="P2PP - Palette 2 Post Processing tool for Prusa Slicer",
-        author="Stefan Hepp",
-        author_email="stefan@stefant.org",
-        packages=['p2pp'],
+        author=__author__,
+        author_email=__email__,
+        packages=find_packages(),  # Use find_packages instead of ['p2pp']
+        package_data={
+            'p2pp': ['*.ui'],
+            '': ['version.py']  # Include version.py in all packages
+        },
         install_requires=[
             'PyQt5>=5.15.0',
             'PyQtWebEngine>=5.15.0',
@@ -101,7 +105,7 @@ if sys.platform.startswith('linux'):
             'bdist_rpm': {
                 'requires': ['python3-qt5 >= 5.15.0'],
                 'group': 'Applications/Engineering',
-                'vendor': 'Stefan Hepp',
+                'vendor': __author__,
                 'post_install': 'scripts/post_install.sh',
                 'post_uninstall': 'scripts/post_uninstall.sh'
             },
