@@ -185,13 +185,14 @@ releaseinfo = {
     "9.1.03": "added reverse splices and self-splices to the lgorithm list",
     "9.1.04": "more tweaking of thesplices and self-splices",
     "9.1.05": "issue with skipped layers in accessory mode",
+    "10.0.0": "Create new packages and CI/CD system",
     '--- RELEASE INFORMATION': 'END'
 }
 
 # general version info
-MajorVersion = 9
-MinorVersion = 1
-Build = 5
+MajorVersion = 10
+MinorVersion = 0
+Build = 0
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 

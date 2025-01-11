@@ -72,28 +72,40 @@ if sys.platform.startswith('linux'):
         name="p2pp",
         version=version.Version,
         description="P2PP - Palette 2 Post Processing tool for Prusa Slicer",
-        author="Your Name",
-        author_email="your.email@example.com",
+        author="Stefan Hepp",
+        author_email="stefan@stefant.org",
         packages=['p2pp'],
         install_requires=[
             'PyQt5>=5.15.0',
             'PyQtWebEngine>=5.15.0',
-            # ... other dependencies ...
+            'requests>=2.31.0',
+            'packaging>=23.2'
         ],
         data_files=[
             ('share/applications', ['p2pp.desktop']),
-            ('share/icons', ['icons/icon.ico']),
-            ('share/p2pp', ['p2pp.ui', 'p2ppconf.ui', 'SendError.ui', 'p3browser.ui'])
+            ('share/icons/hicolor/128x128/apps', ['icons/icon.ico']),
+            ('share/p2pp', [
+                'p2pp.ui', 
+                'p2ppconf.ui', 
+                'SendError.ui', 
+                'p3browser.ui'
+            ])
         ],
+        entry_points={
+            'gui_scripts': [
+                'p2pp=p2pp:main',
+            ],
+        },
         options={
             'bdist_rpm': {
                 'requires': ['python3-qt5 >= 5.15.0'],
                 'group': 'Applications/Engineering',
-                'vendor': 'Your Organization',
+                'vendor': 'Stefan Hepp',
+                'post_install': 'scripts/post_install.sh',
+                'post_uninstall': 'scripts/post_uninstall.sh'
             },
         }
     )
-
 
 if sys.platform == "win32":
     import sys
