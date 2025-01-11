@@ -91,6 +91,9 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: ['rpm', 'deb']
     steps:
     - uses: actions/checkout@v3
     
@@ -109,13 +112,17 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements-linux.txt
         
-    - name: Build Linux Packages
-      run: |
-        # Build RPM
-        python setup.py bdist_rpm
+    - name: Build RPM Package
+      if: matrix.package == 'rpm'
+      run: python setup.py bdist_rpm
+      env:
+        BUILD_TYPE: rpm
         
-        # Build DEB
-        python setup.py --command-packages=stdeb.command bdist_deb
+    - name: Build DEB Package
+      if: matrix.package == 'deb'
+      run: python setup.py --command-packages=stdeb.command bdist_deb
+      env:
+        BUILD_TYPE: deb
         
     - name: Upload Linux Packages
       uses: softprops/action-gh-release@v1
@@ -126,22 +133,3 @@ jobs:
           deb_dist/*.deb
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  create-release:
-    needs: [build-macos, build-windows, build-linux]
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
-    steps:
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          draft: false
-          prerelease: false
-          generate_release_notes: true
-          files: |
-            P2PP.dmg
-            dist/*.msi
-            dist/*.rpm
-            deb_dist/*.deb
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -67,7 +67,11 @@ if sys.platform == "darwin":
     
 
 if sys.platform.startswith('linux'):
-    from setuptools import setup, find_packages  # Add find_packages
+    from setuptools import setup, find_packages
+    import os
+
+    # Determine if we're building RPM or DEB
+    build_type = os.environ.get('BUILD_TYPE', 'rpm')
 
     setup(
         name="p2pp",
@@ -75,10 +79,10 @@ if sys.platform.startswith('linux'):
         description="P2PP - Palette 2 Post Processing tool for Prusa Slicer",
         author=__author__,
         author_email=__email__,
-        packages=find_packages(),  # Use find_packages instead of ['p2pp']
+        packages=find_packages(),
         package_data={
             'p2pp': ['*.ui'],
-            '': ['version.py']  # Include version.py in all packages
+            '': ['version.py']
         },
         install_requires=[
             'PyQt5>=5.15.0',
