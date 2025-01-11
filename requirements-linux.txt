@@ -1,3 +1,4 @@
 setuptools==70.3.0
+stdeb
 cx_Freeze==7.2.8
 -r requirements-common.txt

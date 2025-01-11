@@ -65,23 +65,34 @@ if sys.platform == "darwin":
     )
     
 
-if sys.platform == "linux":
-    import sys
-    import version
-    from cx_Freeze import setup, Executable
+if sys.platform.startswith('linux'):
+    from setuptools import setup
 
-    includefiles = ["p2pp.ui", 'p2ppconf.ui', "icons/icon.ico", "SendError.ui", "p3browser.ui"]
-    excludes = ["tkinter"]
-    includes = ['PyQt5.QtWidgets', 'PyQt5.QtGui', 'PyQt5.Qt', 'PyQt5', 'PyQt5.QtCore', 'PyQt5.QtWebEngineWidgets']
-
-    build_exe_options = {"packages": ["os", "urllib3", "urllib3.contrib", "urllib3.contrib.appengine"], 'include_files': includefiles, "excludes": excludes, "includes": includes}
-
-    setup(name="p2pp",
-          version=version.Version,
-          description="P2PP - Palette 2 Post Processing tool for Prusa Slicer",
-          options={"build_exe": build_exe_options},
-          executables=[Executable("P2PP.py", base=None, icon="icons/icon.ico")]
-          )
+    setup(
+        name="p2pp",
+        version=version.Version,
+        description="P2PP - Palette 2 Post Processing tool for Prusa Slicer",
+        author="Your Name",
+        author_email="your.email@example.com",
+        packages=['p2pp'],
+        install_requires=[
+            'PyQt5>=5.15.0',
+            'PyQtWebEngine>=5.15.0',
+            # ... other dependencies ...
+        ],
+        data_files=[
+            ('share/applications', ['p2pp.desktop']),
+            ('share/icons', ['icons/icon.ico']),
+            ('share/p2pp', ['p2pp.ui', 'p2ppconf.ui', 'SendError.ui', 'p3browser.ui'])
+        ],
+        options={
+            'bdist_rpm': {
+                'requires': ['python3-qt5 >= 5.15.0'],
+                'group': 'Applications/Engineering',
+                'vendor': 'Your Organization',
+            },
+        }
+    )
 
 
 if sys.platform == "win32":

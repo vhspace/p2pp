@@ -49,6 +49,13 @@ jobs:
         fi
       shell: bash
 
+    - name: Install Linux packaging dependencies
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y rpm build-essential debhelper
+      shell: bash
+
     - name: Build
       run: |
         if [ "${{ matrix.os }}" = "macos-latest" ]; then
@@ -58,7 +65,10 @@ jobs:
           python setup.py build
           python setup.py bdist_msi
         else
+          # Linux builds
           python setup.py build
+          python setup.py bdist_rpm
+          python setup.py --command-packages=stdeb.command bdist_deb
         fi
       shell: bash
 
