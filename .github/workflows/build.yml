@@ -39,20 +39,24 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r requirements-common.txt
         if [ "${{ matrix.os }}" = "macos-latest" ]; then
-          pip install py2app --no-deps
+          pip install -r requirements-mac.txt
+        elif [ "${{ matrix.os }}" = "windows-latest" ]; then
+          pip install -r requirements-win.txt
         else
-          pip install cx_Freeze
+          pip install -r requirements-linux.txt
         fi
       shell: bash
 
     - name: Build
       run: |
         if [ "${{ matrix.os }}" = "macos-latest" ]; then
-          # Clean build directories first
           rm -rf build/ dist/
           python setup.py py2app
+        elif [ "${{ matrix.os }}" = "windows-latest" ]; then
+          python setup.py build
+          python setup.py bdist_msi
         else
           python setup.py build
         fi
