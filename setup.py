@@ -95,16 +95,13 @@ if sys.platform == "win32":
 
     build_exe_options = {"packages": ["os"], 'include_files': includefiles, "excludes": excludes, "includes": includes}
 
-    # Updated MSI options with correct directory structure
+   # Simplified MSI options with correct directory structure
     bdist_msi_options = {
         "upgrade_code": "{2E1D0F3B-768A-4E44-9D1C-85A4F8673C80}",
         "add_to_path": False,
         "initial_target_dir": r"[ProgramFilesFolder]\P2PP",
-        "target_name": "P2PP",
         "directories": [
-            ("SourceDir", "TARGETDIR", "SourceDir"),
-            ("SourceDir/ProgramMenuFolder", "ProgramMenuFolder"),
-            ("SourceDir/ProgramMenuFolder/P2PP", "ApplicationProgramsFolder"),
+            ("ProgramMenuFolder", "TARGETDIR", "ProgramMenuFolder")
         ]
     }
 
