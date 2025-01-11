@@ -68,10 +68,6 @@ if sys.platform == "darwin":
 
 if sys.platform.startswith('linux'):
     from setuptools import setup, find_packages
-    import os
-
-    # Determine if we're building RPM or DEB
-    build_type = os.environ.get('BUILD_TYPE', 'rpm')
 
     setup(
         name="p2pp",
@@ -104,15 +100,6 @@ if sys.platform.startswith('linux'):
             'gui_scripts': [
                 'p2pp=p2pp:main',
             ],
-        },
-        options={
-            'bdist_rpm': {
-                'requires': ['python3-qt5 >= 5.15.0'],
-                'group': 'Applications/Engineering',
-                'vendor': __author__,
-                'post_install': 'scripts/post_install.sh',
-                'post_uninstall': 'scripts/post_uninstall.sh'
-            },
         }
     )
 
