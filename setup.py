@@ -7,6 +7,7 @@ Usage:
 
 import sys
 import os
+from version import Version, __author__, __email__
 
 if sys.platform == "darwin":
     from setuptools import setup
@@ -70,7 +71,7 @@ if sys.platform.startswith('linux'):
 
     setup(
         name="p2pp",
-        version=version.Version,
+        version=Version,
         description="P2PP - Palette 2 Post Processing tool for Prusa Slicer",
         author="Stefan Hepp",
         author_email="stefan@stefant.org",
