@@ -68,9 +68,8 @@ jobs:
           # Linux builds
           python setup.py build
           python setup.py bdist_rpm
-          python setup.py --command-packages=stdeb.command sdist_dsc --with-python3=True bdist_deb
-          mkdir -p dist/deb
-          cp deb_dist/*.deb dist/deb/
+          python setup.py --command-packages=stdeb.command sdist_dsc --with-python3=True && cd deb_dist/p2pp-* && dpkg-buildpackage -rfakeroot -uc -us
+          cp ../p2pp_*.deb ../../dist/
         fi
       shell: bash
 

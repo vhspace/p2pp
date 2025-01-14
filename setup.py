@@ -69,11 +69,6 @@ if sys.platform == "darwin":
 if sys.platform.startswith('linux'):
     from setuptools import setup, find_packages
 
-    # Configure stdeb settings for Debian packaging
-    import os
-    os.environ['DEBFULLNAME'] = __author__
-    os.environ['DEBEMAIL'] = __email__
-
     setup(
         name="p2pp",
         version=Version,
@@ -111,11 +106,6 @@ if sys.platform.startswith('linux'):
                 'requires': ['python3-qt5', 'python3-qtwebengine'],
                 'group': 'Applications/Engineering',
                 'vendor': __author__
-            },
-            'stdeb': {
-                'Depends': 'python3-qt5, python3-qtwebengine',
-                'Suite': 'stable',
-                'Section': 'utils'
             }
         }
     )
