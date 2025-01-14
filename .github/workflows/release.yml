@@ -102,6 +102,9 @@ jobs:
         
     - name: Build Linux Packages
       run: |
+        # Remove any existing compat files in debian directory
+        find . -name "compat" -exec rm -f {} \;
+        
         # Build RPM
         python setup.py bdist_rpm
         
@@ -109,11 +112,22 @@ jobs:
         python setup.py sdist
         cd dist
         tar xvf *.tar.gz
-        cd "$(ls -d p2pp-*)"  # This ensures proper cd with spaces
+        cd "$(ls -d p2pp-*)"
+        
+        # Debug: Check for any compat files
+        echo "=== Checking for compat files ==="
+        find / -name "compat" 2>/dev/null || true
+        
         mkdir -p debian
         cp ../../debian/control debian/
+        
+        # Force remove compat file again
+        rm -f debian/compat
+        rm -f ../../debian/compat
+        
         chmod +x scripts/post_install.sh
         chmod +x scripts/post_uninstall.sh
+        
         dpkg-buildpackage -us -uc
         cd ..
         mkdir -p deb
