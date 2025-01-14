@@ -1,5 +1,4 @@
 setuptools==70.3.0
 stdeb
 cx_Freeze==7.2.8
-python-stdeb
 -r requirements-common.txt
