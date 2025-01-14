@@ -68,6 +68,16 @@ if sys.platform == "darwin":
 
 if sys.platform.startswith('linux'):
     from setuptools import setup, find_packages
+    
+    # Add Debian packaging options
+    options = {
+        'bdist_rpm': {},
+        'bdist_deb': {
+            'maintainer': __author__,
+            'maintainer-email': __email__,
+            'depends': ['python3-qt5', 'python3-qtwebengine']
+        }
+    }
 
     setup(
         name="p2pp",
@@ -75,6 +85,7 @@ if sys.platform.startswith('linux'):
         description="P2PP - Palette 2 Post Processing tool for Prusa Slicer",
         author=__author__,
         author_email=__email__,
+        options=options,  # Add this line
         packages=find_packages(),
         package_data={
             'p2pp': ['*.ui'],
