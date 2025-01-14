@@ -53,9 +53,11 @@ jobs:
           python setup.py sdist
           cd dist
           tar xvf *.tar.gz
-          cd p2pp-*
+          cd "$(ls -d p2pp-*)"
           mkdir -p debian
           cp ../../debian/control debian/
+          chmod +x scripts/post_install.sh
+          chmod +x scripts/post_uninstall.sh
           dpkg-buildpackage -us -uc
           cd ..
           mkdir -p deb
