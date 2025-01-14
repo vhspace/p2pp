@@ -53,7 +53,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install -y rpm build-essential debhelper
+        sudo apt-get install -y rpm build-essential debhelper python3-all dh-python python3-stdeb
       shell: bash
 
     - name: Build
@@ -69,6 +69,8 @@ jobs:
           python setup.py build
           python setup.py bdist_rpm
           python setup.py --command-packages=stdeb.command bdist_deb
+          mkdir -p dist/deb
+          cp deb_dist/*.deb dist/deb/
         fi
       shell: bash
 
