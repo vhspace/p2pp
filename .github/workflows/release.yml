@@ -44,25 +44,36 @@ jobs:
         if [ "${{ matrix.os }}" = "macos-latest" ]; then
           rm -rf build/ dist/
           python setup.py py2app
-          create-dmg \
-            --volname "P2PP" \
-            --window-pos 200 120 \
-            --window-size 600 400 \
-            --icon-size 100 \
-            --icon "P2PP.app" 175 120 \
-            --hide-extension "P2PP.app" \
-            --app-drop-link 425 120 \
-            "dist/P2PP.dmg" \
-            "dist/P2PP.app"
         elif [ "${{ matrix.os }}" = "windows-latest" ]; then
           python setup.py bdist_msi
         else
+          # Linux builds
+          # First build RPM
           python setup.py bdist_rpm
-          python setup.py --command-packages=stdeb.command sdist_dsc --with-python3=True
-          cd deb_dist/p2pp-* && dpkg-buildpackage -rfakeroot -uc -us
-          cd ../.. && mkdir -p dist/deb && cp deb_dist/*.deb dist/deb/
+          
+          # Then build DEB using direct dpkg tools
+          python setup.py sdist
+          cd dist
+          tar xvf *.tar.gz
+          cd p2pp-*
+          mkdir debian
+          cat > debian/control << EOF
+          Source: p2pp
+          Maintainer: Tom Van den Eede <P2PP@pandora.be>
+          Build-Depends: python3-setuptools, python3-all, debhelper (>= 9)
+          
+          Package: p2pp
+          Architecture: all
+          Depends: python3-qt5 (>= 5.15.0), python3-qtwebengine5 (>= 5.15.0)
+          Description: P2PP - Palette 2 Post Processing tool for Prusa Slicer
+          EOF
+          dpkg-buildpackage -us -uc
+          cd ..
+          mkdir -p deb
+          cp *.deb deb/
         fi
       shell: bash
+
 
     - name: Upload to Release
       uses: softprops/action-gh-release@v1
