@@ -49,25 +49,13 @@ jobs:
           python setup.py bdist_msi
         else
           # Linux builds
-          # First build RPM
           python setup.py bdist_rpm
-          
-          # Then build DEB using direct dpkg tools
           python setup.py sdist
           cd dist
           tar xvf *.tar.gz
           cd p2pp-*
           mkdir -p debian
-          cat > debian/control << 'EOF'
-Source: p2pp
-Maintainer: Tom Van den Eede <P2PP@pandora.be>
-Build-Depends: python3-setuptools, python3-all, debhelper (>= 9)
-
-Package: p2pp
-Architecture: all
-Depends: python3-qt5 (>= 5.15.0), python3-qtwebengine5 (>= 5.15.0)
-Description: P2PP - Palette 2 Post Processing tool for Prusa Slicer
-EOF
+          cp ../../debian/control debian/
           dpkg-buildpackage -us -uc
           cd ..
           mkdir -p deb

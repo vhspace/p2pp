@@ -1,12 +1,8 @@
 Source: p2pp
 Maintainer: Tom Van den Eede <P2PP@pandora.be>
-Section: python
-Priority: optional
 Build-Depends: python3-setuptools, python3-all, debhelper (>= 9)
-Standards-Version: 3.9.1
 
 Package: p2pp
 Architecture: all
-Depends: python3-qt5 (>= 5.15.0), python3-qtwebengine5 (>= 5.15.0), ${misc:Depends}, ${python3:Depends}
+Depends: python3-qt5 (>= 5.15.0), python3-qtwebengine5 (>= 5.15.0)
 Description: P2PP - Palette 2 Post Processing tool for Prusa Slicer
- Post processing tool for multi-material 3D printing with Palette devices
