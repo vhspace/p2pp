@@ -1,6 +1,6 @@
 Source: p2pp
 Maintainer: Tom Van den Eede <P2PP@pandora.be>
-Build-Depends: python3-setuptools, python3-all, debhelper (>= 9)
+Build-Depends: python3-setuptools, python3-all, debhelper-compat (= 13)
 
 Package: p2pp
 Architecture: all

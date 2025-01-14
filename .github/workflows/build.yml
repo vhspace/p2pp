@@ -60,6 +60,7 @@ jobs:
           cp ../../debian/control debian/
           cp ../../debian/changelog debian/
           cp ../../debian/rules debian/
+          cp ../../debian/compat debian/
           chmod +x debian/rules
           chmod +x scripts/post_install.sh
           chmod +x scripts/post_uninstall.sh
