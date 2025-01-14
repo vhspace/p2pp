@@ -6,8 +6,6 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-  release:
-    types: [created]
 
 jobs:
   build:
@@ -26,34 +24,20 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Create and activate virtual environment
-      run: |
-        python -m venv venv
-        if [ "${{ matrix.os }}" = "windows-latest" ]; then
-          source venv/Scripts/activate
-        else
-          source venv/bin/activate
-        fi
-      shell: bash
-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements-common.txt
         if [ "${{ matrix.os }}" = "macos-latest" ]; then
           pip install -r requirements-mac.txt
+          brew install create-dmg
         elif [ "${{ matrix.os }}" = "windows-latest" ]; then
           pip install -r requirements-win.txt
         else
           pip install -r requirements-linux.txt
+          sudo apt-get update
+          sudo apt-get install -y rpm build-essential debhelper python3-all dh-python python3-stdeb
         fi
-      shell: bash
-
-    - name: Install Linux packaging dependencies
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y rpm build-essential debhelper python3-all dh-python python3-stdeb
       shell: bash
 
     - name: Build
@@ -62,14 +46,12 @@ jobs:
           rm -rf build/ dist/
           python setup.py py2app
         elif [ "${{ matrix.os }}" = "windows-latest" ]; then
-          python setup.py build
           python setup.py bdist_msi
         else
-          # Linux builds
-          python setup.py build
           python setup.py bdist_rpm
-          python setup.py --command-packages=stdeb.command sdist_dsc --with-python3=True && cd deb_dist/p2pp-* && dpkg-buildpackage -rfakeroot -uc -us
-          cp ../p2pp_*.deb ../../dist/
+          python setup.py --command-packages=stdeb.command sdist_dsc --with-python3=True
+          cd deb_dist/p2pp-* && dpkg-buildpackage -rfakeroot -uc -us
+          cd ../.. && mkdir -p dist/deb && cp deb_dist/*.deb dist/deb/
         fi
       shell: bash
 
@@ -77,16 +59,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: p2pp-${{ matrix.os }}
-        path: |
-          dist/
-          build/
-
-    - name: Create Release
-      if: github.event_name == 'release' && github.event.action == 'created'
-      uses: softprops/action-gh-release@v1
-      with:
-        files: |
-          dist/**
-          build/**
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        path: dist/

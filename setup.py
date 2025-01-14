@@ -68,6 +68,17 @@ if sys.platform == "darwin":
 
 if sys.platform.startswith('linux'):
     from setuptools import setup, find_packages
+    import configparser
+    import os
+
+    # Create a temporary config file with the correct format
+    temp_config = configparser.ConfigParser()
+    temp_config['sdist_dsc'] = {
+        'package': 'p2pp',
+        'maintainer': 'Tom Van den Eede <P2PP@pandora.be>',
+        'build_depends': 'python3-setuptools, python3-all, debhelper (>= 9)',
+        'depends': 'python3-qt5 (>= 5.15.0), python3-qtwebengine5 (>= 5.15.0)'
+    }
 
     setup(
         name="p2pp",
@@ -100,13 +111,6 @@ if sys.platform.startswith('linux'):
             'gui_scripts': [
                 'p2pp=p2pp:main',
             ],
-        },
-        options={
-            'bdist_rpm': {
-                'requires': ['python3-qt5', 'python3-qtwebengine'],
-                'group': 'Applications/Engineering',
-                'vendor': __author__
-            }
         }
     )
 
