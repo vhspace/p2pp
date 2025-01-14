@@ -4,11 +4,19 @@
 	dh $@
 
 override_dh_auto_build:
+	rm -f debian/compat
 	python3 setup.py build
 
 override_dh_auto_install:
+	rm -f debian/compat
 	python3 setup.py install --root=debian/p2pp --install-layout=deb
 
 override_dh_auto_clean:
+	rm -f debian/compat
 	python3 setup.py clean -a
 	rm -rf build/ *.egg-info
+
+# Add a pre-build clean step
+clean:
+	rm -f debian/compat
+	dh clean
