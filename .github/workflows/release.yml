@@ -117,7 +117,7 @@ jobs:
         if [ "${{ matrix.package }}" = "rpm" ]; then
           python setup.py bdist_rpm
         else
-          python setup.py --command-packages=stdeb.command bdist_deb
+          python setup.py --command-packages=stdeb.command sdist_dsc --with-python3=True bdist_deb
           mkdir -p dist/deb
           cp deb_dist/*.deb dist/deb/
         fi
