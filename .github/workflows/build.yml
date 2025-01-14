@@ -36,7 +36,7 @@ jobs:
         else
           pip install -r requirements-linux.txt
           sudo apt-get update
-          sudo apt-get install -y rpm build-essential debhelper python3-all dh-python python3-stdeb
+          sudo apt-get install -y rpm build-essential debhelper python3-all dh-python
         fi
       shell: bash
 
@@ -57,24 +57,23 @@ jobs:
           cd dist
           tar xvf *.tar.gz
           cd p2pp-*
-          mkdir debian
-          cat > debian/control << EOF
-          Source: p2pp
-          Maintainer: Tom Van den Eede <P2PP@pandora.be>
-          Build-Depends: python3-setuptools, python3-all, debhelper (>= 9)
-          
-          Package: p2pp
-          Architecture: all
-          Depends: python3-qt5 (>= 5.15.0), python3-qtwebengine5 (>= 5.15.0)
-          Description: P2PP - Palette 2 Post Processing tool for Prusa Slicer
-          EOF
+          mkdir -p debian
+          cat > debian/control << 'EOF'
+Source: p2pp
+Maintainer: Tom Van den Eede <P2PP@pandora.be>
+Build-Depends: python3-setuptools, python3-all, debhelper (>= 9)
+
+Package: p2pp
+Architecture: all
+Depends: python3-qt5 (>= 5.15.0), python3-qtwebengine5 (>= 5.15.0)
+Description: P2PP - Palette 2 Post Processing tool for Prusa Slicer
+EOF
           dpkg-buildpackage -us -uc
           cd ..
           mkdir -p deb
           cp *.deb deb/
         fi
       shell: bash
-
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
