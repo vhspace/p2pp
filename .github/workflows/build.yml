@@ -52,12 +52,13 @@ jobs:
           python setup.py bdist_rpm
           python setup.py sdist
           cd dist
-          rm -f *.rpm  # Remove RPM files from dist directory
+          rm -f *.rpm
           tar xvf *.tar.gz
           BASE_DIR=$(find . -maxdepth 1 -type d -name "p2pp-*" | head -n 1)
           cd "$BASE_DIR"
           mkdir -p debian
           cp ../../debian/control debian/
+          cp ../../debian/changelog debian/
           chmod +x scripts/post_install.sh
           chmod +x scripts/post_uninstall.sh
           dpkg-buildpackage -us -uc
