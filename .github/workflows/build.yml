@@ -36,7 +36,7 @@ jobs:
         else
           pip install -r requirements-linux.txt
           sudo apt-get update
-          sudo apt-get install -y rpm build-essential debhelper python3-all dh-python
+          sudo apt-get install -y rpm build-essential debhelper python3-all dh-python python3-setuptools dh-python python3-pip python3-pybuild-plugin-pyproject
         fi
       shell: bash
 
@@ -56,15 +56,19 @@ jobs:
           tar xvf *.tar.gz
           BASE_DIR=$(find . -maxdepth 1 -type d -name "p2pp-*" | head -n 1)
           cd "$BASE_DIR"
-          mkdir -p debian
+          
+          # Create proper debian directory structure
+          mkdir -p debian/source
           cp ../../debian/control debian/
           cp ../../debian/changelog debian/
           cp ../../debian/rules debian/
-          # Ensure no compat file exists
-          rm -f debian/compat
+          cp ../../debian/compat debian/
+          echo "3.0 (native)" > debian/source/format
+          
           chmod +x debian/rules
           chmod +x scripts/post_install.sh
           chmod +x scripts/post_uninstall.sh
+          
           dpkg-buildpackage -us -uc
           cd ..
           mkdir -p deb

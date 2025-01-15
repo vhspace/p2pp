@@ -102,9 +102,6 @@ jobs:
         
     - name: Build Linux Packages
       run: |
-        # Remove any existing compat files in debian directory
-        find . -name "compat" -exec rm -f {} \;
-        
         # Build RPM
         python setup.py bdist_rpm
         
@@ -114,17 +111,15 @@ jobs:
         tar xvf *.tar.gz
         cd "$(ls -d p2pp-*)"
         
-        # Debug: Check for any compat files
-        echo "=== Checking for compat files ==="
-        find / -name "compat" 2>/dev/null || true
-        
-        mkdir -p debian
+        # Create proper debian directory structure
+        mkdir -p debian/source
         cp ../../debian/control debian/
+        cp ../../debian/changelog debian/
+        cp ../../debian/rules debian/
+        cp ../../debian/compat debian/
+        echo "3.0 (native)" > debian/source/format
         
-        # Force remove compat file again
-        rm -f debian/compat
-        rm -f ../../debian/compat
-        
+        chmod +x debian/rules
         chmod +x scripts/post_install.sh
         chmod +x scripts/post_uninstall.sh
         
