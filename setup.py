@@ -7,6 +7,7 @@ Usage:
 
 import sys
 import os
+from version import Version, __author__, __email__
 
 if sys.platform == "darwin":
     from setuptools import setup
@@ -65,24 +66,53 @@ if sys.platform == "darwin":
     )
     
 
-if sys.platform == "linux":
-    import sys
-    import version
-    from cx_Freeze import setup, Executable
+if sys.platform.startswith('linux'):
+    from setuptools import setup, find_packages
+    import configparser
+    import os
 
-    includefiles = ["p2pp.ui", 'p2ppconf.ui', "icons/icon.ico", "SendError.ui", "p3browser.ui"]
-    excludes = ["tkinter"]
-    includes = ['PyQt5.QtWidgets', 'PyQt5.QtGui', 'PyQt5.Qt', 'PyQt5', 'PyQt5.QtCore', 'PyQt5.QtWebEngineWidgets']
+    # Create a temporary config file with the correct format
+    temp_config = configparser.ConfigParser()
+    temp_config['sdist_dsc'] = {
+        'package': 'p2pp',
+        'maintainer': 'Tom Van den Eede <P2PP@pandora.be>',
+        'build_depends': 'python3-setuptools, python3-all, debhelper (>= 9)',
+        'depends': 'python3-qt5 (>= 5.15.0), python3-qtwebengine5 (>= 5.15.0)'
+    }
 
-    build_exe_options = {"packages": ["os", "urllib3", "urllib3.contrib", "urllib3.contrib.appengine"], 'include_files': includefiles, "excludes": excludes, "includes": includes}
-
-    setup(name="p2pp",
-          version=version.Version,
-          description="P2PP - Palette 2 Post Processing tool for Prusa Slicer",
-          options={"build_exe": build_exe_options},
-          executables=[Executable("P2PP.py", base=None, icon="icons/icon.ico")]
-          )
-
+    setup(
+        name="p2pp",
+        version=Version,
+        description="P2PP - Palette 2 Post Processing tool for Prusa Slicer",
+        author=__author__,
+        author_email=__email__,
+        packages=find_packages(),
+        package_data={
+            'p2pp': ['*.ui'],
+            '': ['version.py']
+        },
+        install_requires=[
+            'PyQt5>=5.15.0',
+            'PyQtWebEngine>=5.15.0',
+            'requests>=2.31.0',
+            'packaging>=23.2'
+        ],
+        data_files=[
+            ('share/applications', ['p2pp.desktop']),
+            ('share/icons/hicolor/128x128/apps', ['icons/icon.ico']),
+            ('share/p2pp', [
+                'p2pp.ui', 
+                'p2ppconf.ui', 
+                'SendError.ui', 
+                'p3browser.ui'
+            ])
+        ],
+        entry_points={
+            'gui_scripts': [
+                'p2pp=p2pp:main',
+            ],
+        }
+    )
 
 if sys.platform == "win32":
     import sys

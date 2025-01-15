@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=P2PP
+Comment=Palette 2 Post Processing tool for Prusa Slicer
+Exec=p2pp
+Icon=/usr/share/icons/icon.ico
+Terminal=false
+Type=Application
+Categories=Development;Engineering;

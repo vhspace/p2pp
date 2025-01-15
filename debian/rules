@@ -1,0 +1,30 @@
+#!/usr/bin/make -f
+
+export PYBUILD_NAME=p2pp
+export DH_VERBOSE=1
+export PYBUILD_SYSTEM=distutils
+export PYBUILD_DISABLE=test
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_auto_clean:
+	python3 setup.py clean -a
+	rm -rf build/ *.egg-info
+
+override_dh_auto_test:
+	# Skip tests during package build
+
+override_dh_auto_install:
+	python3 setup.py install --root=$(CURDIR)/debian/p2pp --prefix=/usr
+	# Copy UI files
+	mkdir -p debian/p2pp/usr/share/p2pp
+	cp *.ui debian/p2pp/usr/share/p2pp/
+	# Copy icons
+	mkdir -p debian/p2pp/usr/share/icons/hicolor/128x128/apps
+	cp icons/icon.ico debian/p2pp/usr/share/icons/hicolor/128x128/apps/
+	# Copy desktop file
+	mkdir -p debian/p2pp/usr/share/applications
+	cp p2pp.desktop debian/p2pp/usr/share/applications/
+	# Clean up pycache
+	rm -rf debian/*/usr/lib/python*/site-packages/__pycache__
