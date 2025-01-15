@@ -1,14 +1,18 @@
 Source: p2pp
 Section: utils
 Priority: optional
-Maintainer: Your Name <your.email@example.com>
+Maintainer: Tom Van den Eede <P2PP@pandora.be>
 Build-Depends: debhelper-compat (= 13),
                python3-all,
                python3-setuptools,
                dh-python
-Standards-Version: 4.5.1
 
 Package: p2pp
 Architecture: all
-Depends: python3-qt5 (>= 5.15.0), python3-qtwebengine5 (>= 5.15.0)
-Description: P2PP - Palette 2 Post Processing tool for Prusa Slicer
+Depends: ${python3:Depends},
+         ${misc:Depends},
+         python3-qt5 (>= 5.15.0),
+         python3-qtwebengine5 (>= 5.15.0)
+Description: Palette 2 Post Processing tool for Prusa Slicer
+ P2PP is a post-processing tool for PrusaSlicer that enables
+ multi-material printing with the Mosaic Palette 2 device.

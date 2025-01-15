@@ -116,7 +116,6 @@ jobs:
         cp ../../debian/control debian/
         cp ../../debian/changelog debian/
         cp ../../debian/rules debian/
-        cp ../../debian/compat debian/
         echo "3.0 (native)" > debian/source/format
         
         chmod +x debian/rules
