@@ -7,6 +7,10 @@ on:
         type: boolean
         default: false
         required: false
+      use_production_signing:
+        type: boolean
+        default: false
+        required: false
 
 jobs:
   build-macos:
@@ -30,6 +34,38 @@ jobs:
         rm -rf build/ dist/
         python setup.py py2app
         
+    - name: Sign Application (Development)
+      if: ${{ !inputs.use_production_signing }}
+      run: |
+        # Ad-hoc signing for development
+        codesign --force --deep --sign - "dist/P2PP.app"
+        
+    - name: Sign Application (Production)
+      if: ${{ inputs.use_production_signing }}
+      env:
+        APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+        APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      run: |
+        # Import certificate from secrets
+        echo "$APPLE_CERTIFICATE" | base64 --decode > certificate.p12
+        
+        # Create keychain and import certificate
+        security create-keychain -p "" build.keychain
+        security default-keychain -s build.keychain
+        security unlock-keychain -p "" build.keychain
+        security import certificate.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+        security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain
+        
+        # Sign the application
+        codesign --force --deep --sign "Developer ID Application: $APPLE_TEAM_ID" \
+                --options runtime \
+                --entitlements "entitlements.plist" \
+                "dist/P2PP.app"
+        
+        # Verify signature
+        codesign --verify --deep --strict "dist/P2PP.app"
+        
     - name: Create DMG
       run: |
         create-dmg \
@@ -42,6 +78,13 @@ jobs:
           --app-drop-link 425 120 \
           "dist/P2PP.dmg" \
           "dist/P2PP.app"
+          
+    - name: Sign DMG (Production)
+      if: ${{ inputs.use_production_signing }}
+      run: |
+        codesign --force --sign "Developer ID Application: $APPLE_TEAM_ID" \
+                --options runtime \
+                "dist/P2PP.dmg"
 
     - name: Upload to Release
       if: inputs.upload_to_release && startsWith(github.ref, 'refs/tags/')

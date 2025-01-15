@@ -12,3 +12,4 @@ jobs:
     uses: ./.github/workflows/build-packages.yml
     with:
       upload_to_release: false
+      use_production_signing: false
