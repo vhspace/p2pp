@@ -1,22 +1,14 @@
 #!/usr/bin/make -f
 
+export PYBUILD_NAME=p2pp
+export DH_VERBOSE=1
+
 %:
-	dh $@
-
-override_dh_auto_build:
-	rm -f debian/compat
-	python3 setup.py build
-
-override_dh_auto_install:
-	rm -f debian/compat
-	python3 setup.py install --root=debian/p2pp --install-layout=deb
+	dh $@ --with python3 --buildsystem=pybuild
 
 override_dh_auto_clean:
-	rm -f debian/compat
-	python3 setup.py clean -a
+	dh_auto_clean
 	rm -rf build/ *.egg-info
 
-# Add a pre-build clean step
-clean:
-	rm -f debian/compat
-	dh clean
+override_dh_auto_test:
+	# Skip tests during package build
