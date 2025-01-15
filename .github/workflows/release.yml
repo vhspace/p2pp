@@ -108,8 +108,10 @@ jobs:
         # Build DEB
         python setup.py sdist
         cd dist
-        tar xvf *.tar.gz
-        cd "$(ls -d p2pp-*)"
+        # Extract with a specific output directory
+        mkdir build_deb
+        tar xvf p2pp-*.tar.gz -C build_deb --strip-components=1
+        cd build_deb
         
         # Create proper debian directory structure
         mkdir -p debian/source
@@ -119,8 +121,12 @@ jobs:
         echo "3.0 (native)" > debian/source/format
         
         chmod +x debian/rules
-        chmod +x scripts/post_install.sh
-        chmod +x scripts/post_uninstall.sh
+        if [ -f "scripts/post_install.sh" ]; then
+          chmod +x scripts/post_install.sh
+        fi
+        if [ -f "scripts/post_uninstall.sh" ]; then
+          chmod +x scripts/post_uninstall.sh
+        fi
         
         dpkg-buildpackage -us -uc
         cd ..
