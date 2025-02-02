@@ -230,7 +230,7 @@ def find_alternative_tower():
         for i in range(len(v.input_gcode)):
             line = v.input_gcode[i]
             if line.startswith(";"):
-                if line.startswith(";TYPE:Wipe tower"):
+                if line.startswith(";TYPE:Prime tower") or line.startswith(";TYPE:Wipe tower"):
                     state = 1
                     continue
                 if state == 1 and line.startswith(";TYPE"):

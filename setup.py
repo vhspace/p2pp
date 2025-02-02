@@ -25,7 +25,7 @@ if sys.platform == "darwin":
     APP = ['P2PP.py']
     DATA_FILES = ['p2pp.ui', 'p2ppconf.ui', "SendError.ui", "p3browser.ui"]
     OPTIONS = {
-        'argv_emulation': True,
+        'argv_emulation': False,
         "iconfile": "icons/icon.icns",
         "includes": [
             'PyQt5.QtWidgets',

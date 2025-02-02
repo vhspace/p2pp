@@ -9,6 +9,7 @@ __email__ = 'P2PP@pandora.be'
 
 import p2pp.gui as gui
 import p2pp.variables as v
+from packaging import version as semver_version
 
 # SECTION Helper functions
 
@@ -507,7 +508,7 @@ def check_config_parameters(keyword, value):
         import version
         latest = cv.get_version(cv.MASTER)
         if latest:
-            if latest > version.Version:
+            if semver_version.parse(latest) > semver_version.parse(version.Version):
                 gui.create_logitem("New version of P2PP available ({})".format(latest), "red", False, "2.0")
 
     # co be removed ?
