@@ -99,7 +99,7 @@ jobs:
 
     - name: Upload artifacts
       if: ${{ !inputs.upload_to_release }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: p2pp-macos
         path: dist/
@@ -172,7 +172,7 @@ jobs:
 
     - name: Upload artifacts
       if: ${{ !inputs.upload_to_release }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: p2pp-windows
         path: dist/
@@ -240,7 +240,7 @@ jobs:
 
     - name: Upload artifacts
       if: ${{ !inputs.upload_to_release }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: p2pp-linux
         path: dist/ 
