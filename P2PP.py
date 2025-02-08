@@ -29,6 +29,7 @@ import p2pp.mcf as mcf
 import p2pp.variables as v
 import version as ver
 import traceback
+from packaging import version as semver_version
 import p2pp.gui as gui
 
 v.version = ver.Version
@@ -41,7 +42,7 @@ if len(sys.argv) == 1:
         MASTER_VERSION = checkversion.get_version(checkversion.MASTER)
 
         if MASTER_VERSION != "0.0":
-            if v.version < MASTER_VERSION:
+            if semver_version.parse(v.version) < semver_version.parse(MASTER_VERSION):
                 v.version = "Version Check: New release {} available (Current version {})".format(MASTER_VERSION, ver.Version)
                 color = "red"
             else:
@@ -51,7 +52,7 @@ if len(sys.argv) == 1:
             gui.create_logitem(v.version, color)
         gui.app.sync()
         gui.create_emptyline()
-        gui.create_logitem("Line to be used in PrusaSlicer [Print Settings][Output Options][Post Processing Script]",
+        gui.create_logitem("Line to be used in PrusaSlicer (or other PrusaSlicer based slicers) [Print Settings][Output Options][Post Processing Script]",
                            "blue")
         gui.create_emptyline()
         gui.app.sync()

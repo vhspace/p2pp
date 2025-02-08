@@ -218,7 +218,7 @@ def parse_config_parameters():
                 except (IndexError, ValueError):
                     v.p3_bedtemp = [0, 0, 0, 0, 0, 0, 0, 0]
 
-        if gcode_line.startswith("; max_print_height"):
+        if gcode_line.startswith("; max_print_height") or gcode_line.startswith("; printable_height"):  
 
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
@@ -227,7 +227,7 @@ def parse_config_parameters():
 
         if gcode_line.startswith("; wipe_tower_x"):
             parameter_start = gcode_line.find("=")
-            if parameter_start != -1:
+            if parameter_start != -1 and gcode_line.find(",") == -1:
                 v.wipe_tower_posx = float(gcode_line[parameter_start + 1:].strip())
             continue
 
@@ -237,13 +237,13 @@ def parse_config_parameters():
                 v.skirtsize = float(gcode_line[parameter_start + 1:].strip())
             continue
 
-        if gcode_line.startswith("; skirts"):
+        if gcode_line.startswith("; skirts") or gcode_line.startswith("; skirt_loops"):
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
                 v.skirts = float(gcode_line[parameter_start + 1:].strip())
             continue
 
-        if gcode_line.startswith("; wipe_tower_width"):
+        if gcode_line.startswith("; wipe_tower_width") or gcode_line.startswith("; prime_tower_width"):
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
                 v.wipe_tower_width = float(gcode_line[parameter_start + 1:].strip())
@@ -251,11 +251,11 @@ def parse_config_parameters():
 
         if gcode_line.startswith("; wipe_tower_y"):
             parameter_start = gcode_line.find("=")
-            if parameter_start != -1:
+            if parameter_start != -1 and gcode_line.find(",") == -1:
                 v.wipe_tower_posy = float(gcode_line[parameter_start + 1:].strip())
             continue
 
-        if gcode_line.startswith("; extrusion_width"):
+        if gcode_line.startswith("; extrusion_width") or gcode_line.startswith("; line_width"):
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
                 parm = gcode_line[parameter_start + 1:].strip()
@@ -276,7 +276,7 @@ def parse_config_parameters():
                 v.yy_offset = 2 + 8 * v.extrusion_width
             continue
 
-        if gcode_line.startswith("; infill_speed"):
+        if gcode_line.startswith("; infill_speed") or gcode_line.startswith("; internal_solid_infill_speed"):
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
                 v.infill_speed = float(gcode_line[parameter_start + 1:].strip()) * 60
@@ -323,7 +323,7 @@ def parse_config_parameters():
                 v.nozzle_diameter = tmp
             continue
 
-        if gcode_line.startswith("; start_filament_gcode "):
+        if gcode_line.startswith("; start_filament_gcode ") or gcode_line.startswith("; filament_start_gcode "):
             parameter_start = gcode_line.find("=")
             gcode_value = gcode_line[parameter_start + 2:].strip()
             fields = split_csv_strings(gcode_value)
@@ -337,7 +337,8 @@ def parse_config_parameters():
                         v.used_filament_types = list(dict.fromkeys(v.used_filament_types))
             continue
 
-        if gcode_line.startswith("; start_gcode "):
+        # start_gcode -> prusaslicer, machine_start_gcode -> bambu/orcaslicer
+        if gcode_line.startswith("; start_gcode ") or gcode_line.startswith("; machine_start_gcode "): 
             parameter_start = gcode_line.find("=")
             gcode_value = gcode_line[parameter_start + 2:].strip()
             lines = gcode_value.split("\\n")
@@ -392,7 +393,7 @@ def parse_config_parameters():
 
             continue
 
-        if gcode_line.startswith("; retract_length = "):
+        if gcode_line.startswith("; retract_length = ") or gcode_line.startswith("; retract_length_toolchange"):
             retract_error = False
             parameter_start = gcode_line.find("=")
             if parameter_start != -1:
@@ -429,7 +430,7 @@ def parse_config_parameters():
                     gui.log_warning("P2PP requires input file with RELATIVE extrusion")
             continue
 
-        if gcode_line.startswith("; wiping_volumes_matrix"):
+        if gcode_line.startswith("; wiping_volumes_matrix") or gcode_line.startswith("; flush_volumes_matrix"):
             wiping_info = []
             _warning = False
             parameter_start = gcode_line.find("=")
