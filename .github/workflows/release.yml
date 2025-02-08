@@ -11,4 +11,4 @@ jobs:
     uses: ./.github/workflows/build-packages.yml
     with:
       upload_to_release: true
-      use_production_signing: ${{ secrets.APPLE_CERTIFICATE != '' && secrets.WINDOWS_CERTIFICATE != '' }}
+      use_production_signing: false # ${{ secrets.APPLE_CERTIFICATE != '' && secrets.WINDOWS_CERTIFICATE != '' }}
