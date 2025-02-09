@@ -23,14 +23,15 @@ jobs:
         # Download and install the universal2 installer (replace 3.12.2 with your version)
         curl -O https://www.python.org/ftp/python/3.12.2/python-3.12.2-macos11.pkg
         sudo installer -pkg python-3.12.2-macos11.pkg -target /
-        # Confirm installation and upgrade pip
-        python3 -m pip install --upgrade pip setuptools wheel
+        # Do not upgrade system pip here — we'll use a virtual environment below
 
     - name: Create Virtual Environment and Install Dependencies
       run: |
         python3 -m venv venv
         source venv/bin/activate
+        # Upgrade pip, setuptools and wheel inside the venv
         pip install --upgrade pip setuptools wheel
+        # Install py2app and PyQt5 in the venv
         pip install py2app PyQt5
 
     - name: Build Universal App
