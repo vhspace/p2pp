@@ -31,7 +31,6 @@ jobs:
         python3 -m venv venv
         source venv/bin/activate
         pip install --upgrade pip setuptools wheel
-        # Install py2app and PyQt5 (ensure PyQt5 is the universal wheel if available)
         pip install py2app PyQt5
 
     - name: Build Universal App
