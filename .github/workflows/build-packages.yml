@@ -11,19 +11,36 @@ on:
         type: boolean
         default: false
         required: false
+      macos_runner:
+        type: string
+        default: macos-latest
+        required: false
+      windows_runner:
+        type: string
+        default: windows-latest
+        required: false
+      linux_runner:
+        type: string
+        default: ubuntu-latest
+        required: false
 
 jobs:
   build-macos:
-    runs-on: macos-latest
+    runs-on: ${{ inputs.macos_runner }}
     steps:
     - uses: actions/checkout@v3
     
     - name: Install Universal Python
       run: |
-        # Download and install the universal2 installer (replace 3.12.2 with your version)
+        # Download and install the Python 3.12.2 universal2 installer
         curl -O https://www.python.org/ftp/python/3.12.2/python-3.12.2-macos11.pkg
         sudo installer -pkg python-3.12.2-macos11.pkg -target /
-        # Do not upgrade system pip here — we'll use a virtual environment below
+    
+    - name: Update PATH for Python 3.12.2
+      run: echo "/Library/Frameworks/Python.framework/Versions/3.12/bin" >> $GITHUB_PATH
+    
+    - name: Verify Python Version
+      run: python3 --version
 
     - name: Create Virtual Environment and Install Dependencies
       run: |
@@ -116,7 +133,7 @@ jobs:
         path: dist/
 
   build-windows:
-    runs-on: windows-latest
+    runs-on: ${{ inputs.windows_runner }}
     steps:
     - uses: actions/checkout@v3
     
@@ -189,7 +206,7 @@ jobs:
         path: dist/
 
   build-linux:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.linux_runner }}
     steps:
     - uses: actions/checkout@v3
     

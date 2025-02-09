@@ -12,3 +12,4 @@ jobs:
     with:
       upload_to_release: true
       use_production_signing: false # ${{ secrets.APPLE_CERTIFICATE != '' && secrets.WINDOWS_CERTIFICATE != '' }}
+      macos_runner: macos-latest
