@@ -13,3 +13,4 @@ jobs:
     with:
       upload_to_release: false
       use_production_signing: false
+      macos_runner: macos-latest

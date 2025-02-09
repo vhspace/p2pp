@@ -46,9 +46,8 @@ jobs:
       run: |
         python3 -m venv venv
         source venv/bin/activate
-        # Upgrade pip, setuptools and wheel inside the venv
-        pip install --upgrade pip setuptools wheel
-        # Install py2app and PyQt5 in the venv
+        # Pin setuptools to a version compatible with py2app to avoid the copying error
+        pip install --upgrade pip setuptools==66.1.1 wheel
         pip install py2app PyQt5
 
     - name: Build Universal App
