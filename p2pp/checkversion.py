@@ -9,7 +9,7 @@ __email__ = 'P2PP@pandora.be'
 
 import platform
 
-MASTER = "https://github.com/tomvandeneede/p2pp/raw/master/version.py"
+MASTER = "https://raw.githubusercontent.com/vhspace/p2pp/master/version.py"
 
 _p = platform.python_version().strip()
 python_version = _p[0]
