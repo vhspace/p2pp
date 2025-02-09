@@ -18,21 +18,32 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
-        
-    - name: Install dependencies
+    - name: Install Universal Python
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements-mac.txt
-        brew install create-dmg
-        
+        # Download and install the universal2 installer (replace 3.12.2 with your version)
+        curl -O https://www.python.org/ftp/python/3.12.2/python-3.12.2-macos11.pkg
+        sudo installer -pkg python-3.12.2-macos11.pkg -target /
+        # Confirm installation and upgrade pip
+        python3 -m pip install --upgrade pip setuptools wheel
+
+    - name: Create Virtual Environment and Install Dependencies
+      run: |
+        python3 -m venv venv
+        source venv/bin/activate
+        pip install --upgrade pip setuptools wheel
+        # Install py2app and PyQt5 (ensure PyQt5 is the universal wheel if available)
+        pip install py2app PyQt5
+
     - name: Build Universal App
       run: |
+        source venv/bin/activate
         rm -rf build/ dist/
         python setup.py py2app
+        
+    - name: Verify Universal Binary
+      run: |
+        # Check that the library includes both arm64 and x86_64 slices.
+        lipo -info dist/P2PP.app/Contents/Resources/lib/python3.12/PyQt5/QtWebEngineWidgets.abi3.so
         
     - name: Sign Application (Development)
       if: ${{ !inputs.use_production_signing }}
