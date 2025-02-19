@@ -7,9 +7,10 @@ on:
 
 jobs:
   build-macos-x64:
-    runs-on: macos-latest
+    runs-on: macos-14
     env:
       PY2APP_ARCH: x86_64
+      MACOS_ARCH: x64
     steps:
       - uses: actions/checkout@v3
 
@@ -17,6 +18,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
+          architecture: x64
         
       - name: Install Dependencies
         run: |
@@ -53,10 +55,10 @@ jobs:
                   "dist/P2PP.app"
           codesign --verify --deep --strict "dist/P2PP.app"
 
-      - name: Create DMG Archive (x86)
+      - name: Create DMG Archive (x64)
         run: |
           create-dmg \
-            --volname "P2PP" \
+            --volname "P2PP-x64" \
             --window-pos 200 120 \
             --window-size 600 400 \
             --icon-size 100 \
@@ -66,18 +68,18 @@ jobs:
             "dist/P2PP-x64.dmg" \
             "dist/P2PP.app"
 
-      - name: Upload x86 Artifact
+      - name: Upload x64 Artifact
         uses: actions/upload-artifact@v4
         with:
           name: "P2PP-macos-x64"
-          path: dist/
+          path: |
+            dist/P2PP-x64.dmg
 
-  build-macos-m1:
-    # Use the appropriate GitHub runner that runs on Apple Silicon.
-    # (Replace "macos-m1" with the appropriate runner label provided by GitHub.)
-    runs-on: macos-m1
+  build-macos-arm64:
+    runs-on: macos-14
     env:
-      PY2APP_ARCH: arm64
+      PY2PP_ARCH: arm64
+      MACOS_ARCH: arm64
     steps:
       - uses: actions/checkout@v3
 
@@ -85,6 +87,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
+          architecture: arm64
         
       - name: Install Dependencies
         run: |
@@ -121,24 +124,25 @@ jobs:
                   "dist/P2PP.app"
           codesign --verify --deep --strict "dist/P2PP.app"
 
-      - name: Create DMG Archive (M1)
+      - name: Create DMG Archive (arm64)
         run: |
           create-dmg \
-            --volname "P2PP" \
+            --volname "P2PP-arm64" \
             --window-pos 200 120 \
             --window-size 600 400 \
             --icon-size 100 \
             --icon "P2PP.app" 175 120 \
             --hide-extension "P2PP.app" \
             --app-drop-link 425 120 \
-            "dist/P2PP-m1.dmg" \
+            "dist/P2PP-arm64.dmg" \
             "dist/P2PP.app"
 
-      - name: Upload M1 Artifact
+      - name: Upload arm64 Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: "P2PP-macos-m1"
-          path: dist/
+          name: "P2PP-macos-arm64"
+          path: |
+            dist/P2PP-arm64.dmg
 
   build-windows:
     runs-on: windows-latest
