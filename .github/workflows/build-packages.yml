@@ -1,108 +1,144 @@
 name: Build Packages
 
 on:
-  workflow_call:
-    inputs:
-      upload_to_release:
-        type: boolean
-        default: false
-        required: false
-      use_production_signing:
-        type: boolean
-        default: false
-        required: false
+  push:
+    tags: ['v*']
+  pull_request:
 
 jobs:
-  build-macos:
+  build-macos-x64:
     runs-on: macos-latest
+    env:
+      PY2APP_ARCH: x86_64
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
-        
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements-mac.txt
-        brew install create-dmg
-        
-    - name: Build Universal App
-      run: |
-        rm -rf build/ dist/
-        python setup.py py2app
-        
-    - name: Sign Application (Development)
-      if: ${{ !inputs.use_production_signing }}
-      run: |
-        # Ad-hoc signing for development
-        codesign --force --deep --sign - "dist/P2PP.app"
-        
-    - name: Sign Application (Production)
-      if: ${{ inputs.use_production_signing }}
-      env:
-        APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-        APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-      run: |
-        # Import certificate from secrets
-        echo "$APPLE_CERTIFICATE" | base64 --decode > certificate.p12
-        
-        # Create keychain and import certificate
-        security create-keychain -p "" build.keychain
-        security default-keychain -s build.keychain
-        security unlock-keychain -p "" build.keychain
-        security import certificate.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
-        security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain
-        
-        # Sign the application
-        codesign --force --deep --sign "Developer ID Application: $APPLE_TEAM_ID" \
-                --options runtime \
-                --entitlements "entitlements.plist" \
-                "dist/P2PP.app"
-        
-        # Verify signature
-        codesign --verify --deep --strict "dist/P2PP.app"
-        
-    - name: Create DMG
-      run: |
-        create-dmg \
-          --volname "P2PP" \
-          --window-pos 200 120 \
-          --window-size 600 400 \
-          --icon-size 100 \
-          --icon "P2PP.app" 175 120 \
-          --hide-extension "P2PP.app" \
-          --app-drop-link 425 120 \
-          "dist/P2PP.dmg" \
-          "dist/P2PP.app"
-          
-    - name: Sign DMG (Production)
-      if: ${{ inputs.use_production_signing }}
-      run: |
-        codesign --force --sign "Developer ID Application: $APPLE_TEAM_ID" \
-                --options runtime \
-                "dist/P2PP.dmg"
+      - uses: actions/checkout@v3
 
-    - name: Upload to Release
-      if: inputs.upload_to_release && startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v1
-      with:
-        files: dist/P2PP.dmg
-        draft: false
-        prerelease: false
-        generate_release_notes: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+        
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-mac.txt
+          brew install create-dmg
 
-    - name: Upload artifacts
-      if: ${{ !inputs.upload_to_release }}
-      uses: actions/upload-artifact@v4
-      with:
-        name: p2pp-macos
-        path: dist/
+      - name: Build App (x86)
+        run: |
+          rm -rf build/ dist/
+          python setup.py py2app
+
+      - name: Code Sign Application (Development)
+        if: github.event_name != 'release'
+        run: |
+          codesign --force --deep --sign - "dist/P2PP.app"
+        
+      - name: Code Sign Application (Production)
+        if: github.event_name == 'release'
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          echo "$APPLE_CERTIFICATE" | base64 --decode > certificate.p12
+          security create-keychain -p "" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "" build.keychain
+          security import certificate.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain
+          codesign --force --deep --sign "Developer ID Application: $APPLE_TEAM_ID" \
+                  --options runtime \
+                  --entitlements "entitlements.plist" \
+                  "dist/P2PP.app"
+          codesign --verify --deep --strict "dist/P2PP.app"
+
+      - name: Create DMG Archive (x86)
+        run: |
+          create-dmg \
+            --volname "P2PP" \
+            --window-pos 200 120 \
+            --window-size 600 400 \
+            --icon-size 100 \
+            --icon "P2PP.app" 175 120 \
+            --hide-extension "P2PP.app" \
+            --app-drop-link 425 120 \
+            "dist/P2PP-x64.dmg" \
+            "dist/P2PP.app"
+
+      - name: Upload x86 Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "P2PP-macos-x64"
+          path: dist/
+
+  build-macos-m1:
+    # Use the appropriate GitHub runner that runs on Apple Silicon.
+    # (Replace "macos-m1" with the appropriate runner label provided by GitHub.)
+    runs-on: macos-m1
+    env:
+      PY2APP_ARCH: arm64
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+        
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-mac.txt
+          brew install create-dmg
+
+      - name: Build App (M1)
+        run: |
+          rm -rf build/ dist/
+          python setup.py py2app
+
+      - name: Code Sign Application (Development)
+        if: github.event_name != 'release'
+        run: |
+          codesign --force --deep --sign - "dist/P2PP.app"
+        
+      - name: Code Sign Application (Production)
+        if: github.event_name == 'release'
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          echo "$APPLE_CERTIFICATE" | base64 --decode > certificate.p12
+          security create-keychain -p "" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "" build.keychain
+          security import certificate.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain
+          codesign --force --deep --sign "Developer ID Application: $APPLE_TEAM_ID" \
+                  --options runtime \
+                  --entitlements "entitlements.plist" \
+                  "dist/P2PP.app"
+          codesign --verify --deep --strict "dist/P2PP.app"
+
+      - name: Create DMG Archive (M1)
+        run: |
+          create-dmg \
+            --volname "P2PP" \
+            --window-pos 200 120 \
+            --window-size 600 400 \
+            --icon-size 100 \
+            --icon "P2PP.app" 175 120 \
+            --hide-extension "P2PP.app" \
+            --app-drop-link 425 120 \
+            "dist/P2PP-m1.dmg" \
+            "dist/P2PP.app"
+
+      - name: Upload M1 Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "P2PP-macos-m1"
+          path: dist/
 
   build-windows:
     runs-on: windows-latest
