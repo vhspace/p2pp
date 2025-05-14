@@ -403,9 +403,9 @@ def parse_gcode_first_pass():
                 else:
                     v.bed.position(code[gcode.X], code[gcode.Y])
 
-        # determine block separators by looking at the last full XY positioning move
-        if (code[gcode.MOVEMENT] & 3) == 3:
-            if (code[gcode.MOVEMENT] & 12) == 0:
+        # determine block separators by looking at the last full XY positioning move without extrusion
+        if (code[gcode.MOVEMENT] & 3) == 3: # XY
+            if (code[gcode.MOVEMENT] & 8) == 0: # no extrusion
                 backpass_line = len(v.parsed_gcode) - 1
 
             # add
