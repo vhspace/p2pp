@@ -5,10 +5,45 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      commit_hash:
+        description: 'Commit hash to tag for release'
+        required: true
+        type: string
+      tag_name:
+        description: 'Tag name (e.g., v1.0.0)'
+        required: true
+        type: string
 
 jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Validate commit hash
+        run: |
+          if ! git cat-file -e ${{ github.event.inputs.commit_hash }}; then
+            echo "Error: Commit hash ${{ github.event.inputs.commit_hash }} does not exist"
+            exit 1
+          fi
+      
+      - name: Create and push tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ github.event.inputs.tag_name }} ${{ github.event.inputs.commit_hash }}
+          git push origin ${{ github.event.inputs.tag_name }}
+
   release:
     uses: ./.github/workflows/build-packages.yml
+    needs: [create-tag]
+    if: always() && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && needs.create-tag.result == 'success'))
     with:
       upload_to_release: true
       use_production_signing: false # ${{ secrets.APPLE_CERTIFICATE != '' && secrets.WINDOWS_CERTIFICATE != '' }}
