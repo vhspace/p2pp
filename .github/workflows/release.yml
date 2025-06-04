@@ -4,21 +4,30 @@ on:
   push:
     tags:
       - 'v*'
+  release:
+    types: [created, published]
   workflow_dispatch:
     inputs:
       commit_hash:
-        description: 'Commit hash to tag for release'
-        required: true
+        description: 'Commit hash to tag for release (leave empty if using existing tag)'
+        required: false
         type: string
       tag_name:
         description: 'Tag name (e.g., v1.0.0)'
         required: true
         type: string
+      use_existing_tag:
+        description: 'Use existing tag (skip tag creation)'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   create-tag:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && !inputs.use_existing_tag
+    outputs:
+      tag_name: ${{ github.event.inputs.tag_name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -40,10 +49,38 @@ jobs:
           git tag ${{ github.event.inputs.tag_name }} ${{ github.event.inputs.commit_hash }}
           git push origin ${{ github.event.inputs.tag_name }}
 
+  validate-existing-tag:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && inputs.use_existing_tag
+    outputs:
+      tag_name: ${{ github.event.inputs.tag_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Validate existing tag
+        run: |
+          if ! git rev-parse "refs/tags/${{ github.event.inputs.tag_name }}" >/dev/null 2>&1; then
+            echo "Error: Tag ${{ github.event.inputs.tag_name }} does not exist"
+            exit 1
+          fi
+          echo "Tag ${{ github.event.inputs.tag_name }} exists and is valid"
+
   release:
     uses: ./.github/workflows/build-packages.yml
-    needs: [create-tag]
-    if: always() && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && needs.create-tag.result == 'success'))
+    needs: [create-tag, validate-existing-tag]
+    if: >
+      always() && (
+        (github.event_name == 'push') ||
+        (github.event_name == 'release') ||
+        (github.event_name == 'workflow_dispatch' && 
+         ((needs.create-tag.result == 'success') || 
+          (needs.validate-existing-tag.result == 'success')))
+      )
     with:
       upload_to_release: true
       use_production_signing: false # ${{ secrets.APPLE_CERTIFICATE != '' && secrets.WINDOWS_CERTIFICATE != '' }}
+      tag_name: ${{ github.event_name == 'release' && github.event.release.tag_name || needs.create-tag.outputs.tag_name || needs.validate-existing-tag.outputs.tag_name || '' }}
