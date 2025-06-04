@@ -28,6 +28,12 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.12'
+    
+    - name: Get version
+      id: get_version
+      run: |
+        VERSION=$(python version.py)
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
         
     - name: Install dependencies
       run: |
@@ -82,7 +88,7 @@ jobs:
           --icon "P2PP.app" 175 120 \
           --hide-extension "P2PP.app" \
           --app-drop-link 425 120 \
-          "dist/P2PP.dmg" \
+          "dist/P2PP-${{ steps.get_version.outputs.version }}.dmg" \
           "dist/P2PP.app"
           
     - name: Sign DMG (Production)
@@ -90,13 +96,13 @@ jobs:
       run: |
         codesign --force --sign "Developer ID Application: $APPLE_TEAM_ID" \
                 --options runtime \
-                "dist/P2PP.dmg"
+                "dist/P2PP-${{ steps.get_version.outputs.version }}.dmg"
 
     - name: Upload to Release
       if: inputs.upload_to_release && (startsWith(github.ref, 'refs/tags/') || inputs.tag_name)
       uses: softprops/action-gh-release@v1
       with:
-        files: dist/P2PP.dmg
+        files: dist/P2PP-${{ steps.get_version.outputs.version }}.dmg
         draft: false
         prerelease: false
         generate_release_notes: true
@@ -122,6 +128,13 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.12'
+    
+    - name: Get version
+      id: get_version
+      run: |
+        $VERSION = python version.py
+        echo "version=$VERSION" >> $env:GITHUB_OUTPUT
+      shell: pwsh
         
     - name: Install dependencies
       run: |
@@ -198,6 +211,12 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.12'
+    
+    - name: Get version
+      id: get_version
+      run: |
+        VERSION=$(python version.py)
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
         
     - name: Install system dependencies
       run: |
@@ -226,6 +245,17 @@ jobs:
         cp ../../debian/changelog debian/
         cp ../../debian/rules debian/
         echo "3.0 (native)" > debian/source/format
+        
+        # Update changelog with current version
+        VERSION="${{ steps.get_version.outputs.version }}"
+        DATE=$(date -R)
+        cat > debian/changelog << EOF
+        p2pp ($VERSION-1) unstable; urgency=medium
+
+          * Release version $VERSION
+
+         -- GitHub Actions <actions@github.com>  $DATE
+        EOF
         
         chmod +x debian/rules
         if [ -f "scripts/post_install.sh" ]; then
