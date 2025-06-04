@@ -194,7 +194,7 @@ MajorVersion = 10
 MinorVersion = 2
 Build = 1
 
-Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
+Version = "{}.{}.{}".format(MajorVersion, MinorVersion, Build)
 
 if __name__ == "__main__":
     print(Version)
