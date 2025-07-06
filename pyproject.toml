@@ -1,93 +1,44 @@
-[build-system]
-requires = ["setuptools>=45", "wheel"]
-build-backend = "setuptools.build_meta"
+# Minimal pyproject.toml for tool configuration only
+# Package building is handled by setup.py
 
 [project]
-name = "p2pp"
-version = "1.0.0"  # Fixed version for now
-description = "P2PP - Palette 2 Post Processing tool for Prusa Slicer"
+name = "p2pp-dev"
+version = "1.0.0"
+description = "P2PP development environment"
 authors = [
     {name = "Tom Van den Eede", email = "P2PP@pandora.be"}
 ]
-readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.9"  # Fixed to avoid dependency conflicts
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: End Users/Desktop",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Topic :: Multimedia :: Graphics :: 3D Printing",
-]
-
-dependencies = [
-    "requests>=2.31.0",
-    "packaging>=23.2",
-]
+requires-python = ">=3.9"
+dependencies = []
 
 [project.optional-dependencies]
-# Development dependencies
 dev = [
     "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
-    "pytest-mock>=3.10.0",
-    "pytest-timeout>=2.1.0",
-    "coverage[toml]>=7.0.0",
     "black>=23.0.0",
     "isort>=5.12.0",
-    "flake8>=6.0.0",
-]
-
-# Testing dependencies for different platforms
-test-linux = [
-    "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
-    "pytest-mock>=3.10.0",
-    "pytest-timeout>=2.1.0",
 ]
-
-[project.urls]
-"Homepage" = "https://github.com/vhspace/p2pp"
-"Bug Reports" = "https://github.com/vhspace/p2pp/issues"
-"Source" = "https://github.com/vhspace/p2pp"
-
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["p2pp*"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = [
-    "-ra",
-    "--strict-markers",
-    "--strict-config",
-]
 testpaths = ["tests"]
 markers = [
-    "unit: Unit tests",
-    "integration: Integration tests", 
-    "e2e: End-to-end tests",
-    "gui: Tests that require GUI",
-    "slow: Slow tests",
+    "unit: Unit tests for individual components",
+    "integration: Integration tests for system components",
+    "e2e: End-to-end tests for complete workflows",
+    "gui: Tests that require GUI components",
+    "build: Tests that involve the build system",
+    "slow: Tests that take longer to run",
     "macos: macOS-specific tests",
-    "windows: Windows-specific tests", 
+    "windows: Windows-specific tests",
     "linux: Linux-specific tests",
     "intel: Intel architecture tests",
     "arm: ARM architecture tests",
 ]
-timeout = 300
 
 [tool.black]
 line-length = 88
-target-version = ['py39']
 
 [tool.isort]
 profile = "black"
-multi_line_output = 3
-line_length = 88

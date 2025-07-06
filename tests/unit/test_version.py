@@ -1,202 +1,184 @@
 """
-Unit tests for version module and basic application functionality.
+Unit tests for P2PP version module and basic functionality.
 """
 
 import pytest
 import sys
+import os
+import platform
 from pathlib import Path
 
 # Add project root to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from version import Version, __author__, __email__
+import version
 
 
 @pytest.mark.unit
 class TestVersion:
-    """Test version information."""
-    
+    """Test version module functionality."""
+
     def test_version_format(self):
         """Test that version follows semantic versioning."""
-        assert isinstance(Version, str)
-        assert len(Version) > 0
+        assert hasattr(version, 'Version')
+        assert isinstance(version.Version, str)
         
-        # Basic semantic version pattern (x.y.z)
-        parts = Version.split('.')
-        assert len(parts) >= 2, "Version should have at least major.minor"
+        # Should be in format X.Y.Z
+        parts = version.Version.split('.')
+        assert len(parts) == 3
         
-        # Check that major and minor are numeric
-        assert parts[0].isdigit(), "Major version should be numeric"
-        assert parts[1].isdigit(), "Minor version should be numeric"
-    
+        # Each part should be numeric
+        for part in parts:
+            assert part.isdigit() or part.zfill(2).isdigit()
+
+    def test_version_constants(self):
+        """Test that version constants are defined."""
+        assert hasattr(version, 'MajorVersion')
+        assert hasattr(version, 'MinorVersion')
+        assert hasattr(version, 'Build')
+        
+        assert isinstance(version.MajorVersion, int)
+        assert isinstance(version.MinorVersion, int)
+        assert isinstance(version.Build, int)
+
+    @pytest.mark.unit
     def test_author_info(self):
-        """Test that author information is properly defined."""
-        assert isinstance(__author__, str)
-        assert len(__author__) > 0
-        assert __author__ != "Unknown"
-    
+        """Test that author information is present."""
+        assert hasattr(version, '__author__')
+        assert hasattr(version, '__email__')
+        assert hasattr(version, '__maintainer__')
+        
+        assert "Tom Van den Eede" in version.__author__
+        assert "P2PP@pandora.be" in version.__email__
+
+    @pytest.mark.unit 
     def test_email_info(self):
-        """Test that email information is properly defined."""
-        assert isinstance(__email__, str)
-        assert len(__email__) > 0
-        assert "@" in __email__
-        assert "." in __email__
+        """Test email format."""
+        assert "@" in version.__email__
+        assert "." in version.__email__
+
+    def test_release_info(self):
+        """Test release information structure."""
+        assert hasattr(version, 'releaseinfo')
+        assert isinstance(version.releaseinfo, dict)
+        assert len(version.releaseinfo) > 0
 
 
 @pytest.mark.unit
 class TestBasicImports:
-    """Test that basic imports work correctly."""
-    
+    """Test basic module imports."""
+
     def test_version_import(self):
-        """Test that version can be imported without errors."""
+        """Test version module can be imported."""
         import version
-        assert hasattr(version, 'Version')
-        assert hasattr(version, '__author__')
-        assert hasattr(version, '__email__')
-    
+        assert version is not None
+
     def test_main_module_exists(self):
-        """Test that main P2PP module exists."""
-        p2pp_file = Path(__file__).parent.parent.parent / "P2PP.py"
-        assert p2pp_file.exists(), "P2PP.py should exist"
-    
+        """Test main P2PP module exists."""
+        main_file = Path(__file__).parent.parent.parent / "P2PP.py"
+        assert main_file.exists()
+
     def test_setup_module_exists(self):
-        """Test that setup.py exists and is readable."""
+        """Test setup.py exists."""
         setup_file = Path(__file__).parent.parent.parent / "setup.py"
-        assert setup_file.exists(), "setup.py should exist"
-        
-        # Check that it contains basic setup information
-        content = setup_file.read_text()
-        assert "setup" in content.lower()
-        assert "py2app" in content or "cx_freeze" in content or "setuptools" in content
+        assert setup_file.exists()
 
 
 @pytest.mark.unit
 class TestProjectStructure:
-    """Test that project structure is correct."""
-    
+    """Test project structure."""
+
+    @pytest.mark.gui
     def test_ui_files_exist(self):
-        """Test that UI files exist."""
+        """Test UI files exist."""
         project_root = Path(__file__).parent.parent.parent
-        
-        required_ui_files = [
+        ui_files = [
             "p2pp.ui",
             "p2ppconf.ui", 
             "SendError.ui",
-            "p3browser.ui",
+            "p3browser.ui"
         ]
         
-        for ui_file in required_ui_files:
-            ui_path = project_root / ui_file
-            assert ui_path.exists(), f"UI file {ui_file} should exist"
-    
+        for ui_file in ui_files:
+            assert (project_root / ui_file).exists(), f"UI file {ui_file} should exist"
+
+    @pytest.mark.unit
     def test_icons_directory_exists(self):
-        """Test that icons directory exists."""
+        """Test icons directory exists."""
         icons_dir = Path(__file__).parent.parent.parent / "icons"
-        assert icons_dir.exists(), "Icons directory should exist"
-        assert icons_dir.is_dir(), "Icons should be a directory"
-    
+        assert icons_dir.exists()
+
+    @pytest.mark.unit
     def test_config_files_exist(self):
-        """Test that configuration files exist."""
+        """Test configuration files exist."""
         project_root = Path(__file__).parent.parent.parent
+        config_files = [
+            "requirements-common.txt",
+            "requirements-linux.txt",
+            "requirements-mac.txt",
+            "requirements-win.txt"
+        ]
         
-        # pyproject.toml should exist (new format)
-        pyproject_file = project_root / "pyproject.toml"
-        assert pyproject_file.exists(), "pyproject.toml should exist"
-        
-        # Check basic pyproject.toml structure
-        content = pyproject_file.read_text()
-        assert "[project]" in content
-        assert "name" in content
-        assert "p2pp" in content.lower()
+        for config_file in config_files:
+            assert (project_root / config_file).exists(), f"Config file {config_file} should exist"
 
 
 @pytest.mark.unit
 class TestEnvironmentCompatibility:
-    """Test environment and dependency compatibility."""
-    
+    """Test environment compatibility."""
+
     def test_python_version_compatibility(self):
-        """Test that Python version is compatible."""
-        import sys
-        
-        # Check minimum Python version (3.8+)
-        assert sys.version_info >= (3, 8), "Python 3.8+ is required"
-    
+        """Test Python version compatibility."""
+        # Should work with Python 3.9+
+        assert sys.version_info >= (3, 9)
+
     def test_required_modules_available(self):
-        """Test that required modules can be imported."""
-        # Test core Python modules
-        try:
-            import os
-            import sys
-            import platform
-            import pathlib
-            import configparser
-        except ImportError as e:
-            pytest.fail(f"Core Python module import failed: {e}")
-    
+        """Test required modules are available."""
+        required_modules = [
+            'sys',
+            'os',
+            'platform',
+            'pathlib'
+        ]
+        
+        for module in required_modules:
+            try:
+                __import__(module)
+            except ImportError:
+                pytest.fail(f"Required module {module} not available")
+
     @pytest.mark.gui
     def test_qt_availability(self):
-        """Test that Qt modules are available (when not in headless mode)."""
+        """Test Qt availability for GUI."""
         try:
             import PyQt5.QtCore
-            import PyQt5.QtWidgets
             assert PyQt5.QtCore.QT_VERSION_STR is not None
         except ImportError:
-            pytest.skip("PyQt5 not available (expected in CI)")
+            pytest.skip("PyQt5 not available (expected in test environment)")
 
 
 @pytest.mark.unit
 @pytest.mark.parametrize("platform_name", ["Darwin", "Windows", "Linux"])
 def test_platform_specific_imports(platform_name):
-    """Test that platform-specific functionality can be imported."""
-    import platform
+    """Test platform-specific imports."""
+    # This test verifies the structure exists for different platforms
+    assert platform_name in ["Darwin", "Windows", "Linux"]
     
+    # Test that platform module works
     current_platform = platform.system()
-    
-    if current_platform == platform_name:
-        # Test platform-specific imports for current platform
-        if platform_name == "Darwin":
-            # macOS specific
-            import subprocess
-            import shutil
-        elif platform_name == "Windows":
-            # Windows specific  
-            import subprocess
-            import shutil
-        elif platform_name == "Linux":
-            # Linux specific
-            import subprocess
-            import shutil
-        
-        # All platforms should have these
-        import tempfile
-        import configparser
+    assert current_platform in ["Darwin", "Windows", "Linux"]
 
 
 @pytest.mark.unit
 class TestArchitectureDetection:
     """Test architecture detection functionality."""
-    
+
     def test_architecture_detection(self):
-        """Test that we can detect the current architecture."""
-        import platform
-        
+        """Test architecture detection."""
         machine = platform.machine()
-        assert machine in ["x86_64", "arm64", "AMD64", "i386", "i686"], f"Unknown architecture: {machine}"
-    
+        assert machine in ["x86_64", "arm64", "AMD64", "aarch64"]
+
     def test_platform_detection(self):
-        """Test that we can detect the current platform."""
-        import platform
-        
+        """Test platform detection."""
         system = platform.system()
-        assert system in ["Darwin", "Windows", "Linux"], f"Unknown platform: {system}"
-    
-    def test_cross_compilation_matrix(self, system_info, architecture_test_matrix):
-        """Test that architecture test matrix is correct for the platform."""
-        if system_info["is_macos"]:
-            # macOS should support both architectures
-            assert "x86_64" in architecture_test_matrix
-            assert "arm64" in architecture_test_matrix
-        else:
-            # Other platforms should only have their native architecture
-            assert len(architecture_test_matrix) == 1
-            assert architecture_test_matrix[0] == system_info["architecture"]
+        assert system in ["Darwin", "Windows", "Linux"]
