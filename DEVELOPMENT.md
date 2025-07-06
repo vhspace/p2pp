@@ -2,6 +2,28 @@
 
 This guide covers how to develop P2PP using modern Python tooling with **uv** for fast package management and task running.
 
+## Development Options
+
+### Option 1: Development Container (Recommended for new contributors)
+
+The fastest way to get started is using the pre-configured development container:
+
+**GitHub Codespaces:**
+1. Click **Code** → **Create codespace** on the repository
+2. Wait 2-3 minutes for automatic setup
+3. Start coding immediately!
+
+**VS Code Dev Containers:**
+1. Install the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+2. Open the project in VS Code
+3. `Ctrl+Shift+P` → "Dev Containers: Reopen in Container"
+4. Wait for automatic setup
+
+✅ **Includes everything**: Python 3.12, uv, PyQt5, testing tools, and GUI support
+📖 [Dev Container Documentation](.devcontainer/README.md)
+
+### Option 2: Local Development
+
 ## Quick Start
 
 1. **Install uv** (if not already installed):
@@ -95,6 +117,11 @@ uv run ci-test
 ```
 p2pp/
 ├── pyproject.toml          # Project configuration and uv scripts
+├── .devcontainer/          # Development container setup
+│   ├── devcontainer.json   # VS Code dev container config
+│   ├── Dockerfile          # Container definition
+│   ├── post-create.sh      # Setup script
+│   └── README.md           # Container documentation
 ├── tests/
 │   ├── conftest.py         # Pytest configuration and fixtures
 │   ├── unit/               # Unit tests
@@ -216,10 +243,28 @@ uv run test-arch
 uv run test-unit
 ```
 
+### Development Container Issues
+
+If using the dev container and encountering issues:
+
+```bash
+# Restart virtual display
+/usr/local/bin/start-xvfb
+
+# Check environment variables
+echo $DISPLAY
+echo $QT_QPA_PLATFORM
+
+# Test GUI support
+xvfb-run -a uv run test-unit
+```
+
 ## Contributing
 
 1. Fork the repository
-2. Set up development environment: `uv sync --dev && uv run dev-setup`
+2. Choose your development method:
+   - **Easy**: Use GitHub Codespaces or VS Code Dev Container
+   - **Local**: Set up with `uv sync --dev && uv run dev-setup`
 3. Make your changes
 4. Run tests: `uv run test`
 5. Format code: `uv run format`

@@ -1,10 +1,13 @@
 {
-    "name": "Python 3",
+    "name": "P2PP Development Container",
     "build": {
         "dockerfile": "Dockerfile"
     },
     "features": {
-        "ghcr.io/devcontainers/features/desktop-lite:1": {}
+        "ghcr.io/devcontainers/features/desktop-lite:1": {},
+        "ghcr.io/devcontainers/features/python:1": {
+            "version": "3.12"
+        }
     },
     "forwardPorts": [6080],
     "portsAttributes": {
@@ -16,9 +19,57 @@
         "vscode": {
             "extensions": [
                 "ms-python.python",
-                "ms-python.vscode-pylance"
-            ]
+                "ms-python.vscode-pylance",
+                "ms-python.black-formatter",
+                "ms-python.isort",
+                "ms-python.flake8",
+                "ms-python.mypy-type-checker",
+                "ms-vscode.test-adapter-converter",
+                "littlefoxteam.vscode-python-test-adapter",
+                "charliermarsh.ruff",
+                "tamasfe.even-better-toml",
+                "redhat.vscode-yaml",
+                "yzhang.markdown-all-in-one"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.terminal.activateEnvironment": false,
+                "python.testing.pytestEnabled": true,
+                "python.testing.pytestArgs": [
+                    "tests/"
+                ],
+                "python.testing.unittestEnabled": false,
+                "python.linting.enabled": true,
+                "python.linting.flake8Enabled": true,
+                "python.linting.mypyEnabled": true,
+                "python.formatting.provider": "black",
+                "python.sortImports.args": ["--profile", "black"],
+                "editor.formatOnSave": true,
+                "editor.codeActionsOnSave": {
+                    "source.organizeImports": true
+                },
+                "files.associations": {
+                    "*.toml": "toml"
+                }
+            }
         }
     },
-    "postCreateCommand": "pip install -r requirements.txt"
+    "remoteEnv": {
+        "DEBIAN_FRONTEND": "noninteractive",
+        "QT_DEBUG_PLUGINS": "1", 
+        "PYTHONPATH": "/workspace",
+        "QT_QPA_PLATFORM": "xcb",
+        "DISPLAY": ":1"
+    },
+    "postCreateCommand": "bash .devcontainer/post-create.sh",
+    "postStartCommand": "echo '🚀 P2PP Dev Container Ready! Run: uv run check-arch'",
+    "postAttachCommand": {
+        "welcome": "echo '📖 Quick start: uv run test-unit'"
+    },
+    "containerEnv": {
+        "UV_CACHE_DIR": "/workspace/.uv-cache"
+    },
+    "mounts": [
+        "source=${localWorkspaceFolder}/.uv-cache,target=/workspace/.uv-cache,type=bind,consistency=cached"
+    ]
 }
