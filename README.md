@@ -7,6 +7,10 @@ P2PP is a post-processing tool that optimizes G-code files for Palette 2 multi-m
 ### Quick Architecture Check
 Not sure which build to download? Run this script to find out:
 ```bash
+# If you have Python/uv installed:
+uv run check-arch
+
+# Or download and run:
 python scripts/check_architecture.py
 ```
 
@@ -25,66 +29,109 @@ python scripts/check_architecture.py
 
 📥 **[Download Latest Release](https://github.com/vhspace/p2pp/releases/latest)**
 
-### ⚠️ Important: Architecture Compatibility
-- **Never use Universal2 builds** - they cause crashes with PyQt5
-- Download the correct build for your system architecture
-- See [Architecture Build Guide](docs/ARCHITECTURE_BUILDS.md) for detailed instructions
+### Important: Architecture-Specific Builds
 
-## Getting Started
+P2PP provides **separate builds for different architectures** to ensure maximum compatibility. Universal2 builds are **not supported** due to PyQt5/QtWebEngine limitations.
 
-Have a look at the [P2PP Wiki pages](https://github.com/tomvandeneede/p2pp/wiki/Home) to get you started.
-
-## For Developers
-
-### Local Development
-```bash
-# Clone the repository
-git clone https://github.com/vhspace/p2pp.git
-cd p2pp
-
-# Set up virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies for your platform
-pip install -r requirements-mac.txt     # macOS
-pip install -r requirements-win.txt     # Windows
-pip install -r requirements-linux.txt   # Linux
+If you download the wrong architecture, you may see errors like:
+```
+ImportError: dlopen(...QtWebEngineWidgets.abi3.so, 0x0002): 
+tried: '...' (mach-o file, but is an incompatible architecture 
+(have (arm64), need (x86_64)))
 ```
 
-### Building Locally
+📖 **[Architecture Build Guide](docs/ARCHITECTURE_BUILDS.md)**
+
+## Development
+
+P2PP uses modern Python tooling with **uv** for fast package management and testing.
+
+### Quick Start
+
 ```bash
-# macOS - Intel
-export ARCHFLAGS="-arch x86_64"
-python setup.py py2app --arch=x86_64
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# macOS - Apple Silicon
-export ARCHFLAGS="-arch arm64"
-python setup.py py2app --arch=arm64
+# Set up development environment
+uv sync --dev
+uv run dev-setup
 
-# Windows
-python setup.py bdist_msi
+# Run tests
+uv run test
 
-# Linux
-python setup.py bdist_rpm
+# Check your architecture
+uv run check-arch
 ```
 
-### Testing Builds
+### Common Development Commands
+
 ```bash
-# Test your build works correctly
-python scripts/test_architecture_builds.py
+# Testing
+uv run test              # Run all tests
+uv run test-unit         # Fast unit tests
+uv run test-integration  # Integration tests
+uv run test-e2e          # End-to-end tests
+uv run test-coverage     # With coverage report
+
+# Code Quality
+uv run format           # Format code
+uv run lint             # Run linting
+
+# Building
+uv run build-macos-intel  # Intel macOS
+uv run build-macos-arm    # ARM macOS
+uv run build-windows      # Windows MSI
+uv run build-linux-rpm    # Linux RPM
 ```
 
-## Architecture & Build System
+📚 **[Complete Development Guide](DEVELOPMENT.md)**
 
-P2PP uses architecture-specific builds to ensure maximum compatibility and performance:
+## Features
 
-- **Separate Intel/ARM builds** prevent QtWebEngine compatibility issues
-- **End-to-end testing** validates each build on target platforms  
-- **Cross-compilation support** allows ARM Macs to build Intel binaries
-- **Automated CI/CD** builds and tests all architectures on every release
+- **Multi-material optimization** for Palette 2 printers
+- **Architecture-aware builds** for maximum compatibility
+- **Comprehensive testing** with unit, integration, and end-to-end tests
+- **Cross-platform support** for macOS, Windows, and Linux
+- **Modern development workflow** with uv and pytest
 
-See [Architecture Build Documentation](docs/ARCHITECTURE_BUILDS.md) for complete details.
+## Why uv?
+
+This project uses [uv](https://docs.astral.sh/uv/) for several advantages:
+
+- **⚡ Fast**: Incredibly fast dependency resolution and installation
+- **🔧 Cross-platform**: Works identically on macOS, Windows, and Linux
+- **🐍 Python-native**: No need to learn Make or other build tools
+- **📦 Dependency management**: Handles virtual environments automatically
+- **🚀 Modern**: Uses modern Python packaging standards
+
+## Architecture Support
+
+| Platform | Intel/x86_64 | ARM64/Apple Silicon | Universal2 |
+|----------|-------------|-------------------|------------|
+| macOS    | ✅ Supported | ✅ Supported      | ❌ Not supported* |
+| Windows  | ✅ Supported | ⚠️ Future         | N/A |
+| Linux    | ✅ Supported | ✅ Supported      | N/A |
+
+*Universal2 is not supported due to PyQt5/QtWebEngine limitations.
+
+## Contributing
+
+We welcome contributions! Please see our [Development Guide](DEVELOPMENT.md) for details on:
+
+- Setting up the development environment
+- Running tests locally
+- Architecture-specific building
+- Code quality standards
+
+## Support
+
+- 📋 **Issues**: [GitHub Issues](https://github.com/vhspace/p2pp/issues)
+- 🏗️ **Architecture Problems**: See [Architecture Build Guide](docs/ARCHITECTURE_BUILDS.md)
+- 💻 **Development**: See [Development Guide](DEVELOPMENT.md)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgements
 

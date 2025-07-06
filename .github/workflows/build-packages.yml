@@ -28,25 +28,21 @@ jobs:
         curl -LsSf https://astral.sh/uv/install.sh | sh
         echo "$HOME/.cargo/bin" >> $GITHUB_PATH
         
-    - name: Install dependencies
+    - name: Install dependencies and system tools
       run: |
-        uv pip install -e ".[test-macos,build-macos]"
+        uv sync --extra test-macos --extra build-macos
         brew install create-dmg
         
     - name: Run Unit Tests
-      run: |
-        uv pip install -e ".[dev]"
-        python -m pytest tests/unit/ -v -m unit --tb=short
+      run: uv run test-unit
         
     - name: Run Integration Tests
-      run: |
-        python -m pytest tests/integration/ -v -m "integration and not slow" --tb=short
+      run: uv run test-integration
         
     - name: Build Intel App
       run: |
-        rm -rf build/ dist/
-        export ARCHFLAGS="-arch x86_64"
-        python setup.py py2app --arch=x86_64
+        uv run clean
+        uv run build-macos-intel
         
     - name: End-to-End Test - Intel
       run: |
@@ -63,7 +59,7 @@ jobs:
         otool -L dist/P2PP.app/Contents/MacOS/P2PP | grep -E "(Qt|Python)"
         
         # Run end-to-end tests
-        python -m pytest tests/e2e/ -v -m "e2e and intel" --tb=short || echo "E2E tests completed"
+        uv run test-e2e || echo "E2E tests completed"
         
     - name: Sign Application (Development)
       if: ${{ !inputs.use_production_signing }}
@@ -150,25 +146,21 @@ jobs:
         curl -LsSf https://astral.sh/uv/install.sh | sh
         echo "$HOME/.cargo/bin" >> $GITHUB_PATH
         
-    - name: Install dependencies
+    - name: Install dependencies and system tools
       run: |
-        uv pip install -e ".[test-macos,build-macos]"
+        uv sync --extra test-macos --extra build-macos
         brew install create-dmg
         
     - name: Run Unit Tests
-      run: |
-        uv pip install -e ".[dev]"
-        python -m pytest tests/unit/ -v -m unit --tb=short
+      run: uv run test-unit
         
     - name: Run Integration Tests
-      run: |
-        python -m pytest tests/integration/ -v -m "integration and not slow" --tb=short
+      run: uv run test-integration
         
     - name: Build ARM App
       run: |
-        rm -rf build/ dist/
-        export ARCHFLAGS="-arch arm64"
-        python setup.py py2app --arch=arm64
+        uv run clean
+        uv run build-macos-arm
         
     - name: End-to-End Test - ARM
       run: |
@@ -185,7 +177,7 @@ jobs:
         otool -L dist/P2PP.app/Contents/MacOS/P2PP | grep -E "(Qt|Python)"
         
         # Run end-to-end tests
-        python -m pytest tests/e2e/ -v -m "e2e and arm" --tb=short || echo "E2E tests completed"
+        uv run test-e2e || echo "E2E tests completed"
         
     - name: Sign Application (Development)
       if: ${{ !inputs.use_production_signing }}
@@ -274,20 +266,18 @@ jobs:
         
     - name: Install dependencies
       run: |
-        uv pip install -e ".[test-windows,build-windows]"
+        uv sync --extra test-windows --extra build-windows
         
     - name: Run Unit Tests
-      run: |
-        uv pip install -e ".[dev]"
-        python -m pytest tests/unit/ -v -m unit --tb=short
+      run: uv run test-unit
         
     - name: Run Integration Tests
-      run: |
-        python -m pytest tests/integration/ -v -m "integration and not slow" --tb=short
+      run: uv run test-integration
         
     - name: Build Windows Package
       run: |
-        python setup.py bdist_msi
+        uv run clean
+        uv run build-windows
 
     - name: End-to-End Test - Windows
       run: |
@@ -311,7 +301,7 @@ jobs:
         }
         
         # Run end-to-end tests
-        python -m pytest tests/e2e/ -v -m "e2e and windows" --tb=short
+        uv run test-e2e
         
         # Clean up
         Remove-Item $tempDir -Recurse -Force
@@ -393,21 +383,20 @@ jobs:
         
     - name: Install Python dependencies
       run: |
-        uv pip install -e ".[test-linux,build-linux]"
+        uv sync --extra test-linux --extra build-linux
         
     - name: Run Unit Tests
-      run: |
-        uv pip install -e ".[dev]"
-        python -m pytest tests/unit/ -v -m unit --tb=short
+      run: uv run test-unit
         
     - name: Run Integration Tests
-      run: |
-        python -m pytest tests/integration/ -v -m "integration and not slow" --tb=short
+      run: uv run test-integration
         
     - name: Build Linux Packages
       run: |
+        uv run clean
+        
         # Build RPM
-        python setup.py bdist_rpm
+        uv run build-linux-rpm
         
         # Build DEB
         python setup.py sdist
@@ -446,7 +435,7 @@ jobs:
         sudo apt-get install -f -y  # Fix any dependency issues
         
         # Run end-to-end tests with virtual display
-        xvfb-run -a python -m pytest tests/e2e/ -v -m "e2e and linux" --tb=short || echo "E2E tests completed"
+        xvfb-run -a uv run test-e2e || echo "E2E tests completed"
         
         # Clean up
         sudo dpkg -r p2pp || true
@@ -488,12 +477,10 @@ jobs:
         
     - name: Install dependencies
       run: |
-        uv pip install -e ".[dev,test-linux]"
+        uv sync --extra test-linux
         
     - name: Run Unit Tests
-      run: |
-        python -m pytest tests/unit/ -v -m unit --tb=short
+      run: uv run test-unit
         
     - name: Run Integration Tests (non-build)
-      run: |
-        python -m pytest tests/integration/ -v -m "integration and not build and not slow" --tb=short 
+      run: uv run test-integration 

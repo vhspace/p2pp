@@ -105,6 +105,7 @@ build-linux = [
 
 [project.scripts]
 p2pp = "p2pp:main"
+check-architecture = "scripts.check_architecture:main"
 
 [project.gui-scripts]
 p2pp-gui = "p2pp:main"
@@ -115,6 +116,68 @@ write_to = "p2pp/_version.py"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["p2pp*"]
+
+# uv script definitions - replaces Makefile functionality
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-qt>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "pytest-timeout>=2.1.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+
+[tool.uv.sources]
+
+[tool.uv.scripts]
+# Development setup
+dev-setup = "python -c 'import subprocess; subprocess.run([\"pre-commit\", \"install\"], check=False); print(\"Development environment ready!\")'"
+
+# Testing commands
+test = "python -m pytest -v --tb=short"
+test-unit = "python -m pytest tests/unit/ -v -m unit"
+test-integration = "python -m pytest tests/integration/ -v -m integration"
+test-e2e = "python -m pytest tests/e2e/ -v -m e2e"
+test-coverage = "python -m pytest --cov=p2pp --cov-report=html --cov-report=term-missing"
+test-quick = "python -m pytest tests/unit/ -v --tb=line -x"
+
+# Platform-specific tests
+test-macos = "python -m pytest -v -m macos"
+test-windows = "python -m pytest -v -m windows"
+test-linux = "python -m pytest -v -m linux"
+
+# Architecture tests
+test-arch = "python scripts/test_architecture_builds.py"
+check-arch = "python scripts/check_architecture.py"
+
+# Code quality
+lint = [
+    "python -m flake8 p2pp/ tests/ scripts/",
+    "python -m mypy p2pp/ --ignore-missing-imports",
+]
+format = [
+    "python -m black p2pp/ tests/ scripts/",
+    "python -m isort p2pp/ tests/ scripts/",
+]
+
+# Build commands
+clean = "python -c 'import shutil, os; [shutil.rmtree(d, ignore_errors=True) for d in [\"build\", \"dist\", \"*.egg-info\", \".pytest_cache\", \"htmlcov\"]]; [os.remove(f) for f in [\".coverage\"] if os.path.exists(f)]'"
+
+# Platform-specific builds
+build-macos-intel = "python -c 'import os; os.environ[\"ARCHFLAGS\"] = \"-arch x86_64\"; os.system(\"python setup.py py2app --arch=x86_64\")'"
+build-macos-arm = "python -c 'import os; os.environ[\"ARCHFLAGS\"] = \"-arch arm64\"; os.system(\"python setup.py py2app --arch=arm64\")'"
+build-windows = "python setup.py bdist_msi"
+build-linux-rpm = "python setup.py bdist_rpm"
+
+# CI commands
+ci-test = "python -m pytest -v --tb=short --junitxml=test-results.xml"
+
+# Development helpers
+watch-test = "python -m pytest tests/unit/ -v --tb=line -f"
 
 [tool.pytest.ini_options]
 minversion = "7.0"
