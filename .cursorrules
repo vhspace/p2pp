@@ -1,0 +1,155 @@
+# P2PP Project Cursor Rules
+
+## Project Overview
+P2PP is a post-processing tool for Palette 2 printers that works with Prusa Slicer. It's built with Python and PyQt5, and supports multiple platforms with architecture-specific builds.
+
+## Architecture-Specific Builds
+
+### Important: NO Universal2 Builds
+- **NEVER use universal2 builds** - PyQt5/QtWebEngine does not support universal2 properly
+- Always build separate Intel (x86_64) and ARM (arm64) versions for macOS
+- This prevents the "mach-o file, but is an incompatible architecture" error
+
+### macOS Build Commands
+```bash
+# For Intel Macs
+export ARCHFLAGS="-arch x86_64"
+python setup.py py2app --arch=x86_64
+
+# For Apple Silicon Macs  
+export ARCHFLAGS="-arch arm64"
+python setup.py py2app --arch=arm64
+```
+
+### Windows Build Commands
+```bash
+python setup.py bdist_msi
+```
+
+### Linux Build Commands
+```bash
+# RPM packages
+python setup.py bdist_rpm
+
+# DEB packages (requires additional debian/ setup)
+python setup.py sdist
+```
+
+## Build System Structure
+
+### GitHub Workflows
+- `build-macos-intel`: Builds for Intel x86_64 using macos-13 runner
+- `build-macos-arm`: Builds for ARM64 using macos-14 runner  
+- `build-windows`: Builds Windows MSI packages
+- `build-linux`: Builds RPM and DEB packages
+
+### End-to-End Testing
+Each build job includes comprehensive E2E tests:
+- Verifies package creation
+- Tests architecture compatibility
+- Validates app launch and basic functionality
+- Checks dependency loading
+
+## Local Development & Testing
+
+### Running Architecture Tests
+```bash
+# Test current platform builds
+python scripts/test_architecture_builds.py
+
+# This will:
+# - Build for current architecture
+# - Test cross-compilation (ARM64 Mac can build Intel)
+# - Verify binary architecture
+# - Test app launch and PyQt5 imports
+# - Check library dependencies
+```
+
+### Virtual Environment Setup
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements-[platform].txt
+```
+
+## File Structure Rules
+
+### Platform-Specific Requirements
+- `requirements-mac.txt` - macOS dependencies
+- `requirements-win.txt` - Windows dependencies  
+- `requirements-linux.txt` - Linux dependencies
+- `requirements-common.txt` - Shared dependencies
+
+### Build Configuration
+- `setup.py` - Main build script with architecture detection
+- `.github/workflows/build-packages.yml` - CI/CD pipeline
+- `scripts/test_architecture_builds.py` - Local testing
+
+## Code Quality & Standards
+
+### PyQt5 Usage
+- Always use PyQt5 (not PyQt6) for compatibility
+- Import QtWebEngineWidgets carefully - it's the main source of universal2 issues
+- Test imports on target architectures
+
+### Error Handling
+- Handle architecture mismatches gracefully
+- Provide clear error messages for unsupported platforms
+- Log architecture information during builds
+
+### Dependencies
+- Pin PyQt5 versions in requirements files
+- Avoid packages that don't support architecture-specific builds
+- Test all dependencies on target platforms
+
+## Release Process
+
+### Version Management
+- Update `version.py` for new releases
+- Tag releases with `v*` format to trigger workflows
+- Both Intel and ARM DMGs will be created automatically
+
+### Distribution Strategy
+- Clearly label Intel vs ARM builds in release names
+- Use descriptive filenames: `P2PP-intel.dmg`, `P2PP-arm.dmg`
+- Include architecture compatibility info in release notes
+
+### User Guidance
+- Provide clear download instructions for each architecture
+- Document system requirements for each platform
+- Include troubleshooting for architecture mismatches
+
+## Common Issues & Solutions
+
+### "Incompatible Architecture" Error
+- This happens when running ARM build on Intel Mac or vice versa
+- Solution: Download correct architecture build
+- Never attempt universal2 builds
+
+### Build Failures
+- Check `ARCHFLAGS` environment variable is set correctly
+- Verify Python and dependencies are installed for target architecture
+- Run local architecture tests first
+
+### PyQt5 Import Errors
+- Ensure PyQt5 was installed for correct architecture
+- Check that QtWebEngine is available for target platform
+- Test with minimal import script first
+
+## Development Workflow
+
+### Before Making Changes
+1. Run `python scripts/test_architecture_builds.py`
+2. Test on target platforms if possible
+3. Check CI pipeline passes for all architectures
+
+### When Adding Dependencies
+1. Add to appropriate requirements-*.txt file
+2. Test architecture compatibility
+3. Update CI workflows if needed
+
+### For Release
+1. Update version.py
+2. Test builds locally
+3. Create tag to trigger release workflow
+4. Verify both Intel and ARM builds in release

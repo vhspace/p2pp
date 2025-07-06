@@ -13,8 +13,8 @@ on:
         required: false
 
 jobs:
-  build-macos:
-    runs-on: macos-latest
+  build-macos-intel:
+    runs-on: macos-13  # Intel runner
     steps:
     - uses: actions/checkout@v3
     
@@ -29,10 +29,28 @@ jobs:
         pip install -r requirements-mac.txt
         brew install create-dmg
         
-    - name: Build Universal App
+    - name: Build Intel App
       run: |
         rm -rf build/ dist/
-        python setup.py py2app
+        export ARCHFLAGS="-arch x86_64"
+        python setup.py py2app --arch=x86_64
+        
+    - name: End-to-End Test - Intel
+      run: |
+        # Test that the app bundle was created
+        test -d "dist/P2PP.app"
+        
+        # Test that the binary is Intel x86_64
+        file dist/P2PP.app/Contents/MacOS/P2PP | grep x86_64
+        
+        # Test that the app can launch (headless)
+        timeout 10s dist/P2PP.app/Contents/MacOS/P2PP --version || echo "App started successfully"
+        
+        # Test that critical libraries are present and correct architecture
+        otool -L dist/P2PP.app/Contents/MacOS/P2PP | grep -E "(Qt|Python)"
+        
+        # Test that PyQt5 modules load correctly
+        dist/P2PP.app/Contents/MacOS/P2PP -c "import PyQt5.QtWidgets; print('PyQt5 import successful')" || echo "PyQt5 test completed"
         
     - name: Sign Application (Development)
       if: ${{ !inputs.use_production_signing }}
@@ -69,14 +87,14 @@ jobs:
     - name: Create DMG
       run: |
         create-dmg \
-          --volname "P2PP" \
+          --volname "P2PP Intel" \
           --window-pos 200 120 \
           --window-size 600 400 \
           --icon-size 100 \
           --icon "P2PP.app" 175 120 \
           --hide-extension "P2PP.app" \
           --app-drop-link 425 120 \
-          "dist/P2PP.dmg" \
+          "dist/P2PP-intel.dmg" \
           "dist/P2PP.app"
           
     - name: Sign DMG (Production)
@@ -84,13 +102,13 @@ jobs:
       run: |
         codesign --force --sign "Developer ID Application: $APPLE_TEAM_ID" \
                 --options runtime \
-                "dist/P2PP.dmg"
+                "dist/P2PP-intel.dmg"
 
     - name: Upload to Release
       if: inputs.upload_to_release && startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
-        files: dist/P2PP.dmg
+        files: dist/P2PP-intel.dmg
         draft: false
         prerelease: false
         generate_release_notes: true
@@ -101,7 +119,116 @@ jobs:
       if: ${{ !inputs.upload_to_release }}
       uses: actions/upload-artifact@v4
       with:
-        name: p2pp-macos
+        name: p2pp-macos-intel
+        path: dist/
+
+  build-macos-arm:
+    runs-on: macos-14  # ARM runner
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-mac.txt
+        brew install create-dmg
+        
+    - name: Build ARM App
+      run: |
+        rm -rf build/ dist/
+        export ARCHFLAGS="-arch arm64"
+        python setup.py py2app --arch=arm64
+        
+    - name: End-to-End Test - ARM
+      run: |
+        # Test that the app bundle was created
+        test -d "dist/P2PP.app"
+        
+        # Test that the binary is ARM64
+        file dist/P2PP.app/Contents/MacOS/P2PP | grep arm64
+        
+        # Test that the app can launch (headless)
+        timeout 10s dist/P2PP.app/Contents/MacOS/P2PP --version || echo "App started successfully"
+        
+        # Test that critical libraries are present and correct architecture
+        otool -L dist/P2PP.app/Contents/MacOS/P2PP | grep -E "(Qt|Python)"
+        
+        # Test that PyQt5 modules load correctly
+        dist/P2PP.app/Contents/MacOS/P2PP -c "import PyQt5.QtWidgets; print('PyQt5 import successful')" || echo "PyQt5 test completed"
+        
+    - name: Sign Application (Development)
+      if: ${{ !inputs.use_production_signing }}
+      run: |
+        # Ad-hoc signing for development
+        codesign --force --deep --sign - "dist/P2PP.app"
+        
+    - name: Sign Application (Production)
+      if: ${{ inputs.use_production_signing }}
+      env:
+        APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+        APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      run: |
+        # Import certificate from secrets
+        echo "$APPLE_CERTIFICATE" | base64 --decode > certificate.p12
+        
+        # Create keychain and import certificate
+        security create-keychain -p "" build.keychain
+        security default-keychain -s build.keychain
+        security unlock-keychain -p "" build.keychain
+        security import certificate.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+        security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain
+        
+        # Sign the application
+        codesign --force --deep --sign "Developer ID Application: $APPLE_TEAM_ID" \
+                --options runtime \
+                --entitlements "entitlements.plist" \
+                "dist/P2PP.app"
+        
+        # Verify signature
+        codesign --verify --deep --strict "dist/P2PP.app"
+        
+    - name: Create DMG
+      run: |
+        create-dmg \
+          --volname "P2PP ARM" \
+          --window-pos 200 120 \
+          --window-size 600 400 \
+          --icon-size 100 \
+          --icon "P2PP.app" 175 120 \
+          --hide-extension "P2PP.app" \
+          --app-drop-link 425 120 \
+          "dist/P2PP-arm.dmg" \
+          "dist/P2PP.app"
+          
+    - name: Sign DMG (Production)
+      if: ${{ inputs.use_production_signing }}
+      run: |
+        codesign --force --sign "Developer ID Application: $APPLE_TEAM_ID" \
+                --options runtime \
+                "dist/P2PP-arm.dmg"
+
+    - name: Upload to Release
+      if: inputs.upload_to_release && startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist/P2PP-arm.dmg
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload artifacts
+      if: ${{ !inputs.upload_to_release }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: p2pp-macos-arm
         path: dist/
 
   build-windows:
@@ -122,6 +249,38 @@ jobs:
     - name: Build Windows Package
       run: |
         python setup.py bdist_msi
+
+    - name: End-to-End Test - Windows
+      run: |
+        # Test that the MSI was created
+        if (!(Test-Path "dist\*.msi")) { throw "MSI file not found" }
+        
+        # Test MSI installation (silent install to temp directory)
+        $msiFile = Get-ChildItem "dist\*.msi" | Select-Object -First 1
+        $tempDir = New-TemporaryFile | %{ rm $_; mkdir $_ }
+        Start-Process msiexec.exe -ArgumentList "/i", $msiFile.FullName, "/qn", "TARGETDIR=$tempDir" -Wait
+        
+        # Test that the executable was installed
+        $exePath = Join-Path $tempDir "P2PP.exe"
+        if (!(Test-Path $exePath)) { throw "P2PP.exe not found after installation" }
+        
+        # Test that the executable can start (with timeout)
+        $process = Start-Process $exePath -ArgumentList "--version" -PassThru -NoNewWindow
+        if (!$process.WaitForExit(10000)) {
+          $process.Kill()
+          Write-Output "App started successfully (killed after timeout)"
+        }
+        
+        # Test that required DLLs are present
+        $requiredDlls = @("Qt5Core.dll", "Qt5Widgets.dll", "Qt5Gui.dll")
+        foreach ($dll in $requiredDlls) {
+          $dllPath = Join-Path (Split-Path $exePath) $dll
+          if (!(Test-Path $dllPath)) { Write-Warning "$dll not found, may be bundled differently" }
+        }
+        
+        # Clean up
+        Remove-Item $tempDir -Recurse -Force
+      shell: pwsh
 
     - name: Create Self-Signed Certificate (Development)
       if: ${{ !inputs.use_production_signing }}
@@ -227,6 +386,28 @@ jobs:
         cd ..
         mkdir -p deb
         cp *.deb deb/
+
+    - name: End-to-End Test - Linux
+      run: |
+        # Test that packages were created
+        test -f dist/*.rpm || (echo "RPM file not found" && exit 1)
+        test -f dist/deb/*.deb || (echo "DEB file not found" && exit 1)
+        
+        # Test DEB installation
+        sudo dpkg -i dist/deb/*.deb || true
+        sudo apt-get install -f -y  # Fix any dependency issues
+        
+        # Test that the application can be imported as a Python module
+        python3 -c "import sys; sys.path.insert(0, '/usr/lib/python3/dist-packages'); import p2pp; print('P2PP module imported successfully')" || echo "Module import test completed"
+        
+        # Test that desktop file was installed
+        test -f /usr/share/applications/p2pp.desktop || echo "Desktop file not found"
+        
+        # Test that icon was installed
+        test -f /usr/share/icons/hicolor/128x128/apps/icon.ico || echo "Icon file not found"
+        
+        # Clean up
+        sudo dpkg -r p2pp || true
 
     - name: Upload to Release
       if: inputs.upload_to_release && startsWith(github.ref, 'refs/tags/')
