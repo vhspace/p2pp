@@ -134,8 +134,9 @@ dev-dependencies = [
 [tool.uv.sources]
 
 [tool.uv.scripts]
-# Development setup
-dev-setup = "python -c 'import subprocess; subprocess.run([\"pre-commit\", \"install\"], check=False); print(\"Development environment ready!\")'"
+# Setup commands
+setup = "python -c 'import subprocess; subprocess.run([\"uv\", \"sync\", \"--dev\"], check=True); subprocess.run([\"uv\", \"run\", \"dev-setup\"], check=False)'"
+dev-setup = "python -c 'import subprocess; subprocess.run([\"pre-commit\", \"install\"], check=False); print(\"Development environment ready\")'"
 
 # Testing commands
 test = "python -m pytest -v --tb=short"
@@ -144,6 +145,7 @@ test-integration = "python -m pytest tests/integration/ -v -m integration"
 test-e2e = "python -m pytest tests/e2e/ -v -m e2e"
 test-coverage = "python -m pytest --cov=p2pp --cov-report=html --cov-report=term-missing"
 test-quick = "python -m pytest tests/unit/ -v --tb=line -x"
+test-watch = "python -m pytest tests/unit/ -v --tb=line -f"
 
 # Platform-specific tests
 test-macos = "python -m pytest -v -m macos"
@@ -163,21 +165,51 @@ format = [
     "python -m black p2pp/ tests/ scripts/",
     "python -m isort p2pp/ tests/ scripts/",
 ]
+check-format = [
+    "python -m black --check p2pp/ tests/ scripts/",
+    "python -m isort --check-only p2pp/ tests/ scripts/",
+]
 
 # Build commands
 clean = "python -c 'import shutil, os; [shutil.rmtree(d, ignore_errors=True) for d in [\"build\", \"dist\", \"*.egg-info\", \".pytest_cache\", \"htmlcov\"]]; [os.remove(f) for f in [\".coverage\"] if os.path.exists(f)]'"
+build = "python -c 'import platform, os; {\"Darwin\": lambda: os.system(\"uv run build-macos-native\"), \"Windows\": lambda: os.system(\"uv run build-windows\"), \"Linux\": lambda: os.system(\"uv run build-linux-rpm\")}[platform.system()]()"
 
 # Platform-specific builds
 build-macos-intel = "python -c 'import os; os.environ[\"ARCHFLAGS\"] = \"-arch x86_64\"; os.system(\"python setup.py py2app --arch=x86_64\")'"
 build-macos-arm = "python -c 'import os; os.environ[\"ARCHFLAGS\"] = \"-arch arm64\"; os.system(\"python setup.py py2app --arch=arm64\")'"
+build-macos-native = "python -c 'import platform, os; arch = \"intel\" if platform.machine() == \"x86_64\" else \"arm\"; os.system(f\"uv run build-macos-{arch}\")'"
 build-windows = "python setup.py bdist_msi"
 build-linux-rpm = "python setup.py bdist_rpm"
 
+# Development workflows
+pre-commit = "pre-commit run --all-files"
+fix = [
+    "python -m black p2pp/ tests/ scripts/",
+    "python -m isort p2pp/ tests/ scripts/",
+    "python -m flake8 p2pp/ tests/ scripts/ --exit-zero",
+]
+
 # CI commands
 ci-test = "python -m pytest -v --tb=short --junitxml=test-results.xml"
+ci-check = [
+    "python -m black --check p2pp/ tests/ scripts/",
+    "python -m isort --check-only p2pp/ tests/ scripts/",
+    "python -m flake8 p2pp/ tests/ scripts/",
+    "python -m mypy p2pp/ --ignore-missing-imports",
+]
 
-# Development helpers
-watch-test = "python -m pytest tests/unit/ -v --tb=line -f"
+# Release preparation
+release-check = [
+    "uv run clean",
+    "uv run test",
+    "uv run ci-check",
+    "uv run test-arch",
+]
+
+# Quick development commands
+start = "uv run setup"
+quick = "uv run test-quick"
+all = "uv run test && uv run lint"
 
 [tool.pytest.ini_options]
 minversion = "7.0"
