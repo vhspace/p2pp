@@ -1,0 +1,222 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "p2pp"
+dynamic = ["version"]
+description = "P2PP - Palette 2 Post Processing tool for Prusa Slicer"
+authors = [
+    {name = "Tom Van den Eede", email = "P2PP@pandora.be"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Graphics :: 3D Printing",
+]
+
+dependencies = [
+    "PyQt5>=5.15.0",
+    "PyQtWebEngine>=5.15.0",
+    "requests>=2.31.0",
+    "packaging>=23.2",
+]
+
+[project.optional-dependencies]
+# Development dependencies
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-xvfb>=3.0.0",  # For headless GUI testing on Linux
+    "pytest-qt>=4.0.0",    # For Qt application testing
+    "pytest-mock>=3.10.0",
+    "pytest-timeout>=2.1.0",
+    "pytest-parallel>=0.1.1",
+    "coverage[toml]>=7.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+]
+
+# Testing dependencies for different platforms
+test-macos = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-qt>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "pytest-timeout>=2.1.0",
+    "psutil>=5.9.0",  # For process management
+]
+
+test-windows = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-qt>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "pytest-timeout>=2.1.0",
+    "psutil>=5.9.0",
+    "pywin32>=306",  # Windows-specific
+]
+
+test-linux = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-xvfb>=3.0.0",
+    "pytest-qt>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "pytest-timeout>=2.1.0",
+    "psutil>=5.9.0",
+]
+
+# Build dependencies for different platforms
+build-macos = [
+    "py2app>=0.28.0",
+    "dmgbuild>=1.6.0",
+]
+
+build-windows = [
+    "cx_Freeze>=6.15.0",
+    "pywin32>=306",
+]
+
+build-linux = [
+    "setuptools>=65.0.0",
+    "wheel>=0.40.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/vhspace/p2pp"
+"Bug Reports" = "https://github.com/vhspace/p2pp/issues"
+"Source" = "https://github.com/vhspace/p2pp"
+"Documentation" = "https://github.com/vhspace/p2pp/wiki"
+
+[project.scripts]
+p2pp = "p2pp:main"
+
+[project.gui-scripts]
+p2pp-gui = "p2pp:main"
+
+[tool.setuptools_scm]
+write_to = "p2pp/_version.py"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["p2pp*"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=p2pp",
+    "--cov-report=term-missing:skip-covered",
+    "--cov-report=html:htmlcov",
+    "--cov-report=xml",
+    "--cov-fail-under=80",
+]
+testpaths = ["tests"]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests", 
+    "e2e: End-to-end tests",
+    "gui: Tests that require GUI",
+    "build: Tests that require build system",
+    "slow: Slow tests",
+    "macos: macOS-specific tests",
+    "windows: Windows-specific tests", 
+    "linux: Linux-specific tests",
+    "intel: Intel architecture tests",
+    "arm: ARM architecture tests",
+]
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+]
+timeout = 300  # 5 minutes default timeout
+
+[tool.coverage.run]
+source = ["p2pp"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/_version.py",
+    "*/setup.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+  | _version\.py
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["p2pp"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "PyQt5.*",
+    "cx_Freeze.*",
+    "py2app.*",
+    "dmgbuild.*",
+]
+ignore_missing_imports = true
