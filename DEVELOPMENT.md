@@ -1,257 +1,156 @@
 # P2PP Development Guide
 
-This guide covers how to develop P2PP using modern Python tooling with **uv** for fast package management and task running.
+Modern Python development with **uv** for package management and testing.
 
 ## Development Options
 
-### Option 1: Development Container (Recommended for new contributors)
-
-The fastest way to get started is using the pre-configured development container:
+### Option 1: Development Container (Recommended)
 
 **GitHub Codespaces:**
-1. Click **Code** → **Create codespace** on the repository
-2. Wait 2-3 minutes for automatic setup
-3. Start coding immediately!
+1. Click **Code** → **Create codespace**
+2. Wait 2-3 minutes for setup
+3. Start coding
 
 **VS Code Dev Containers:**
-1. Install the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-2. Open the project in VS Code
+1. Install [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+2. Open project in VS Code
 3. `Ctrl+Shift+P` → "Dev Containers: Reopen in Container"
-4. Wait for automatic setup
 
-✅ **Includes everything**: Python 3.12, uv, PyQt5, testing tools, and GUI support
-📖 [Dev Container Documentation](.devcontainer/README.md)
+Includes: Python 3.12, uv, PyQt5, testing tools, GUI support
+See [Dev Container Documentation](.devcontainer/README.md)
 
 ### Option 2: Local Development
 
-## Quick Start
-
-1. **Install uv** (if not already installed):
-   ```bash
-   curl -LsSf https://astral.sh/uv/install.sh | sh
-   ```
-
-2. **Set up development environment**:
-   ```bash
-   uv sync --dev
-   uv run dev-setup
-   ```
-
-3. **Run tests**:
-   ```bash
-   uv run test
-   ```
-
-4. **Check your architecture**:
-   ```bash
-   uv run check-arch
-   ```
-
-## Development Commands
-
-All development tasks are managed through `uv run` commands defined in `pyproject.toml`:
-
-### Testing
 ```bash
-# Run all tests
-uv run test
+# Install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Run specific test types
-uv run test-unit           # Fast unit tests
-uv run test-integration    # Integration tests
-uv run test-e2e            # End-to-end tests
+# Complete setup
+uv run start
 
-# Run tests with coverage
-uv run test-coverage
-
-# Quick test (unit tests only, exit on first failure)
-uv run test-quick
-
-# Platform-specific tests
-uv run test-macos          # macOS only
-uv run test-windows        # Windows only  
-uv run test-linux          # Linux only
-```
-
-### Code Quality
-```bash
-# Format code
-uv run format
-
-# Run linting
-uv run lint
-
-# Development setup (install pre-commit hooks)
-uv run dev-setup
-```
-
-### Architecture & Building
-```bash
-# Check system architecture
+# Verify setup
 uv run check-arch
-
-# Test architecture-specific builds
-uv run test-arch
-
-# Clean build artifacts
-uv run clean
-
-# Platform-specific builds
-uv run build-macos-intel   # Intel macOS
-uv run build-macos-arm     # ARM macOS
-uv run build-windows       # Windows MSI
-uv run build-linux-rpm     # Linux RPM
 ```
 
-### Development Helpers
-```bash
-# Watch for changes and run tests
-uv run watch-test
+## Essential Commands
 
-# CI test command
-uv run ci-test
+### New Developer Workflow
+```bash
+uv run start             # Complete setup (sync + dev-setup)
+uv run quick             # Run unit tests
+uv run check-arch        # Check system architecture
+```
+
+### Daily Development
+```bash
+uv run test              # All tests
+uv run test-unit         # Unit tests only
+uv run fix               # Auto-fix formatting
+uv run all               # Test + lint everything
+```
+
+### Before Commits
+```bash
+uv run pre-commit        # Run pre-commit hooks
+uv run ci-check          # Check CI compliance
+```
+
+### Building
+```bash
+uv run build             # Platform-specific build
+uv run build-macos-intel # Intel macOS
+uv run build-macos-arm   # ARM macOS
+uv run build-windows     # Windows MSI
+uv run build-linux-rpm   # Linux RPM
 ```
 
 ## Project Structure
 
 ```
 p2pp/
-├── pyproject.toml          # Project configuration and uv scripts
-├── .devcontainer/          # Development container setup
-│   ├── devcontainer.json   # VS Code dev container config
-│   ├── Dockerfile          # Container definition
-│   ├── post-create.sh      # Setup script
-│   └── README.md           # Container documentation
+├── pyproject.toml          # Project config + uv scripts
+├── .devcontainer/          # Development container
 ├── tests/
-│   ├── conftest.py         # Pytest configuration and fixtures
+│   ├── conftest.py         # Pytest config + fixtures
 │   ├── unit/               # Unit tests
 │   ├── integration/        # Integration tests
 │   └── e2e/                # End-to-end tests
 ├── scripts/
-│   ├── check_architecture.py    # Architecture detection tool
-│   └── test_architecture_builds.py  # Build testing tool
-├── docs/
-│   └── ARCHITECTURE_BUILDS.md      # Architecture documentation
-└── .cursorrules           # Cursor AI rules
+│   ├── check_architecture.py    # Architecture detection
+│   └── test_architecture_builds.py  # Build testing
+└── docs/
+    └── ARCHITECTURE_BUILDS.md      # Architecture docs
 ```
 
-## Architecture-Specific Development
+## Architecture Development
 
-### Why No Universal2 Builds?
+### Critical Rules
+- **NEVER use Universal2 builds** - PyQt5/QtWebEngine breaks
+- Always build separate Intel (x86_64) and ARM (arm64) for macOS
+- Error: "mach-o file, but is an incompatible architecture"
 
-P2PP **cannot** use Universal2 builds because PyQt5/QtWebEngine doesn't support them properly. This causes crashes like:
-
-```
-ImportError: dlopen(...QtWebEngineWidgets.abi3.so, 0x0002): 
-tried: '...' (mach-o file, but is an incompatible architecture 
-(have (arm64), need (x86_64)))
-```
-
-### Building for Different Architectures
-
-**macOS:**
+### Build Commands
 ```bash
-# For Intel Macs
-uv run build-macos-intel
+# macOS
+uv run build-macos-intel   # Intel build
+uv run build-macos-arm     # ARM build
 
-# For Apple Silicon Macs
-uv run build-macos-arm
+# Other platforms
+uv run build-windows       # Windows MSI
+uv run build-linux-rpm     # Linux RPM
 ```
 
-**Windows:**
+### Testing
 ```bash
-uv run build-windows
+uv run check-arch          # Check system
+uv run test-arch           # Test builds
 ```
-
-**Linux:**
-```bash
-uv run build-linux-rpm
-```
-
-### Testing Architecture Builds
-
-```bash
-# Test your system's architecture
-uv run check-arch
-
-# Test architecture-specific builds
-uv run test-arch
-```
-
-## CI/CD Integration
-
-The project uses GitHub Actions with uv for fast, reliable CI/CD:
-
-```yaml
-# Install uv in GitHub Actions
-- name: Install uv
-  run: |
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-    echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
-# Install dependencies
-- name: Install dependencies
-  run: uv sync --dev
-
-# Run tests
-- name: Run tests
-  run: uv run ci-test
-```
-
-## Why uv Instead of Make?
-
-uv provides several advantages over traditional Makefiles:
-
-1. **Faster**: uv is incredibly fast at dependency resolution and installation
-2. **Cross-platform**: Works identically on macOS, Windows, and Linux
-3. **Python-native**: No need to learn Make syntax
-4. **Dependency management**: Handles virtual environments automatically
-5. **Caching**: Aggressive caching for faster repeated runs
-6. **Modern**: Uses modern Python packaging standards
 
 ## Test Categories
 
-Tests are organized by markers:
+Use pytest markers:
+- `@pytest.mark.unit` - Fast unit tests
+- `@pytest.mark.integration` - System tests
+- `@pytest.mark.e2e` - End-to-end tests
+- `@pytest.mark.gui` - GUI tests (skip in CI)
+- `@pytest.mark.macos/.windows/.linux` - Platform-specific
+- `@pytest.mark.intel/.arm` - Architecture-specific
 
-- `unit`: Fast unit tests for individual components
-- `integration`: Integration tests for system components
-- `e2e`: End-to-end tests for complete workflows
-- `gui`: Tests requiring GUI (skipped in CI)
-- `build`: Tests involving the build system
-- `slow`: Tests that take longer to run
-- `macos`/`windows`/`linux`: Platform-specific tests
-- `intel`/`arm`: Architecture-specific tests
+## CI/CD Integration
+
+```yaml
+# GitHub Actions
+- name: Install uv
+  run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+- name: Setup
+  run: uv run setup
+
+- name: Test
+  run: uv run ci-test
+```
+
+## Why uv?
+
+- Fast dependency resolution
+- Cross-platform compatibility
+- Python-native workflow
+- Automatic virtual environments
+- Modern packaging standards
 
 ## Troubleshooting
 
 ### Common Issues
-
-1. **PyQt5 import errors**: Make sure you're using the correct architecture build
-2. **Build failures**: Run `uv run clean` then try building again
-3. **Test failures**: Check if you have the right platform-specific dependencies
-
-### Getting Help
-
-```bash
-# Check system info
-uv run check-arch
-
-# Run architecture tests
-uv run test-arch
-
-# Check project structure
-uv run test-unit
-```
+1. **PyQt5 import errors**: Use correct architecture build
+2. **Build failures**: Run `uv run clean` first
+3. **Test failures**: Check platform dependencies
 
 ### Development Container Issues
-
-If using the dev container and encountering issues:
-
 ```bash
 # Restart virtual display
 /usr/local/bin/start-xvfb
 
-# Check environment variables
+# Check environment
 echo $DISPLAY
 echo $QT_QPA_PLATFORM
 
@@ -261,17 +160,12 @@ xvfb-run -a uv run test-unit
 
 ## Contributing
 
-1. Fork the repository
-2. Choose your development method:
-   - **Easy**: Use GitHub Codespaces or VS Code Dev Container
-   - **Local**: Set up with `uv sync --dev && uv run dev-setup`
-3. Make your changes
-4. Run tests: `uv run test`
-5. Format code: `uv run format`
-6. Submit a pull request
+1. Fork repository
+2. Choose method:
+   - Easy: GitHub Codespaces or VS Code Dev Container
+   - Local: `uv run start`
+3. Make changes
+4. Run `uv run all`
+5. Submit pull request
 
-All CI checks must pass, including:
-- Unit tests on Python 3.8-3.12
-- Integration tests on all platforms
-- End-to-end tests for architecture-specific builds
-- Code formatting and linting
+CI checks: Python 3.8-3.12, all platforms, architecture builds.
