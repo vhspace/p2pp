@@ -12,32 +12,113 @@ P2PP is a post-processing tool for Palette 2 printers. Uses Python + PyQt5. Mode
 
 ### Architecture Commands
 ```bash
-uv run check-arch        # Check system architecture
-uv run build-macos-intel # Intel macOS build
-uv run build-macos-arm   # ARM macOS build
-uv run build             # Auto-detect platform build
+python3 scripts/check_architecture.py  # Check system architecture
+python3 scripts/dev.py test-unit       # Run unit tests
+python3 scripts/dev.py format          # Fix formatting
+python3 scripts/dev.py all             # Run everything
 ```
 
 ## Development Workflow
 
-### New Developer Setup
+### Setup
 ```bash
-uv run start             # Complete setup (sync + dev-setup)
-uv run quick             # Run quick tests
+uv venv
+source .venv/bin/activate
+uv sync --extra dev --no-build
 ```
 
-### Daily Development
+### Commands
 ```bash
-uv run test              # All tests
-uv run test-unit         # Fast unit tests
-uv run fix               # Auto-fix formatting issues
-uv run all               # Test + lint everything
+python3 scripts/dev.py <command>
+# test-unit, test-e2e, format, check-arch, all
 ```
 
-### Before Commits
+## Code Standards
+
+### Comment Policy
+**RULE: No "what" comments, only "why" comments**
+
+Bad:
+```python
+# Create a virtual environment
+uv venv
+
+# Install dependencies  
+uv sync
+```
+
+Good:
+```python
+uv venv  # Isolated environment prevents system conflicts
+uv sync --no-build  # Skip building to avoid cx_Freeze compatibility issues
+```
+
+### DRY Principle
+- Extract common patterns into functions
+- Use constants for repeated values
+- Consolidate similar logic
+
+### Testing Standards
+- All tests must actually run and pass
+- Use descriptive test names that explain intent
+- Test real functionality, not implementation details
+
+## Tool-Specific Rules
+
+### For Cursor Users
+- Use `python3 scripts/dev.py` commands for consistency
+- Follow existing patterns in pyproject.toml
+- Check README.md for project standards
+
+### For GitHub Copilot Users
+- Check pyproject.toml for available commands
+- Follow existing code patterns in the project
+- Use type hints and docstrings for better suggestions
+- Reference existing tests in tests/ for patterns
+
+### For All AI Assistants
+- Always test generated code before suggesting
+- Prefer built-in Python modules over external dependencies
+- Follow the simplified architecture (platform module vs custom detection)
+- Use uv commands in development, setup.py for building
+
+## File Organization
+
+### Essential Files
+- `scripts/check_architecture.py` - Architecture detection (simplified)
+- `scripts/dev.py` - Development commands (DRY)
+- `pyproject.toml` - Tool configuration only
+- `setup.py` - Building only
+- `tests/unit/` - Unit tests (18 tests)
+- `tests/e2e/` - End-to-end tests
+- `.github/workflows/` - CI/CD
+
+### Python Version
+- Development: Python 3.9+
+- Building: Python 3.11 (cx_Freeze compatibility)
+
+## Quick Reference
+
+### Essential Commands
 ```bash
-uv run pre-commit        # Run pre-commit hooks
-uv run ci-check          # Check CI compliance
+python3 scripts/check_architecture.py  # Check what build to download
+python3 scripts/dev.py test-unit       # Run 18 unit tests
+python3 scripts/dev.py all             # Full verification
+```
+
+### Architecture-Specific Builds
+```bash
+# macOS Intel
+export ARCHFLAGS="-arch x86_64"
+python setup.py py2app --arch=x86_64
+
+# macOS ARM
+export ARCHFLAGS="-arch arm64"
+python setup.py py2app --arch=arm64
+
+# Windows/Linux
+python setup.py bdist_msi
+python setup.py bdist_rpm
 ```
 
 ## Code Style Rules
@@ -170,11 +251,9 @@ uv run test-arch         # Architecture validation
 
 ### Essential Commands
 ```bash
-uv run start             # New developer setup
-uv run test              # Run all tests  
-uv run fix               # Fix formatting
-uv run build             # Platform-specific build
-uv run check-arch        # Architecture info
+python3 scripts/check_architecture.py  # Check what build to download
+python3 scripts/dev.py test-unit       # Run 18 unit tests
+python3 scripts/dev.py all             # Full verification
 ```
 
 ### File Locations

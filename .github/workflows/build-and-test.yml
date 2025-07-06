@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-13, macos-14]
-        python-version: ['3.11']  # Use 3.11 for cx_Freeze compatibility
+        python-version: ['3.11']
       fail-fast: false
     
     steps:
@@ -32,27 +32,71 @@ jobs:
       run: uv venv
     
     - name: Install dependencies
-      run: |
-        uv sync --extra dev --no-build
+      run: uv sync --extra dev --no-build
     
-    - name: Test architecture detection
-      run: |
-        uv run python scripts/check_architecture.py
+    - name: Run architecture check
+      run: uv run python3 scripts/check_architecture.py
     
     - name: Run unit tests
-      run: |
-        uv run python -m pytest tests/unit/ -v
+      run: uv run python3 -m pytest tests/unit/ -v
     
-    - name: Test development commands
-      run: |
-        uv run python scripts/dev.py check-arch
-        uv run python scripts/dev.py test-unit
+    - name: Run e2e tests (fast)
+      run: uv run python3 -m pytest tests/e2e/ -v -k "not slow"
     
-    - name: Verify setup.py functionality
-      run: |
-        uv run python setup.py --help-commands
+    - name: Test platform startup
+      run: uv run python3 -m pytest tests/e2e/test_platform_startup.py -v
+    
+    - name: Verify setup.py commands
+      run: uv run python3 setup.py --help-commands
 
-  build-macos-intel:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    needs: test
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: "linux"
+          - os: windows-latest
+            platform: "windows"
+          - os: macos-13
+            platform: "macos-intel"
+          - os: macos-14
+            platform: "macos-arm"
+      fail-fast: false
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-common.txt
+        pip install setuptools wheel
+    
+    - name: Install platform-specific dependencies (macOS)
+      if: runner.os == 'macOS'
+      run: pip install -r requirements-mac.txt
+    
+    - name: Install platform-specific dependencies (Windows)
+      if: runner.os == 'Windows'
+      run: pip install -r requirements-win.txt
+    
+    - name: Install platform-specific dependencies (Linux)
+      if: runner.os == 'Linux'
+      run: pip install -r requirements-linux.txt
+    
+    - name: Test build command exists
+      run: python setup.py --help-commands
+    
+    - name: Verify architecture detection
+      run: python scripts/check_architecture.py
     name: Build macOS Intel
     runs-on: macos-13  # Intel runner
     needs: test
