@@ -1,0 +1,86 @@
+# P2PP Development Rules
+
+## Project Overview
+P2PP post-processing tool for Palette 2 printers. Python + PyQt5. uv package manager.
+
+## Critical Rules
+
+### Architecture
+- NEVER use Universal2 builds - PyQt5/QtWebEngine breaks
+- Always separate Intel (x86_64) and ARM (arm64) for macOS
+- Error: "mach-o file, but is an incompatible architecture"
+
+### Commands
+```bash
+python3 scripts/check_architecture.py  # Check system
+python3 scripts/dev.py test-unit       # Unit tests  
+python3 scripts/dev.py all             # All checks
+```
+
+### Setup
+```bash
+uv venv
+source .venv/bin/activate
+uv sync --extra dev --no-build
+```
+
+## Code Standards
+
+### Comments
+- No "what" comments - only "why" comments
+- Bad: `# Create virtual environment`
+- Good: `# Isolated environment prevents system conflicts`
+
+### DRY Principle
+- Extract common patterns into functions
+- Use constants for repeated values
+- Consolidate similar logic
+
+### Testing
+- All tests must run and pass
+- Test real functionality, not implementation details
+
+## Tool Rules
+
+### Cursor Users
+- Use `python3 scripts/dev.py` commands
+- Check README.md for project standards
+
+### GitHub Copilot Users
+- Check pyproject.toml for available commands
+- Use type hints and docstrings
+- Reference existing tests in tests/
+
+### All AI Assistants
+- Test generated code before suggesting
+- Prefer built-in Python modules
+- Use uv for development, setup.py for building
+
+## Quick Reference
+
+### Commands
+```bash
+python3 scripts/check_architecture.py  # Check download needed
+python3 scripts/dev.py test-unit       # 19 unit tests
+python3 scripts/dev.py all             # Full verification
+```
+
+### Building
+```bash
+# macOS Intel
+export ARCHFLAGS="-arch x86_64"
+python setup.py py2app --arch=x86_64
+
+# macOS ARM
+export ARCHFLAGS="-arch arm64"
+python setup.py py2app --arch=arm64
+
+# Windows/Linux
+python setup.py bdist_msi
+python setup.py bdist_rpm
+```
+
+## Python Version
+- Development: Python 3.9+
+- Building: Python 3.11 (cx_Freeze compatibility)
+

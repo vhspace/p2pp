@@ -1,0 +1,51 @@
+# Minimal pyproject.toml for tool configuration only
+# Package building is handled by setup.py
+
+[project]
+name = "p2pp-dev"
+version = "1.0.0"
+description = "P2PP development environment"
+authors = [
+    {name = "Tom Van den Eede", email = "P2PP@pandora.be"}
+]
+license = {text = "MIT"}
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "pytest-cov>=4.0.0",
+    "PyQt5>=5.15.0",
+    "PyQtWebEngine>=5.15.0",
+    "requests>=2.28.0",
+    "simplejson>=3.17.0",
+    "bcrypt>=3.2.0",
+    "setuptools>=70.0.0",
+    "wheel>=0.37.0",
+]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+markers = [
+    "unit: Unit tests for individual components",
+    "integration: Integration tests for system components",
+    "e2e: End-to-end tests for complete workflows",
+    "gui: Tests that require GUI components",
+    "build: Tests that involve the build system",
+    "slow: Tests that take longer to run",
+    "macos: macOS-specific tests",
+    "windows: Windows-specific tests",
+    "linux: Linux-specific tests",
+    "intel: Intel architecture tests",
+    "arm: ARM architecture tests",
+]
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"

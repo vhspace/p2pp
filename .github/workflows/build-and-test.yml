@@ -1,0 +1,80 @@
+name: Build and Test P2PP
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-13, macos-14]
+        python-version: ['3.11']
+      fail-fast: false
+    
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
+    - name: Install dependencies
+      run: |
+        uv venv
+        uv sync --extra dev --no-build
+    - name: Run architecture check
+      run: uv run python scripts/check_architecture.py
+    - name: Run unit tests
+      run: uv run python -m pytest tests/unit/ -v
+    - name: Test platform startup (headless)
+      run: |
+        uv run python -m pytest tests/e2e/test_platform_startup.py::TestPlatformStartup::test_version_module_import -v
+        uv run python -m pytest tests/e2e/test_platform_startup.py::TestPlatformStartup::test_p2pp_module_structure -v
+        uv run python -m pytest tests/e2e/test_platform_startup.py::TestPlatformStartup::test_setup_py_commands_available -v
+    - name: Verify setup.py commands
+      run: uv run python setup.py --help-commands
+
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    needs: test
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: windows-latest
+          - os: macos-13
+          - os: macos-14
+      fail-fast: false
+    
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-common.txt
+        pip install setuptools wheel
+    - name: Install platform dependencies (macOS)
+      if: runner.os == 'macOS'
+      run: pip install -r requirements-mac.txt
+    - name: Install platform dependencies (Windows)
+      if: runner.os == 'Windows'
+      run: pip install -r requirements-win.txt
+    - name: Install platform dependencies (Linux)
+      if: runner.os == 'Linux'
+      run: pip install -r requirements-linux.txt
+    - name: Test build command exists
+      run: python setup.py --help-commands
+    - name: Verify architecture detection
+      run: python scripts/check_architecture.py
