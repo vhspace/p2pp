@@ -25,18 +25,21 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install uv
       uses: astral-sh/setup-uv@v4
-    - name: Create virtual environment
-      run: uv venv
     - name: Install dependencies
-      run: uv sync --extra dev --no-build
+      run: |
+        uv venv
+        uv sync --extra dev --no-build
     - name: Run architecture check
-      run: uv run python3 scripts/check_architecture.py
+      run: uv run python scripts/check_architecture.py
     - name: Run unit tests
-      run: uv run python3 -m pytest tests/unit/ -v
-    - name: Test platform startup
-      run: uv run python3 -m pytest tests/e2e/test_platform_startup.py -v
+      run: uv run python -m pytest tests/unit/ -v
+    - name: Test platform startup (headless)
+      run: |
+        uv run python -m pytest tests/e2e/test_platform_startup.py::TestPlatformStartup::test_version_module_import -v
+        uv run python -m pytest tests/e2e/test_platform_startup.py::TestPlatformStartup::test_p2pp_module_structure -v
+        uv run python -m pytest tests/e2e/test_platform_startup.py::TestPlatformStartup::test_setup_py_commands_available -v
     - name: Verify setup.py commands
-      run: uv run python3 setup.py --help-commands
+      run: uv run python setup.py --help-commands
 
   build:
     name: Build on ${{ matrix.os }}
