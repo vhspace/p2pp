@@ -14,7 +14,13 @@ on:
 
 jobs:
   build-macos:
-    runs-on: macos-latest
+    # Using macos-14 explicitly for stability
+    # TODO: Evaluate migration to macOS 15 after Sept 2025 when the migration is complete
+    # and all dependencies have been verified on the new image
+    runs-on: macos-14
+    strategy:
+      matrix:
+        arch: [x86_64, arm64]
     steps:
     - uses: actions/checkout@v3
     
@@ -29,16 +35,16 @@ jobs:
         pip install -r requirements-mac.txt
         brew install create-dmg
         
-    - name: Build Universal App
+    - name: Build Application
       run: |
-        rm -rf build/ dist/
-        python setup.py py2app
+        rm -rf build_${{ matrix.arch }}/ dist_${{ matrix.arch }}/
+        python setup.py py2app --arch=${{ matrix.arch }}
         
     - name: Sign Application (Development)
       if: ${{ !inputs.use_production_signing }}
       run: |
         # Ad-hoc signing for development
-        codesign --force --deep --sign - "dist/P2PP.app"
+        codesign --force --deep --sign - "dist_${{ matrix.arch }}/P2PP.app"
         
     - name: Sign Application (Production)
       if: ${{ inputs.use_production_signing }}
@@ -61,36 +67,36 @@ jobs:
         codesign --force --deep --sign "Developer ID Application: $APPLE_TEAM_ID" \
                 --options runtime \
                 --entitlements "entitlements.plist" \
-                "dist/P2PP.app"
+                "dist_${{ matrix.arch }}/P2PP.app"
         
         # Verify signature
-        codesign --verify --deep --strict "dist/P2PP.app"
+        codesign --verify --deep --strict "dist_${{ matrix.arch }}/P2PP.app"
         
     - name: Create DMG
       run: |
         create-dmg \
-          --volname "P2PP" \
+          --volname "P2PP-${{ matrix.arch }}" \
           --window-pos 200 120 \
           --window-size 600 400 \
           --icon-size 100 \
           --icon "P2PP.app" 175 120 \
           --hide-extension "P2PP.app" \
           --app-drop-link 425 120 \
-          "dist/P2PP.dmg" \
-          "dist/P2PP.app"
+          "dist_${{ matrix.arch }}/P2PP-${{ matrix.arch }}.dmg" \
+          "dist_${{ matrix.arch }}/P2PP.app"
           
     - name: Sign DMG (Production)
       if: ${{ inputs.use_production_signing }}
       run: |
         codesign --force --sign "Developer ID Application: $APPLE_TEAM_ID" \
                 --options runtime \
-                "dist/P2PP.dmg"
+                "dist_${{ matrix.arch }}/P2PP-${{ matrix.arch }}.dmg"
 
     - name: Upload to Release
       if: inputs.upload_to_release && startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
-        files: dist/P2PP.dmg
+        files: dist_${{ matrix.arch }}/P2PP-${{ matrix.arch }}.dmg
         draft: false
         prerelease: false
         generate_release_notes: true
@@ -243,4 +249,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: p2pp-linux
-        path: dist/ 
+        path: dist/
