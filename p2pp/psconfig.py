@@ -119,11 +119,14 @@ def parse_config_parameters():
 
     # TODO - get this information from the environment parameters
     # TODO - need to find out as from what version of PS this is working
-
     for idx in range(len(v.input_gcode) - 1, -1, -1):
 
         gcode_line = v.input_gcode[idx]
-
+        
+        # Stopping point of the config parameters
+        if gcode_line.startswith("; EXTRA_CONFIG_VARIABLES"):
+            return
+        
         if gcode_line.startswith("; estimated printing time"):
             try:
                 fields = gcode_line.split("=")
@@ -150,7 +153,6 @@ def parse_config_parameters():
 
             except (ValueError, IndexError):
                 pass
-            return
 
         if gcode_line.startswith("; filament_settings_id"):
             v.filament_ids = split_csv_strings(gcode_line)
