@@ -523,7 +523,7 @@ def check_config_parameters(keyword, value):
 
     if keyword == "FINISH_MOVES_M400":
         v.finish_moves = "M400"
-        v.replace_G4S0 = True
+        v.replace_G4P0 = True
 
     # process toolchanges the KLIPPER way
     if keyword == "KLIPPER_TOOLCHANGE":
