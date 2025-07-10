@@ -1,0 +1,81 @@
+name: Auto Release on Version Change
+
+on:
+  push:
+    branches: [master]
+    paths: ['version.py']
+
+jobs:
+  # First run CI checks
+  ci-checks:
+    uses: ./.github/workflows/build-packages.yml
+    with:
+      upload_to_release: false
+      use_production_signing: false
+
+  # Only create release if CI passes
+  check-version-and-release:
+    runs-on: ubuntu-latest
+    needs: [ci-checks]
+    if: success()
+    outputs:
+      tag_name: ${{ steps.get_version.outputs.tag_name }}
+      should_release: ${{ steps.check_tag.outputs.tag_exists == 'false' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      
+      - name: Extract version from version.py
+        id: get_version
+        run: |
+          # Extract version from version.py
+          VERSION=$(python version.py)
+          echo "Current version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag_name=v$VERSION" >> $GITHUB_OUTPUT
+      
+      - name: Check if tag already exists
+        id: check_tag
+        run: |
+          TAG_NAME="v${{ steps.get_version.outputs.version }}"
+          if git rev-parse "refs/tags/$TAG_NAME" >/dev/null 2>&1; then
+            echo "Tag $TAG_NAME already exists"
+            echo "tag_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Tag $TAG_NAME does not exist, will create release"
+            echo "tag_exists=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Get commit info
+        id: commit_info
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        run: |
+          COMMIT_HASH=$(git rev-parse HEAD)
+          echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
+          echo "Will tag commit: $COMMIT_HASH"
+      
+      - name: Create and push tag
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ steps.get_version.outputs.tag_name }} ${{ steps.commit_info.outputs.commit_hash }}
+          git push origin ${{ steps.get_version.outputs.tag_name }}
+
+  # Build and release after tagging
+  release:
+    uses: ./.github/workflows/build-packages.yml
+    needs: [check-version-and-release]
+    if: success() && needs.check-version-and-release.outputs.should_release == 'true'
+    with:
+      upload_to_release: true
+      use_production_signing: false # ${{ secrets.APPLE_CERTIFICATE != '' && secrets.WINDOWS_CERTIFICATE != '' }}
+      tag_name: ${{ needs.check-version-and-release.outputs.tag_name }} 
