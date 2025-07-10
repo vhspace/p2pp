@@ -19,7 +19,8 @@ Z = 2
 E = 3
 F = 4
 S = 5
-OTHER = 6
+P = 6
+OTHER = 14
 COMMAND = 7
 COMMENT = 8
 MOVEMENT = 9
@@ -30,20 +31,21 @@ CLASS = 13
 INTOWER = 256
 
 # PARAM     A   B   C   D  E  F   G   H   I   J   K   L   M   N   O   P   Q   R  S   T   U  V   W   X  Y  Z
-parmidx = [-1, -1, -1, -1, 3, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 5, -1, -1, -1, -1, 0, 1, 2]
+parmidx = [-1, -1, -1, -1, 3, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, -1, -1, 5, -1, -1, -1, -1, 0, 1, 2]
 # X = 1
 # Y = 2
 # Z = 4
 # E = 8
 # F = 16
 # S = 32
+# P = 64
 # Other values are not used!!!
 
 # SECTION String -> GCODE
 
 def create_command(gcode_line, is_comment=False, userclass=0):
 
-    return_value = [None, None, None, None, None, None, "", None, "", 0, False, False, False, userclass]
+    return_value = [None, None, None, None, None, None, None, None, "", 0, False, False, False, userclass,""]
 
     if is_comment:
         return_value[COMMENT] = gcode_line
@@ -74,8 +76,8 @@ def create_command(gcode_line, is_comment=False, userclass=0):
                 except (IndexError, ValueError):
                     return_value[OTHER] = return_value[OTHER] + " " + param
 
-            if v. replace_G4S0:
-                if return_value[COMMAND] == "G4" and return_value[S] == 0:
+            if v. replace_G4P0:
+                if return_value[COMMAND] == "G4" and return_value[P] == 0:
                     return create_command("M400", False, userclass)
 
             check = (param_coefficient & 31)
@@ -127,6 +129,8 @@ def create_commandstring(gcode_tupple):
                 p = p + " S{}".format(int(gcode_tupple[S]))
             else:
                 p = p + " S{}".format(float(gcode_tupple[S]))
+        if gcode_tupple[P] is not None:
+            p = p + " P{}".format(int(gcode_tupple[P]))
         p = p + gcode_tupple[OTHER]
         if gcode_tupple[COMMENT] != "":
             p = p + " " + gcode_tupple[COMMENT]
@@ -156,6 +160,7 @@ def move_to_comment(gcode_tupple, text):
     gcode_tupple[E] = None
     gcode_tupple[F] = None
     gcode_tupple[S] = None
+    gcode_tupple[P] = None
     gcode_tupple[OTHER] = ""
     gcode_tupple[RETRACT] = None
     gcode_tupple[UNRETRACT] = None

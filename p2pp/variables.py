@@ -383,8 +383,8 @@ p3_showwebbrowser = False
 p3_upside_down = False
 
 # use M400 to finish moves instead of G4 P0 or G4 S0
-finish_moves = "G4 S0"
-replace_G4S0 = False
+finish_moves = "G4 P0"
+replace_G4P0 = False
 
 # firmware purge
 firmwarepurge = 0
