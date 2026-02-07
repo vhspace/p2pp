@@ -28,19 +28,19 @@ plugins:
   - git-authors
 
 extra_javascript:
-  - /_p2pp/javascripts/katex.js
+  - _p2pp/javascripts/katex.js
   - https://unpkg.com/katex@0/dist/katex.min.js
   - https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
 
 
 extra_css:
-  - /_p2pp/css/extra.css
+  - _p2pp/css/extra.css
   - https://unpkg.com/katex@0/dist/katex.min.css
 
 theme:
   name: material
-  logo: /images/p2pp_logo.png
-  favicon: /images/p2pp_logo.png
+  logo: images/p2pp_logo.png
+  favicon: images/p2pp_logo.png
   palette:
       - media: "(prefers-color-scheme: light)"
         scheme: default
