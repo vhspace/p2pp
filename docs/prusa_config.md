@@ -35,7 +35,7 @@ Set all parameters under `Single extruder MM setup` to zero except `Purging volu
 
 Make sure the settings of each of the 4/8 extruders are set correctly. Set the `Lift Height` to 0.  
 
-Settings for `retraction when the tool is disabled` are not used.   
+Settings for `retraction when the tool is disabled` are not used, but do not set it to 0 (Leave it to default).   
 You can also set the extruder color here. This is the color that will be shown on the 
 Palette screen during the loading process. The color can also be set from the plater 
 interface.
