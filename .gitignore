@@ -3,3 +3,6 @@
 **/__pycache__/** 
 build/** 
 dist/**
+.vscode/settings.json
+docs/_p2pp/.cache/
+site/
