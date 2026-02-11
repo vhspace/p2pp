@@ -6,10 +6,13 @@
     "features": {
         "ghcr.io/devcontainers/features/desktop-lite:1": {}
     },
-    "forwardPorts": [6080],
+    "forwardPorts": [6080, 8000],
     "portsAttributes": {
         "6080": {
             "label": "desktop"
+        },
+        "8000": {
+            "label": "mkdocs"
         }
     },
     "customizations": {
@@ -20,5 +23,5 @@
             ]
         }
     },
-    "postCreateCommand": "pip install -r requirements.txt"
+    "postCreateCommand": "bash -lc \"(test -d .venv-mkdocs || python3 -m venv .venv-mkdocs) && . .venv-mkdocs/bin/activate && python -m pip install -U pip && python -m pip install -r docs/_p2pp/mkdocs-requirements.txt\""
 }
