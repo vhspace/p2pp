@@ -688,6 +688,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="contributing.html" class="md-nav__link md-nav__link--active">
         
   
@@ -704,6 +722,97 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#first-contribution-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        First contribution checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-expectations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing expectations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opening-a-pull-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Opening a Pull Request
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation-updates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation updates
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documentation updates">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#local-preview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Local preview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-to-github-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deploy to GitHub Pages
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -764,6 +873,86 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#first-contribution-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        First contribution checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-expectations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing expectations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opening-a-pull-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Opening a Pull Request
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation-updates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation updates
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documentation updates">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#local-preview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Local preview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-to-github-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deploy to GitHub Pages
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -796,8 +985,66 @@
 
 
 <h1 id="contributing">Contributing</h1>
-<p>TODO  </p>
-<p>When you've implemented a new feature, please document it in our docs. It wil help to maintain the project and help others to use your implemented feature.</p>
+<p>Thanks for your interest in contributing to P2PP.</p>
+<p>If this is your first contribution, this page walks you through the process from code changes to review.</p>
+<h2 id="first-contribution-checklist">First contribution checklist</h2>
+<ol>
+<li>Fork this repository to your own GitHub account.</li>
+<li>Create a branch for your change.</li>
+<li>Implement your change in small, reviewable commits.</li>
+<li>Add tests:</li>
+<li>Include unit tests for changed behavior.</li>
+<li>Add an end-to-end (e2e) test when the change affects a full user workflow and an e2e test is practical.</li>
+<li>Update docs when behavior, configuration, or usage changes.</li>
+<li>Push your branch and open a Pull Request (PR).</li>
+<li>Ask for review and address feedback.</li>
+</ol>
+<p>Example branch setup:</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>yourname/short-change-description
+</code></pre></div>
+<h2 id="testing-expectations">Testing expectations</h2>
+<p>Before opening a PR:</p>
+<ul>
+<li>Run the relevant unit tests and confirm they pass.</li>
+<li>Add or update unit tests for bug fixes and new features.</li>
+<li>If possible, include e2e coverage for user-facing flows impacted by your change.</li>
+<li>Mention what you tested in the PR description (for example: "unit tests passed", "manual validation", "e2e added/skipped with reason").</li>
+</ul>
+<p>If you are not sure which tests to run, open the PR anyway and call that out explicitly so maintainers can guide you.</p>
+<h2 id="opening-a-pull-request">Opening a Pull Request</h2>
+<p>When your branch is ready:</p>
+<ol>
+<li>Push your branch to your fork.</li>
+<li>Open a PR to <code>vhspace/p2pp:master</code>.</li>
+<li>In the PR description, include:</li>
+<li>What changed and why.</li>
+<li>Screenshots/logs for UI or output changes (if applicable).</li>
+<li>Test evidence (unit tests, e2e tests, or why e2e was not feasible).</li>
+<li>Any follow-up work or known limitations.</li>
+<li>Mark the PR ready for review.</li>
+</ol>
+<p>After review starts:</p>
+<ul>
+<li>Respond to comments and push follow-up commits.</li>
+<li>Keep discussion focused on behavior and correctness.</li>
+<li>Re-run tests after substantial updates.</li>
+</ul>
+<h2 id="documentation-updates">Documentation updates</h2>
+<p>When you've implemented a new feature, please document it in our docs. This helps maintain the project and helps others use your feature.</p>
+<p>The documentation content is in <code>docs/</code>. MkDocs is configured via <code>docs/_p2pp/mkdocs.yml</code>.</p>
+<h3 id="local-preview">Local preview</h3>
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv-mkdocs
+<span class="nb">source</span><span class="w"> </span>.venv-mkdocs/bin/activate
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>docs/_p2pp/mkdocs-requirements.txt
+mkdocs<span class="w"> </span>serve<span class="w"> </span>-f<span class="w"> </span>docs/_p2pp/mkdocs.yml
+</code></pre></div>
+<h3 id="deploy-to-github-pages">Deploy to GitHub Pages</h3>
+<p>Docs are automatically deployed to GitHub Pages from GitHub Actions when changes to docs are merged into <code>master</code>.</p>
+<p>If you need to deploy manually, MkDocs can still push the generated site to the <code>gh-pages</code> branch:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">source</span><span class="w"> </span>.venv-mkdocs/bin/activate
+mkdocs<span class="w"> </span>gh-deploy<span class="w"> </span>-f<span class="w"> </span>docs/_p2pp/mkdocs.yml<span class="w"> </span>--clean
+</code></pre></div>
+<p>If deployment fails due to GitHub API rate limits in <code>git-committers</code> / <code>git-authors</code>, set <code>GITHUB_TOKEN=...</code> and retry.</p>
 
 
 
@@ -815,12 +1062,13 @@
   <span class="md-source-file__fact">
     <span class="md-icon" title="Contributors">
       
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4m0 10c4.42 0 8 1.79 8 4v2H4v-2c0-2.21 3.58-4 8-4"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 5.5A3.5 3.5 0 0 1 15.5 9a3.5 3.5 0 0 1-3.5 3.5A3.5 3.5 0 0 1 8.5 9 3.5 3.5 0 0 1 12 5.5M5 8c.56 0 1.08.15 1.53.42-.15 1.43.27 2.85 1.13 3.96C7.16 13.34 6.16 14 5 14a3 3 0 0 1-3-3 3 3 0 0 1 3-3m14 0a3 3 0 0 1 3 3 3 3 0 0 1-3 3c-1.16 0-2.16-.66-2.66-1.62a5.54 5.54 0 0 0 1.13-3.96c.45-.27.97-.42 1.53-.42M5.5 18.25c0-2.07 2.91-3.75 6.5-3.75s6.5 1.68 6.5 3.75V20h-13zM0 20v-1.5c0-1.39 1.89-2.56 4.45-2.9-.59.68-.95 1.62-.95 2.65V20zm24 0h-3.5v-1.75c0-1.03-.36-1.97-.95-2.65 2.56.34 4.45 1.51 4.45 2.9z"/></svg>
       
     </span>
     <nav>
       
-        <a href="mailto:94018661+jd-c0de@users.noreply.github.com">JD-c0de</a>
+        <a href="mailto:94018661+jd-c0de@users.noreply.github.com">JD-c0de</a>, 
+        <a href="mailto:mballew@together.ai">Mark Ballew</a>
     </nav>
   </span>
 
@@ -837,6 +1085,11 @@
 
     
     <nav>
+      
+        <a href="https://github.com/markballew" class="md-author" title="@markballew">
+          
+          <img src="https://avatars.githubusercontent.com/u/5522525?v=4&size=72" alt="markballew">
+        </a>
       
         <a href="https://github.com/JD-c0de" class="md-author" title="@JD-c0de">
           

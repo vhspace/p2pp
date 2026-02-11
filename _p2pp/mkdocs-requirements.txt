@@ -1,6 +1,5 @@
 # Python virtualenv module requirements for mkdocs
 mkdocs>=1.6.1
 mkdocs-material>=9.7.1
-click==8.2.1
 mkdocs-git-committers-plugin-2>=1.6.1
 mkdocs-git-authors-plugin>=0.10.0
