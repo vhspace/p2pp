@@ -5,8 +5,13 @@ ENV QT_DEBUG_PLUGINS=1
 ENV PYTHONPATH=/workspace
 ENV QT_QPA_PLATFORM=xcb
 
+# The base devcontainer image can include a Yarn APT source without its GPG key
+# in some environments. Remove it to keep apt-get update reliable.
+RUN rm -f /etc/apt/sources.list.d/yarn.list /etc/apt/sources.list.d/yarn.sources || true
+
 # Update package list and install basic dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
     libegl1 \
     libgl1 \
     libxcb-icccm4 \
