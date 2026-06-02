@@ -19,12 +19,11 @@
 Have a look at the [P2PP Docs](https://vhspace.github.io/p2pp/) to get youstarted.
 
 
-## Acknowledgements
+## Contributing
 
-Thanks to.....
-Tim Brookman for the co-development of this plugin.
-Klaus, Khalil ,Casey, Jermaul, Paul, Gideon,   (and all others) for the endless testing and valuable feedback and the ongoing P2PP support to the community...it's them driving the improvements...
-Kurt for making the instructional video n setting up and using p2pp.
+PRs are welcome; PR reviewers are needed.
+
+Merge, release and build happen manually after PR merge.
 
 ## Make a donation...
 
