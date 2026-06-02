@@ -130,7 +130,11 @@ def create_commandstring(gcode_tupple):
             else:
                 p = p + " S{}".format(float(gcode_tupple[S]))
         if gcode_tupple[P] is not None:
-            p = p + " P{}".format(int(gcode_tupple[P]))
+            tmpv = float(gcode_tupple[P])
+            if tmpv == int(tmpv):
+                p = p + " P{}".format(int(gcode_tupple[P]))
+            else:
+                p = p + " P{}".format(gcode_tupple[P])
         p = p + gcode_tupple[OTHER]
         if gcode_tupple[COMMENT] != "":
             p = p + " " + gcode_tupple[COMMENT]
