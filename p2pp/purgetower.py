@@ -303,7 +303,7 @@ def purge_generate_sequence():
     v.max_tower_delta = max(v.max_tower_delta, v.current_position_z - (v.purgelayer + 1) * v.layer_height)
     v.min_tower_delta = min(v.min_tower_delta, v.current_position_z - (v.purgelayer + 1) * v.layer_height)
 
-    if last_posx and last_posy:
+    if last_posx is not None and last_posy is not None:
         # gcode.issue_code(";retraction {}".format(v.retraction))
         if v.retraction == 0:
             retract(v.current_tool)
