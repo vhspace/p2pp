@@ -14,6 +14,7 @@ import traceback
 import image_rc
 import p2pp.variables as v
 import p2pp.colornames as colornames
+import p2pp.uifiles as uifiles
 import version
 import sys
 import os
@@ -146,20 +147,8 @@ def log_warning(text):
 
 # SECTION MAIN Routine
 
-if sys.platform == 'darwin' or sys.platform == 'linux':
-    if len(os.path.dirname(sys.argv[0])) > 0:
-        ui = "{}/{}".format(os.path.dirname(sys.argv[0]), ui_file)
-    else:
-        ui = ui_file
-else:
-    ui = "p2pp.ui"
-    if len(os.path.dirname(sys.argv[0])) > 0:
-        ui = "{}\\{}".format(os.path.dirname(sys.argv[0]), ui_file)
-    else:
-        ui = ui_file
-
 app = QApplication([])
-Form, Window = uic.loadUiType(ui)
+Form, Window = uic.loadUiType(uifiles.find_ui(ui_file))
 window = Window()
 form = Form()
 form.setupUi(window)

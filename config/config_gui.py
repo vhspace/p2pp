@@ -12,6 +12,7 @@ import image_rc
 import config.qdroptarget
 import config.qmulticombo
 import config.prusaconfig as conf
+import p2pp.uifiles as uifiles
 import sys
 import os
 import copy
@@ -601,13 +602,7 @@ def populate_dropdowns():
 def init_gui():
     global form, configs
 
-    ui = "p2ppconf.ui"
-
-    if sys.platform != 'darwin':
-        if len(os.path.dirname(sys.argv[0])) > 0:
-            ui = "{}\\p2ppconf.ui".format(os.path.dirname(sys.argv[0]))
-
-    Form, Window = uic.loadUiType(ui)
+    Form, Window = uic.loadUiType(uifiles.find_ui("p2ppconf.ui"))
     app = QApplication([])
     window = Window()
     form = Form()

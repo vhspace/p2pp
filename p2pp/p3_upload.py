@@ -12,6 +12,7 @@ import requests
 
 import p2pp.variables as v
 import p2pp.gui as gui
+import p2pp.uifiles as uifiles
 from PyQt5 import uic, QtCore
 from PyQt5.QtGui import QTextCursor, QTransform
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings
@@ -164,20 +165,7 @@ def on_clickabort():
 
 # SECTION ERROR WINDOWS
 
-
-if sys.platform == 'darwin' or sys.platform == "linux":
-    if len(os.path.dirname(sys.argv[0])) > 0:
-        ui = "{}/SendError.ui".format(os.path.dirname(sys.argv[0]))
-    else:
-        ui = "SendError.ui"
-else:
-    ui = "SendError.ui"
-    if len(os.path.dirname(sys.argv[0])) > 0:
-        ui = "{}\\SendError.ui".format(os.path.dirname(sys.argv[0]))
-    else:
-        ui = "SendError.ui"
-
-Form, Window = uic.loadUiType(ui)
+Form, Window = uic.loadUiType(uifiles.find_ui("SendError.ui"))
 window = Window()
 form = Form()
 
@@ -192,19 +180,7 @@ form.RetryButton.clicked.connect(on_clickretry)
 
 # SECTION BROWSER
 
-if sys.platform == 'darwin' or sys.platform == 'linux':
-    if len(os.path.dirname(sys.argv[0])) > 0:
-        ui = "{}/p3browser.ui".format(os.path.dirname(sys.argv[0]))
-    else:
-        ui = "p3browser.ui"
-else:
-    ui = "p3browser.ui"
-    if len(os.path.dirname(sys.argv[0])) > 0:
-        ui = "{}\\p3browser.ui".format(os.path.dirname(sys.argv[0]))
-    else:
-        ui = "p3browser.ui"
-
-WebForm, WebWindow = uic.loadUiType(ui)
+WebForm, WebWindow = uic.loadUiType(uifiles.find_ui("p3browser.ui"))
 webwindow = WebWindow()
 
 webwindow.setWindowFlags(webwindow.windowFlags() | QtCore.Qt.CustomizeWindowHint)
