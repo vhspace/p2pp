@@ -8,7 +8,6 @@ __maintainer__ = 'Tom Van den Eede'
 __email__ = 'P2PP@pandora.be'
 
 import p2pp.variables as v
-import p2pp.bedprojection as bp
 import p2pp.genpreview as gp
 
 # SECTION STORAGE/CONSTANTS

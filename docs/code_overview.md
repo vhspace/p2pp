@@ -108,12 +108,6 @@ Used to build the application.
 Developer tool to visualize the preview. (Not yet tested)
 
 
-## [bedprojection.py](https://github.com/vhspace/p2pp/blob/master/p2pp/bedprojection.py)
-
-
-Developer tool to visualize the printbed area. (Not yet tested)
-
-
 ## [tower.py](https://github.com/vhspace/p2pp/blob/master/tower/tower.py)
 
 

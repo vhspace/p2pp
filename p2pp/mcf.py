@@ -18,7 +18,6 @@ from p2pp.psconfig import parse_config_parameters
 from p2pp.omega import header_generate_omega, header_generate_omega_palette3
 from p2pp.sidewipe import create_side_wipe
 import p2pp.manualswap as swap
-# import p2pp.bedprojection as bp
 import base64
 import version
 import zipfile
