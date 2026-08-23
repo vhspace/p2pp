@@ -192,7 +192,7 @@ releaseinfo = {
 # general version info
 MajorVersion = 10
 MinorVersion = 2
-Build = 1
+Build = 2
 
 Version = "{}.{:02}.{:02}".format(MajorVersion, MinorVersion, Build)
 
