@@ -15,9 +15,6 @@ import traceback
 
 
 def main():
-    os.environ[
-        "QTWEBENGINE_CHROMIUM_FLAGS"
-    ] = "--disable-web-security"
 
     if len(sys.argv) == 2 and sys.argv[1].lower() == "-config":
         import config.config_gui as gui
