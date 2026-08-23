@@ -986,15 +986,9 @@ def p2pp_process_file(input_file, output_file):
 
     try:
         basename = os.environ["SLIC3R_PP_OUTPUT_NAME"]
-        pathname = os.path.dirname(os.environ["SLIC3R_PP_OUTPUT_NAME"])
+        pathname = os.path.dirname(basename)
         maffile = basename
         mybasename = os.path.basename(basename)
-
-        if v.palette3 and not os.environ["SLIC3R_PP_HOST"].startswith("File"):
-            gui.log_warning("Palette 3 File uploading currently not supported")
-
-        if v.palette3 and not os.environ["SLIC3R_PP_HOST"].endswith(".mcfx"):
-            gui.log_warning("Palette 3 files should have a .mcfx extension")
 
     # if any the retrieval of this information fails, the good old way is used
 
@@ -1003,6 +997,19 @@ def p2pp_process_file(input_file, output_file):
         basename = os.path.basename(input_file)
         mybasename = basename
         pathname = os.path.dirname(input_file)
+
+    # SLIC3R_PP_HOST holds the export target type ("File", "PrusaLink", "OctoPrint", ...),
+    # never the output file name; it may also be missing entirely. The Palette 3 checks
+    # below therefore must not depend on it being defined together with
+    # SLIC3R_PP_OUTPUT_NAME, and the .mcfx extension check runs against the output name.
+
+    host = os.environ.get("SLIC3R_PP_HOST")
+
+    if v.palette3 and host is not None and not host.startswith("File"):
+        gui.log_warning("Palette 3 File uploading currently not supported")
+
+    if v.palette3 and not mybasename.endswith(".mcfx"):
+        gui.log_warning("Palette 3 files should have a .mcfx extension")
 
     gui.setfilename(basename)
 
@@ -1102,7 +1109,7 @@ def p2pp_process_file(input_file, output_file):
 
         # 22/02/2022 added accessory mode for palette 3
         if v.accessory_mode:
-            gcode_file = os.path.join(path, output_file)
+            gcode_file = output_file
         else:
             gcode_file = os.path.join(path, "print.gcode")
 
