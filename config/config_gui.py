@@ -15,7 +15,7 @@ import config.prusaconfig as conf
 import sys
 import os
 import copy
-import pickle
+import json
 import traceback
 
 form = None
@@ -46,8 +46,9 @@ def config_file():
 
 def set_config():
     try:
-        cfg = pickle.load(open(config_file(), "rb"))
-    except (KeyError, FileNotFoundError, IOError):
+        with open(config_file(), "r") as f:
+            cfg = json.load(f)
+    except (ValueError, OSError):
         return
 
     # Basic P2PP
@@ -127,7 +128,7 @@ def set_config():
     except KeyError:
         pass
     try:
-        form.bb3d_autoadd.setChecked(cfg["bb_enable"])
+        form.bb3d_autoadd.setChecked(cfg["bb_autoadd"])
     except KeyError:
         pass
     try:
@@ -199,7 +200,7 @@ def set_config():
 
     # Accessory Mode Palette+
     try:
-        form.accmode_p2.setChecked(cfg["accmode_pplus"])
+        form.accmode_pplus.setChecked(cfg["accmode_pplus"])
     except KeyError:
         pass
     try:
@@ -237,7 +238,6 @@ def get_config():
            "sw_wiperate": form.sw_wipeFeedrate.text(),
            "bb_enable": form.bb_enable.isChecked(),
            "bb_autoadd": form.bb3d_autoadd.isChecked(),
-           "bb_autoadd": form.bb3d_autoadd.isChecked(),
            "bb_left": form.bb3d_left.isChecked(),
            "bb_blobsize": form.bb3d_blobsize.text(),
            "bb_cooling": form.bb3d_coolingtime.text(),
@@ -253,7 +253,7 @@ def get_config():
            "fp_autoadd": form.fp_autoadd.isChecked(),
            "fp_wiperate": form.fp_wipefeedrate.text(),
            "accmode_p2": form.accmode_p2.isChecked(),
-           "accmode_pplus": form.accmode_p2.isChecked(),
+           "accmode_pplus": form.accmode_pplus.isChecked(),
            "accmode_ppm": form.pplusppm.text(),
            "accmode_lo": form.pplus_loading.text()
     }
@@ -272,7 +272,8 @@ def get_config():
 
     try:
         cfile = config_file()
-        pickle.dump(cfg, open(cfile, "wb"))
+        with open(cfile, "w") as f:
+            json.dump(cfg, f)
     except IOError:
         pass
 
@@ -312,7 +313,7 @@ def remove_p2ppconfig(store):
                 result.append(line)
             else:
                 create_logitem("Previous config line removed: {}".format(line), "blue")
-        store["startup_gcode"] = "\\n".join(result)
+        store["start_gcode"] = "\\n".join(result)
     except KeyError:
         pass
 
