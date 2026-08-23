@@ -87,6 +87,7 @@ if sys.platform.startswith('linux'):
         author=__author__,
         author_email=__email__,
         packages=find_packages(),
+        py_modules=['version', 'image_rc'],
         package_data={
             'p2pp': ['*.ui'],
             '': ['version.py']
