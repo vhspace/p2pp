@@ -14,9 +14,9 @@
 [![Multi-material](https://img.shields.io/badge/multi--material-post--processing-ffcc00)](https://github.com/vhspace/p2pp)
 [![PrusaSlicer](https://img.shields.io/badge/PrusaSlicer-supported-orange)](https://github.com/vhspace/p2pp)
 
-## Getting strarted
+## Getting started
 
-Have a look at the [P2PP Docs](https://vhspace.github.io/p2pp/) to get youstarted.
+Have a look at the [P2PP Docs](https://vhspace.github.io/p2pp/) to get you started.
 
 
 ## Contributing
