@@ -808,7 +808,7 @@ def parse_gcode_second_pass():
                 if v.temp2_stored_command != "":
                     wait_location = calculate_temp_wait_position()
                     gcode.issue_code(
-                        "G1 X{:.3f} Y{:.3f} F8640; temp wait position\n".format(wait_location[0], wait_location[0]))
+                        "G1 X{:.3f} Y{:.3f} F8640; temp wait position\n".format(wait_location[0], wait_location[1]))
                     gcode.issue_code(v.temp2_stored_command)
                     v.temp2_stored_command = ""
 

@@ -328,7 +328,7 @@ def create_side_wipe(length=0):
 
         # check if the sidewipe has an additional z-hop defined, if so increase z-height with that amount
         if v.addzop > 0.0:
-            issue_code("G1 Z{} ;P2PP ZHOP SIDEWIPE".format(v.current_position_z+1.0))
+            issue_code("G1 Z{} ;P2PP ZHOP SIDEWIPE".format(v.current_position_z + v.addzop))
 
         for line in v.before_sidewipe_gcode:
             issue_code(line)
