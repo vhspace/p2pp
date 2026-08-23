@@ -394,6 +394,22 @@ def validate_p3_hostname(hostname):
         return None
     return hostname
 
+
+def p3_output_name_warnings(host, basename):
+    """
+    Palette 3 output-name checks (issue #77).
+
+    Must be called after configuration parsing, when v.palette3 is known.
+    Returns the list of applicable warning messages (empty if none).
+    """
+    warnings = []
+    if host is not None and not host.startswith("File"):
+        warnings.append("Palette 3 File uploading currently not supported")
+    if not basename.endswith(".mcfx"):
+        warnings.append("Palette 3 files should have a .mcfx extension")
+    return warnings
+
+
 # upload the file to the device (future development)
 p3_uploadfile = False
 

@@ -998,17 +998,11 @@ def p2pp_process_file(input_file, output_file):
         pathname = os.path.dirname(input_file)
 
     # SLIC3R_PP_HOST holds the export target type ("File", "PrusaLink", "OctoPrint", ...),
-    # never the output file name; it may also be missing entirely. The Palette 3 checks
-    # below therefore must not depend on it being defined together with
+    # never the output file name; it may also be missing entirely. The Palette 3
+    # output-name checks therefore must not depend on it being defined together with
     # SLIC3R_PP_OUTPUT_NAME, and the .mcfx extension check runs against the output name.
 
     host = os.environ.get("SLIC3R_PP_HOST")
-
-    if v.palette3 and host is not None and not host.startswith("File"):
-        gui.log_warning("Palette 3 File uploading currently not supported")
-
-    if v.palette3 and not mybasename.endswith(".mcfx"):
-        gui.log_warning("Palette 3 files should have a .mcfx extension")
 
     gui.setfilename(basename)
 
@@ -1038,6 +1032,12 @@ def p2pp_process_file(input_file, output_file):
     gui.progress_string(2)
 
     parse_config_parameters()  # Parse the Prusa Slicer  and P2PP Config Parameters
+
+    # Palette 3 output-name checks: only valid after config parsing, since that
+    # is what sets v.palette3 (issue #77).
+    if v.palette3:
+        for warning in v.p3_output_name_warnings(host, mybasename):
+            gui.log_warning(warning)
 
     # Write the unprocessed file
     if v.save_unprocessed:
