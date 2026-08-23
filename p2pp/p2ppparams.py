@@ -108,7 +108,12 @@ def check_config_parameters(keyword, value):
         return
 
     if keyword == "P3_HOSTNAME":
-        v.p3_hostname = value
+        _hostname = v.validate_p3_hostname(value)
+        if _hostname is None:
+            gui.log_warning("Invalid P3_HOSTNAME [{}] - only characters a-z A-Z 0-9 . _ - are allowed (max {} chars). Ignoring value."
+                            .format(value, v.P3_HOSTNAME_MAX_LENGTH))
+        else:
+            v.p3_hostname = _hostname
 
     if keyword == "P3_PROFILENAME":
         v.p3_printername = value

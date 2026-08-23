@@ -372,6 +372,28 @@ bb_maxz = -100000
 # this should either be the IP address or the device hostname (serial number).
 p3_hostname = ""
 
+# hostname validation: only [a-zA-Z0-9._-] allowed, 1-253 characters (issue #54)
+P3_HOSTNAME_MAX_LENGTH = 253
+P3_HOSTNAME_PATTERN = re.compile(r"^[A-Za-z0-9._-]+$")
+
+
+def validate_p3_hostname(hostname):
+    """
+    Validates a P3_HOSTNAME value before it is interpolated into an HTTP URL.
+
+    Returns the stripped hostname if it consists solely of characters
+    [a-zA-Z0-9._-] and is between 1 and 253 characters long,
+    otherwise returns None.
+    """
+    if not isinstance(hostname, str):
+        return None
+    hostname = hostname.strip()
+    if not hostname or len(hostname) > P3_HOSTNAME_MAX_LENGTH:
+        return None
+    if not P3_HOSTNAME_PATTERN.match(hostname):
+        return None
+    return hostname
+
 # upload the file to the device (future development)
 p3_uploadfile = False
 
