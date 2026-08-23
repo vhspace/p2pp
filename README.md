@@ -8,6 +8,7 @@
 [![Stars](https://img.shields.io/github/stars/vhspace/p2pp?style=social)](https://github.com/vhspace/p2pp/stargazers)
 [![Discord](https://img.shields.io/badge/Discord-Join%20chat-5865F2?logo=discord&logoColor=white)](https://discord.gg/gg6DeK9Qfs)
 
+<<<<<<< HEAD
 [![Palette 2](https://img.shields.io/badge/Palette%202-supported-blueviolet)](https://github.com/vhspace/p2pp)
 [![Palette 3](https://img.shields.io/badge/Palette%203-supported-blueviolet)](https://github.com/vhspace/p2pp)
 [![Multi-color](https://img.shields.io/badge/multi--color-printing-ffcc00)](https://github.com/vhspace/p2pp)
@@ -17,6 +18,9 @@
 ## Getting started
 
 Have a look at the [P2PP Docs](https://vhspace.github.io/p2pp/) to get you started.
+=======
+Have a look at the [P2PP Wiki pages](https://github.com/vhspace/p2pp/wiki/Home) to get youstarted.
+>>>>>>> ce4ea2b (fix: replace tomvandeneede paths with vhspace in DMG/ZIP scripts (#57))
 
 
 ## Contributing

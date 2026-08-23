@@ -154,7 +154,7 @@ class Tower(object):
                 self.draw.line((last_point, p1), 1, 1, None)
                 self.draw.line((p1, p2), 1, 1, None)
                 last_point = p2
-        self.data.save('/Users/tomvandeneede/Desktop/tower.png', "PNG")
+        self.data.save('/Users/vhspace/Desktop/tower.png', "PNG")
         return _gcode
 
     def generate_layer(self, layernum, ppct):

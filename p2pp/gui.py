@@ -28,7 +28,7 @@ ui_file = "p2pp.ui"
 def logexception(e):
     create_emptyline()
     log_warning("We're sorry but an unexpected error occurred while processing your file")
-    log_warning("Please sumbit an issue report on https://github.com/tomvandeneede/p2pp")
+    log_warning("Please sumbit an issue report on https://github.com/vhspace/p2pp")
     create_emptyline()
     create_logitem("<b>Error:</b> {}".format(e))
     tb = traceback.format_tb(e.__traceback__)
