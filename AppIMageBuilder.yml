@@ -4,7 +4,7 @@ script:
   - mkdir -p AppDir/usr/src
   - mkdir -p AppDir/share/icons
   - cd AppDir/usr/src
-  - git clone --branch master git://github.com/tomvandeneede/p2pp.git
+  - git clone --branch master https://github.com/vhspace/p2pp.git
   - cd ../../..
   - cp AppDir/usr/src/requirements.txt .
   - cp AppDir/usr/src/icon.ico /Appdir/share/icons
@@ -15,7 +15,7 @@ AppDir:
   path: ./AppDir
 
   app_info:
-    id: org.tomvandeneede.P2PP
+    id: org.vhspace.P2PP
     name: P2PP Prusa Slicer Post Processor
     icon: /AppDir/usr/share/icons/icon.icn
     version: 0.1.0
@@ -27,7 +27,7 @@ AppDir:
   apt:
     arch: amd64
     sources:
-      - sourceline: 'deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse'
+      - sourceline: 'deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse'
         key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
 
     include:
@@ -47,7 +47,7 @@ AppDir:
       PYTHONHOME: '${APPDIR}/usr'
       # Path to the site-packages dir or other modules dirs
       # See https://docs.python.org/3/using/cmdline.html#envvar-PYTHONPATH
-      PYTHONPATH: '${APPDIR}/usr/lib/python3.8/site-packages'
+      PYTHONPATH: '${APPDIR}/usr/lib/python3.12/site-packages'
 
 AppImage:
   arch: amd64

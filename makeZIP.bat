@@ -13,7 +13,7 @@ Rmdir /S /Q _build_update_
 Mkdir _build_update_
 Cd _build_update_
 
-git clone --branch master https://github.com/tomvandeneede/p2pp.git
+git clone --branch master https://github.com/vhspace/p2pp.git
 
 rem Create the new BUILD
 rem ####################
@@ -33,13 +33,13 @@ Rmdir /S /Q p2pp
 
 rem create a ZIP file
 rem #################
-move exe.win-amd64-3.9 p2pp
+move exe.win-amd64-3.12 p2pp
 del %name%.zip
 "c:\Program Files\WinRAR\WinRar.exe" a -m5 -afzip -y %name%.zip p2pp
 
 rem copy the file to dropbox
 rem ########################
-copy %name%.zip "c:\users\tomvandeneede\dropbox\public\p2pp\Development\Windows\"
+copy %name%.zip "c:\users\vhspace\dropbox\public\p2pp\Development\Windows\"
 
 rem # go up to the top level #
 cd ..

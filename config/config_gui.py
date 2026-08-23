@@ -565,7 +565,7 @@ def on_config():
 
     except Exception as e:
         create_logitem("We're sorry but an unexpected error occurred while processing your file", "red")
-        create_logitem("Please sumbit an issue report on https://github.com/tomvandeneede/p2pp","red")
+        create_logitem("Please sumbit an issue report on https://github.com/vhspace/p2pp","red")
         create_logitem(" ")
         create_logitem("<b>Error:</b> {}".format(e))
         tb = traceback.format_tb(e.__traceback__)
