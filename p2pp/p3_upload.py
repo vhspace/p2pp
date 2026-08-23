@@ -80,7 +80,14 @@ def uploadfile(localfile, p3file):
                 gui.create_logitem("|" + '.'*50 + "|", "blue", True)
                 total_bytes = encoder.len
                 # data = {'printFile': (p3file, mcfx_file, "application/octet-stream")}
-                url = "http://{}:5000/print-file".format(v.p3_hostname)
+                _validated_host = v.validate_p3_hostname(v.p3_hostname)
+                if _validated_host is None:
+                    gui.log_warning("Invalid P3_HOSTNAME [{}] - only characters a-z A-Z 0-9 . _ - are allowed (max {} chars). Upload aborted."
+                                    .format(v.p3_hostname, v.P3_HOSTNAME_MAX_LENGTH))
+                    _error = "Invalid hostname - upload aborted"
+                    v.retry_state = False
+                    continue
+                url = "http://{}:5000/print-file".format(_validated_host)
 
                 response = requests.post(url,  data=data, headers={'Content-Type': data.content_type})
                 if response.ok:
@@ -97,7 +104,7 @@ def uploadfile(localfile, p3file):
             _error = "Connection Error occurred!"
 
         if v.p3_showwebbrowser and _error is None:
-            tgtName = "http://{}:5000".format(v.p3_hostname)
+            tgtName = "http://{}:5000".format(_validated_host)
             rotatedpage = """
             <html>
             <head>
