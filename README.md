@@ -19,7 +19,7 @@
 
 Have a look at the [P2PP Docs](https://vhspace.github.io/p2pp/) to get you started.
 =======
-Have a look at the [P2PP Wiki pages](https://github.com/vhspace/p2pp/wiki/Home) to get youstarted.
+Have a look at the [P2PP Wiki pages](https://github.com/vhspace/p2pp/wiki/Home) to get you started.
 >>>>>>> ce4ea2b (fix: replace tomvandeneede paths with vhspace in DMG/ZIP scripts (#57))
 
 
