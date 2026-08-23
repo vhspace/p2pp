@@ -15,7 +15,7 @@ import p2pp.gui as gui
 import p2pp.uifiles as uifiles
 from PyQt5 import uic, QtCore
 from PyQt5.QtGui import QTextCursor, QTransform
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 total_bytes = 0
 
@@ -194,9 +194,6 @@ webwindow.setWindowFlags(webwindow.windowFlags() | QtCore.Qt.CustomizeWindowHint
 webwindow.setWindowFlags(webwindow.windowFlags() & ~QtCore.Qt.WindowCloseButtonHint)
 webform = WebForm()
 webform.webBrowser = QWebEngineView()
-settings = QWebEngineSettings.defaultSettings()
-settings.setAttribute(settings.LocalContentCanAccessRemoteUrls, True)
-settings.setAttribute(settings.AllowRunningInsecureContent, True)
 webform.setupUi(webwindow)
 webform.closeButton.clicked.connect(on_clickclose)
 
