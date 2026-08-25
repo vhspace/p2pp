@@ -23,7 +23,7 @@ Have a look at the [P2PP Docs](https://vhspace.github.io/p2pp/) to get you start
 
 PRs are welcome; PR reviewers are needed.
 
-Merge, release and build happen manually after PR merge.
+CI runs automatically: builds run on every push and pull request via GitHub Actions, and releases are built automatically when a tag is pushed (or triggered manually via workflow dispatch).
 
 ## Make a donation...
 
