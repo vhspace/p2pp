@@ -1,0 +1,101 @@
+solid ColorCube_Color1
+facet normal 0 0 1
+outer loop
+vertex 0 0 0
+vertex 10 0 0
+vertex 10 10 0
+endloop
+endfacet
+facet normal 0 0 1
+outer loop
+vertex 10 10 0
+vertex 0 10 0
+vertex 0 0 0
+endloop
+endfacet
+endsolid ColorCube_Color1
+
+solid ColorCube_Color2
+facet normal 0 0 -1
+outer loop
+vertex 0 0 10
+vertex 0 10 10
+vertex 10 10 10
+endloop
+endfacet
+facet normal 0 0 -1
+outer loop
+vertex 10 10 10
+vertex 10 0 10
+vertex 0 0 10
+endloop
+endfacet
+endsolid ColorCube_Color2
+
+solid ColorCube_Color3
+facet normal 0 1 0
+outer loop
+vertex 0 10 0
+vertex 10 10 0
+vertex 10 10 10
+endloop
+endfacet
+facet normal 0 1 0
+outer loop
+vertex 10 10 10
+vertex 0 10 10
+vertex 0 10 0
+endloop
+endfacet
+endsolid ColorCube_Color3
+
+solid ColorCube_Color4
+facet normal 0 -1 0
+outer loop
+vertex 10 0 0
+vertex 0 0 0
+vertex 0 0 10
+endloop
+endfacet
+facet normal 0 -1 0
+outer loop
+vertex 0 0 10
+vertex 10 0 10
+vertex 10 0 0
+endloop
+endfacet
+endsolid ColorCube_Color4
+
+solid ColorCube_Color5
+facet normal 1 0 0
+outer loop
+vertex 10 0 0
+vertex 10 0 10
+vertex 10 10 10
+endloop
+endfacet
+facet normal 1 0 0
+outer loop
+vertex 10 10 10
+vertex 10 10 0
+vertex 10 0 0
+endloop
+endfacet
+endsolid ColorCube_Color5
+
+solid ColorCube_Color6
+facet normal -1 0 0
+outer loop
+vertex 0 10 0
+vertex 0 10 10
+vertex 0 0 10
+endloop
+endfacet
+facet normal -1 0 0
+outer loop
+vertex 0 0 10
+vertex 0 0 0
+vertex 0 10 0
+endloop
+endfacet
+endsolid ColorCube_Color6
