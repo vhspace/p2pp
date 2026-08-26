@@ -41,7 +41,7 @@ case "$1" in
         prusa-slicer --export-gcode --load "$PROFILE" "$MODEL" --output "$OUTPUT_GCODE"
         
         # Run p2pp post-processing
-        p2pp "$OUTPUT_GCODE"
+        python3 P2PP.py "$OUTPUT_GCODE"
         
         echo "Post-processed G-code saved to: ${OUTPUT_GCODE%.gcode}.p2pp.gcode"
         ;;
