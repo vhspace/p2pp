@@ -90,8 +90,10 @@ def lint_gcode(text):
                                      .format(line)))
 
     # O25 defines the four Palette drives; each is "D0" (unused) or a colour spec.
+    # Colour specs can contain spaces (e.g. "D1FF0000Red;PLA D2 00FF00Green;PLA"),
+    # so we split on " D" (space followed by D) rather than whitespace.
     for line in _by_code(omega, "O25"):
-        drives = line.split()[1:]
+        drives = re.split(r"\s+(?=D)", line)[1:]
         if len(drives) != 4:
             findings.append(_finding("011", "O25 declares {} drives, expected 4: {!r}"
                                      .format(len(drives), line)))
