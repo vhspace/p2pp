@@ -230,7 +230,7 @@ jobs:
 
     - name: Download OrcaSlicer AppImage
       run: |
-        wget -q "https://github.com/SoftFever/OrcaSlicer/releases/download/v2.3.0/OrcaSlicer_2.3.0_linux_x86_64.AppImage" -O OrcaSlicer.AppImage
+        wget -q "https://github.com/OrcaSlicer/OrcaSlicer/releases/download/v2.3.0/OrcaSlicer_Linux_AppImage_V2.3.0.AppImage" -O OrcaSlicer.AppImage
         chmod +x OrcaSlicer.AppImage
 
     - name: Test OrcaSlicer G-code compatibility
