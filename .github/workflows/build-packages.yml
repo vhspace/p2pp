@@ -228,22 +228,6 @@ jobs:
         mkdir -p deb
         cp *.deb deb/
 
-    - name: Download OrcaSlicer AppImage
-      continue-on-error: true  # FUSE not available in CI; best-effort until container work
-      run: |
-        wget -q "https://github.com/OrcaSlicer/OrcaSlicer/releases/download/v2.3.0/OrcaSlicer_Linux_AppImage_V2.3.0.AppImage" -O OrcaSlicer.AppImage
-        chmod +x OrcaSlicer.AppImage
-
-    - name: Test OrcaSlicer G-code compatibility
-      continue-on-error: true  # requires FUSE + test model; best-effort
-      run: |
-        # Slice test model with OrcaSlicer
-        ./OrcaSlicer.AppImage --slice test_model.3mf --output test_output.gcode --config test_config.ini
-        # Run p2pp on output
-        python -m p2pp test_output.gcode test_processed.gcode
-        # Validate with lint validator
-        python -m gcode_lint_validator test_processed.gcode
-
     - name: Upload to Release
       if: inputs.upload_to_release && startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
