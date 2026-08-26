@@ -18,6 +18,9 @@
 
 Have a look at the [P2PP Docs](https://vhspace.github.io/p2pp/) to get you started.
 
+Pre-built slicer profiles for PrusaSlicer and OrcaSlicer (Palette 2 & 3) are available
+in [`profiles/`](profiles/README.md).
+
 
 ## Contributing
 
