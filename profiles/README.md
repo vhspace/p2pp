@@ -6,30 +6,36 @@ Printer profiles for PrusaSlicer and OrcaSlicer configured for use with p2pp.
 
 ### PrusaSlicer
 1. Open PrusaSlicer
-2. Go to Settings > Printer > Add > Load from file
-3. Select the appropriate `.ini` file from this directory
+2. Go to File > Import > Import Config Bundle
+3. Select the appropriate `.ini` file from `prusaslicer/`
 
 ### OrcaSlicer
 1. Open OrcaSlicer
-2. Go to Settings > Printer > Add > Load profile
-3. Select the appropriate `.ini` file from this directory
+2. Go to File > Import > Import Config(s)
+3. Select the appropriate `.ini` file from `orcaslicer/`
 
 ## Profiles
 
-| File | Slicer | Palette | Ping Interval | Splice Tolerance |
-|------|--------|---------|---------------|-------------------|
-| `palette2-prusaslicer.ini` | PrusaSlicer | Palette 2 | 350mm | 0.5mm |
-| `palette3-prusaslicer.ini` | PrusaSlicer | Palette 3 | 300mm | 0.3mm |
-| `palette2-orcaslicer.ini` | OrcaSlicer | Palette 2 | 350mm | 0.5mm |
-| `palette3-orcaslicer.ini` | OrcaSlicer | Palette 3 | 300mm | 0.3mm |
+| File | Slicer | Palette | P2PP Directives |
+|------|--------|---------|-----------------|
+| `prusaslicer/Palette2.ini` | PrusaSlicer | Palette 2 | P2PP PALETTE2, ping/splice settings |
+| `prusaslicer/Palette3.ini` | PrusaSlicer | Palette 3 | P2PP PALETTE3_PRO, P3 settings, material presets |
+| `orcaslicer/Palette2.ini` | OrcaSlicer | Palette 2 | P2PP PALETTE2, ping/splice settings |
+| `orcaslicer/Palette3.ini` | OrcaSlicer | Palette 3 | P2PP PALETTE3_PRO, P3 settings, material presets |
 
-## Post-Processing
+## p2pp Directives
 
-All profiles configure p2pp as the post-processing script. The G-code output from the slicer is passed through p2pp which adds Palette-specific markers (O22 ping/pong, P3 metafile) for multi-color printing.
+Profiles include `;P2PP` directives in the `start_gcode` that configure p2pp behavior:
+- `PALETTE3_PRO` / `PALETTE2` — select Palette model
+- `LINEARPINGLENGTH` — ping interval in mm
+- `SPLICEOFFSET` — splice offset in mm
+- `MATERIAL_*` — material splice parameters
 
-## Customization
+## CI Usage
 
-Adjust the following parameters in the `[post_process]` section:
-- `--ping-interval`: Distance between ping markers (mm). Lower = more frequent pings
-- `--splice-tolerance`: Acceptable splice position variance (mm)
-- `--enable-ping-logging`: Enable detailed ping/pong logging for debugging
+```yaml
+# In GitHub Actions:
+prusa-slicer --export-gcode --load profiles/prusaslicer/Palette3.ini model.stl --output out.gcode
+python3 P2PP.py out.gcode
+python3 tests/lint_gcode.py out.p2pp.gcode
+```
