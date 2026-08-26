@@ -278,6 +278,7 @@ purgespeedmultiplier = 1.0
 wipe_remove_sparse_layers = False
 
 ps_version = "No version info detected"
+orcaslicer_version = "Not detected"
 
 debug_leaveToolCommands = False
 
