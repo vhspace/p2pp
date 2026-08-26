@@ -920,6 +920,34 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#implementation-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation status
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation status">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-lint-validator-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the lint validator checks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1106,6 +1134,69 @@
 <li>G-code specification: https://reprap.org/wiki/G-code</li>
 <li>Palette 2/3 G-code format: https://www.mosaicmfg.com/pages/palette-2</li>
 </ul>
+<h2 id="implementation-status">Implementation status</h2>
+<p>Tracked against the sub-issue list above (issue #86):</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Sub-issue</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>VM/container setup</td>
+<td><strong>Open</strong> — needs a pinned PrusaSlicer image</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Printer profiles</td>
+<td><strong>Open</strong> — no Palette profile vendored yet</td>
+</tr>
+<tr>
+<td>3</td>
+<td>G-code capture</td>
+<td><strong>Partial</strong> — <code>scripts/slice_and_lint.sh</code> drives slice → p2pp → lint; skips when no slicer is present</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Lint validator</td>
+<td><strong>Done</strong> — <code>tests/lint_gcode.py</code>, covered by <code>tests/test_lint_gcode.py</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>CI workflow</td>
+<td><strong>Partial</strong> — <code>.github/workflows/live-test.yml</code>; the slice job is <code>continue-on-error</code> until 1 and 2 land</td>
+</tr>
+<tr>
+<td>6</td>
+<td>OrcaSlicer support</td>
+<td><strong>Open</strong> — <code>SLICER=orca-slicer</code> is accepted by the driver script but unverified</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Golden outputs</td>
+<td><strong>Open</strong> — blocked on 1–3 producing reproducible output</td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-the-lint-validator-checks">What the lint validator checks</h3>
+<p>Derived from the Omega header p2pp emits in <code>p2pp/omega.py</code> and the Mosaic hex
+encodings in <code>p2pp/formatnumbers.py</code>:</p>
+<ul>
+<li>required markers <code>O21</code>, <code>O22</code>, <code>O25</code>, <code>O26</code>–<code>O29</code> present</li>
+<li><code>O22</code> carries a non-empty printer profile ID</li>
+<li><code>O25</code> declares four drives with at least one input used</li>
+<li>declared counts match reality: <code>O26</code> vs <code>O30</code> lines, <code>O28</code> vs <code>O32</code> lines,
+  <code>O27</code> vs <code>O31</code> lines (accessory mode only — connected mode pings are inline)</li>
+<li><code>O30</code> splice positions are well-formed hex floats and strictly increasing</li>
+<li><code>O1</code> job terminator present with a well-formed total-length operand</li>
+<li>Palette 3 <code>.mcfx</code> metafile parses as JSON, declares filaments, and has a
+  <code>pingCount</code> consistent with its <code>pings</code> array</li>
+</ul>
+<p>Findings are prefixed <code>P2PP-LINT-nnn</code> so CI output and tests assert on stable codes.</p>
 
 
 
