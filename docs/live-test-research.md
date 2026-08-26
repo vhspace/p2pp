@@ -111,3 +111,34 @@ live-test:
 - OrcaSlicer releases: https://github.com/SoftFever/OrcaSlicer/releases
 - G-code specification: https://reprap.org/wiki/G-code
 - Palette 2/3 G-code format: https://www.mosaicmfg.com/pages/palette-2
+
+## Implementation status
+
+Tracked against the sub-issue list above (issue #86):
+
+| # | Sub-issue | Status |
+|---|-----------|--------|
+| 1 | VM/container setup | **Open** — needs a pinned PrusaSlicer image |
+| 2 | Printer profiles | **Open** — no Palette profile vendored yet |
+| 3 | G-code capture | **Partial** — `scripts/slice_and_lint.sh` drives slice → p2pp → lint; skips when no slicer is present |
+| 4 | Lint validator | **Done** — `tests/lint_gcode.py`, covered by `tests/test_lint_gcode.py` |
+| 5 | CI workflow | **Partial** — `.github/workflows/live-test.yml`; the slice job is `continue-on-error` until 1 and 2 land |
+| 6 | OrcaSlicer support | **Open** — `SLICER=orca-slicer` is accepted by the driver script but unverified |
+| 7 | Golden outputs | **Open** — blocked on 1–3 producing reproducible output |
+
+### What the lint validator checks
+
+Derived from the Omega header p2pp emits in `p2pp/omega.py` and the Mosaic hex
+encodings in `p2pp/formatnumbers.py`:
+
+- required markers `O21`, `O22`, `O25`, `O26`–`O29` present
+- `O22` carries a non-empty printer profile ID
+- `O25` declares four drives with at least one input used
+- declared counts match reality: `O26` vs `O30` lines, `O28` vs `O32` lines,
+  `O27` vs `O31` lines (accessory mode only — connected mode pings are inline)
+- `O30` splice positions are well-formed hex floats and strictly increasing
+- `O1` job terminator present with a well-formed total-length operand
+- Palette 3 `.mcfx` metafile parses as JSON, declares filaments, and has a
+  `pingCount` consistent with its `pings` array
+
+Findings are prefixed `P2PP-LINT-nnn` so CI output and tests assert on stable codes.
