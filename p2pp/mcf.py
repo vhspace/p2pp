@@ -8,9 +8,13 @@ __maintainer__ = 'Tom Van den Eede'
 __email__ = 'P2PP@pandora.be'
 
 import os
+import sys
 import time
 import p2pp.gcode as gcode
-import p2pp.gui as gui
+try:
+    import p2pp.gui as gui
+except (ImportError, ModuleNotFoundError):
+    gui = None
 import p2pp.pings as pings
 import p2pp.purgetower as purgetower
 import p2pp.variables as v
@@ -23,6 +27,62 @@ import version
 import zipfile
 
 import p2pp.p3_upload as upload
+
+
+cli_mode = False
+
+
+def cli_log_warning(text):
+    if cli_mode:
+        print(f"WARNING: {text}", file=sys.stderr)
+    elif gui:
+        gui.log_warning(text)
+
+
+def cli_create_logitem(text, color=None, force_update=True, position=0):
+    if cli_mode:
+        print(text)
+    elif gui:
+        gui.create_logitem(text, color, force_update, position)
+
+
+def cli_progress_string(pct):
+    if cli_mode:
+        if pct % 10 == 0:
+            print(f"Progress: {pct}%")
+    elif gui:
+        gui.progress_string(pct)
+
+
+def cli_print_summary(summary):
+    if cli_mode:
+        print("=== Print Summary ===")
+        print(f"Number of splices:    {len(v.splice_extruder_position):5}")
+        print(f"Number of pings:      {len(v.ping_extruder_position):5}")
+        print(f"Total print length {v.total_material_extruded:-8.2f}mm")
+        if v.full_purge_reduction or v.tower_delta:
+            print(f"Tower Delta Range  {v.min_tower_delta:.2f}mm -  {v.max_tower_delta:.2f}mm")
+        print("Inputs/Materials used:")
+        print("-" * 22)
+        for i in range(len(v.palette_inputs_used)):
+            if v.palette_inputs_used[i]:
+                print(f"  Input {i+1}  {v.filament_type[i]} {v.filament_color_code[i]}  {v.material_extruded_per_color[i]:-8.2f}mm")
+        print()
+        for line in summary:
+            print(line[1:].strip())
+        print()
+    elif gui:
+        gui.print_summary(summary)
+
+
+def cli_setfilename(text):
+    if not cli_mode and gui:
+        gui.setfilename(text)
+
+
+def cli_close_button_enable():
+    if not cli_mode and gui:
+        gui.close_button_enable()
 
 
 # GCODE BLOCK CLASSES
@@ -104,7 +164,7 @@ def gcode_process_toolchange(new_tool):
 
         filldiff = v.minimaltotal_filament - v.total_material_extruded
         if filldiff > 0:
-            gui.log_warning("Minimum print size not met - adding {:-5.2f}.. of filament".format(filldiff))
+            cli_log_warning("Minimum print size not met - adding {:-5.2f}.. of filament".format(filldiff))
             location += filldiff
             v.material_extruded_per_color[v.current_tool] += filldiff
             v.total_material_extruded += filldiff
@@ -161,7 +221,7 @@ def gcode_process_toolchange(new_tool):
                 gcode.issue_code("G1 Z{:.3f}".format(keep_z))
 
             else:
-                gui.log_warning(gui_format.format(min_length, length, v.last_parsed_layer, v.current_tool + 1))
+                cli_log_warning(gui_format.format(min_length, length, v.last_parsed_layer, v.current_tool + 1))
                 v.filament_short[new_tool] = max(v.filament_short[new_tool],
                                                  v.min_start_splice_length - v.splice_length[-1])
 
@@ -236,7 +296,7 @@ def find_alternative_tower():
                     check_tower_update(False)
                     purgetower.purge_create_layers(v.wipe_tower_info_minx, v.wipe_tower_info_miny, v.wipe_tower_xsize,
                                                    v.wipe_tower_ysize)
-                    gui.create_logitem("Tower detected from ({}, {}) to ({}, {})".format(
+                    cli_create_logitem("Tower detected from ({}, {}) to ({}, {})".format(
                         v.wipe_tower_info_minx, v.wipe_tower_info_miny, v.wipe_tower_info_maxx, v.wipe_tower_info_maxy
                     ))
                     break
@@ -324,7 +384,7 @@ def parse_gcode_first_pass():
         line = v.input_gcode[jndex]
         jndex += 1
         if jndex == 100000:
-            gui.progress_string(4 + 46 * index // total_line_count)
+            cli_progress_string(4 + 46 * index // total_line_count)
             v.input_gcode = v.input_gcode[jndex:]
             jndex = 0
 
@@ -372,7 +432,7 @@ def parse_gcode_first_pass():
                     cur_tool = int(line[1])
                     v.set_tool = cur_tool
             except (TypeError, ValueError):
-                gui.log_warning("Unknown T-command: {}".format(line))
+                cli_log_warning("Unknown T-command: {}".format(line))
             except IndexError:   # in case there is an empty line there will be no line[0]
                 pass
 
@@ -466,7 +526,7 @@ def parse_gcode_second_pass():
             idx = 0
 
         if process_line_count % 10000 == 0:
-            gui.progress_string(50 + 50 * process_line_count // total_line_count)
+            cli_progress_string(50 + 50 * process_line_count // total_line_count)
 
         current_block_class = g[gcode.CLASS]
 
@@ -516,7 +576,7 @@ def parse_gcode_second_pass():
                 try:
                     gcode_process_toolchange(int(g[gcode.COMMAND][1:]))
                 except ValueError:
-                    gui.log_warning("Command {} cound not be processed".format(g[gcode.COMMAND]))
+                    cli_log_warning("Command {} cound not be processed".format(g[gcode.COMMAND]))
 
                 if not v.debug_leaveToolCommands:
                     gcode.move_to_comment(g, "--P2PP-- Color Change")
@@ -535,7 +595,7 @@ def parse_gcode_second_pass():
                             extruder_num = int(extruder[17:])
                         except (ValueError, IndexError):
                             extruder_num = None
-                            gui.log_warning("KLIPPER - Named extruders are not supported ({})".format(extruder))
+cli_log_warning("KLIPPER - Named extruders are not supported ({})".format(extruder))
 
                     if extruder_num is not None:
                         gcode_process_toolchange(extruder_num)
@@ -544,7 +604,7 @@ def parse_gcode_second_pass():
                         gcode.move_to_comment(g, "--P2PP-- Color Change")
                         v.toolchange_processed = True
                 else:
-                    gui.log_warning("KLIPPER - Named extruders are not supported ({})".format(extruder))
+                    cli_log_warning("KLIPPER - Named extruders are not supported ({})".format(extruder))
             else:
                 if current_block_class == CLS_TOOL_UNLOAD:
                     if g[gcode.COMMAND] in ["G4", "M900", "M400"]:
@@ -888,26 +948,26 @@ def parse_gcode_second_pass():
 def config_checks():
     # CHECK BED SIZE PARAMETERS
     if v.bed_size_x == -9999 or v.bed_size_y == -9999 or v.bed_origin_x == -9999 or v.bed_origin_y == -9999:
-        gui.log_warning("Bedsize nor or incorrectly defined.")
+        cli_log_warning("Bedsize nor or incorrectly defined.")
 
     v.bed_max_x = v.bed_origin_x + v.bed_size_x
     v.bed_max_y = v.bed_origin_y + v.bed_size_y
 
     # CHECK EXTRUSION WIDTH
     if v.extrusion_width == 0:
-        gui.create_logitem("Extrusionwidth set to 0, defaulted back to 0.45")
+        cli_create_logitem("Extrusionwidth set to 0, defaulted back to 0.45")
         v.extrusion_width = 0.45
 
     if v.process_temp and v.side_wipe:
-        gui.log_warning("TEMPERATURECONTROL and SIDEWIPE / BigBrain3D are incompatible (TEMPERATURECONTROL disabled")
+        cli_log_warning("TEMPERATURECONTROL and SIDEWIPE / BigBrain3D are incompatible (TEMPERATURECONTROL disabled")
         v.process_temp = False
 
     if v.palette_plus:
         if v.palette_plus_ppm == -9:
-            gui.log_warning("P+ parameter P+PPM incorrectly set up in startup GCODE - Processing Halted")
+            cli_log_warning("P+ parameter P+PPM incorrectly set up in startup GCODE - Processing Halted")
             return -1
         if v.palette_plus_loading_offset == -9:
-            gui.log_warning("P+ parameter P+LOADINGOFFSET incorrectly set up in startup GCODE - Processing Halted")
+            cli_log_warning("P+ parameter P+LOADINGOFFSET incorrectly set up in startup GCODE - Processing Halted")
             return -1
 
     v.side_wipe = not ((v.bed_origin_x <= v.wipe_tower_posx <= v.bed_max_x) and (
@@ -915,43 +975,43 @@ def config_checks():
     v.tower_delta = v.max_tower_z_delta > 0
 
     if (v.tower_delta or v.full_purge_reduction) and v.variable_layer_warning:
-        gui.log_warning("Variable layers may cause issues with FULLPURGE / TOWER DELTA")
-        gui.log_warning("This warning could be caused by support that will print on variable layer offsets")
+        cli_log_warning("Variable layers may cause issues with FULLPURGE / TOWER DELTA")
+        cli_log_warning("This warning could be caused by support that will print on variable layer offsets")
 
     # sidewipe option compatibility test
     if v.side_wipe:
 
         if v.full_purge_reduction:
-            gui.log_warning("FULLURGEREDUCTION is incompatible with SIDEWIPE, parameter ignored")
+            cli_log_warning("FULLURGEREDUCTION is incompatible with SIDEWIPE, parameter ignored")
             v.full_purge_reduction = False
 
         if v.skirts:
             if v.ps_version >= "2.2":
-                gui.log_warning("SIDEWIPE and SKIRTS are NOT compatible in PS2.2 or later")
+                cli_log_warning("SIDEWIPE and SKIRTS are NOT compatible in PS2.2 or later")
 
         if v.wipe_remove_sparse_layers:
-            gui.log_warning("SIDE WIPE mode not compatible with sparse wipe tower in PS - Processing Halted")
+            cli_log_warning("SIDE WIPE mode not compatible with sparse wipe tower in PS - Processing Halted")
             return -1
 
-        gui.create_logitem("Side wipe activated", "blue")
+        cli_create_logitem("Side wipe activated", "blue")
 
     # fullpurge option compatibility test
     if v.full_purge_reduction:
 
         if v.skirts:
-            gui.log_warning("FULLPURGE and SKIRTS are NOT compatible.  Overlaps may occur")
+            cli_log_warning("FULLPURGE and SKIRTS are NOT compatible.  Overlaps may occur")
 
         if v.tower_delta:
-            gui.log_warning("FULLPURGEREDUCTION is incompatible with TOWERDELTA")
+            cli_log_warning("FULLPURGEREDUCTION is incompatible with TOWERDELTA")
             v.tower_delta = False
-        gui.create_logitem("FULLPURGEREDUCTION activated", "blue")
+        cli_create_logitem("FULLPURGEREDUCTION activated", "blue")
 
     # auto add splice length only works with full purge reeduction / sidewipe
     if v.autoaddsplice and (v.full_purge_reduction or (v.side_wipe and not v.bigbrain3d_matrix_blobs)):
-        gui.create_logitem("Automatic Splice length increase activated", "blue")
+        cli_create_logitem("Automatic Splice length increase activated", "blue")
 
     elif v.autoaddsplice:
-        gui.create_logitem("Automatic Splice length increase NOT activated due to incompatible mode", "red")
+        cli_create_logitem("Automatic Splice length increase NOT activated due to incompatible mode", "red")
         gui.create_logitem("Automatic Splice length increase works with Full purge reduction and side wipe only", "red")
 
     if v.last_parsed_layer == -1:

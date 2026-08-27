@@ -15,6 +15,22 @@ import traceback
 
 
 def main():
+    import sys
+
+    if "--cli" in sys.argv:
+        sys.argv.remove("--cli")
+        from p2pp.mcf import p2pp_process_file_cli
+        if len(sys.argv) < 2:
+            print("Usage: P2PP.py --cli input.gcode [output.gcode]")
+            sys.exit(1)
+        input_file = sys.argv[1]
+        output_file = sys.argv[2] if len(sys.argv) > 2 else None
+        try:
+            p2pp_process_file_cli(input_file, output_file)
+            sys.exit(0)
+        except Exception as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
 
     if len(sys.argv) == 2 and sys.argv[1].lower() == "-config":
         import config.config_gui as gui
