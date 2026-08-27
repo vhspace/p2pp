@@ -35,7 +35,6 @@ jobs:
   e2e-pipeline:
     name: Slice -> p2pp -> lint -> P3 firmware
     runs-on: ubuntu-latest
-    if: false  # disabled until Xvfb + Flatpak + Docker runtime is validated
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
