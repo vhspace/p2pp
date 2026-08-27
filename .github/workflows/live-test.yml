@@ -4,9 +4,8 @@ name: live-test
 #
 #   PrusaSlicer (Flathub, pinnable) -> p2pp -> G-code lint -> Palette 3 simulator
 #
-# The Palette 3 stage is a behavioural simulator, not emulated firmware: Mosaic
-# publishes no redistributable P3 firmware image, so there is nothing to boot
-# under QEMU in public CI. See docs/e2e_pipeline.md.
+# The P3 firmware is downloaded from Mosaic's public S3 bucket and run under
+# QEMU ARM emulation. See docs/e2e_pipeline.md.
 
 on:
   push:
@@ -34,21 +33,25 @@ jobs:
         run: python3 tests/test_p3_simulator.py
 
   e2e-pipeline:
-    name: Slice -> p2pp -> lint -> P3 simulator
+    name: Slice -> p2pp -> lint -> P3 firmware
     runs-on: ubuntu-latest
-    if: false  # disabled until Docker container (#88) provides Xvfb + Flatpak runtime
+    if: false  # disabled until Xvfb + Flatpak + Docker runtime is validated
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
+      - name: Load pinned versions
+        run: cat .slicer-versions.env >> "$GITHUB_ENV"
+
       - name: Install p2pp dependencies
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
             xvfb libgl1 libegl1 libxkbcommon-x11-0 libxcb-cursor0 \
-            libxcb-icccm4 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
+            libxcb-icccm4 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 \
+            p7zip-full docker-compose
           python3 -m pip install --upgrade pip
           pip install -r requirements-common.txt -r requirements-linux.txt
 
@@ -58,8 +61,17 @@ jobs:
           path: /var/lib/flatpak
           key: flatpak-prusaslicer-${{ env.PRUSASLICER_FLATPAK_COMMIT || 'stable' }}
 
+      - name: Cache P3 firmware
+        uses: actions/cache@v4
+        with:
+          path: /tmp/p3-firmware
+          key: p3-firmware-${{ env.P3_FIRMWARE_VERSION }}
+
       - name: Install PrusaSlicer from Flathub
         run: bash scripts/install_prusaslicer.sh
+
+      - name: Install P3 firmware (QEMU + Docker)
+        run: bash scripts/install_p3_firmware.sh
 
       - name: Run end-to-end pipeline
         run: bash scripts/e2e_pipeline.sh
