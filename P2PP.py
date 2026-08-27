@@ -13,15 +13,21 @@ import sys
 
 if "--cli" in sys.argv:
     sys.argv.remove("--cli")
+    # Install headless shim BEFORE any p2pp submodule import.
+    # All modules that do `import p2pp.gui as gui` will get this Qt-free
+    # version — no QApplication, no event loop, no image_rc.
+    import p2pp.headless
+    sys.modules["p2pp.gui"] = p2pp.headless
+
     from p2pp.mcf import p2pp_process_file_cli
-    
+
     if len(sys.argv) < 2:
         print("Usage: P2PP.py --cli input.gcode [output.gcode]")
         sys.exit(1)
-    
+
     input_file = sys.argv[1]
     output_file = sys.argv[2] if len(sys.argv) > 2 else None
-    
+
     try:
         p2pp_process_file_cli(input_file, output_file)
         sys.exit(0)
@@ -30,6 +36,4 @@ if "--cli" in sys.argv:
         sys.exit(1)
 else:
     from p2pp.main import main
-
-if __name__ == "__main__":
     main()
