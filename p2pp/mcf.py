@@ -1015,8 +1015,7 @@ def config_checks():
         gui.create_logitem("Automatic Splice length increase works with Full purge reduction and side wipe only", "red")
 
     if v.last_parsed_layer == -1:
-        gui.log_warning("P2PP Layer Configuration is missing!!")
-        return -1
+        cli_log_warning("P2PP Layer Configuration is missing!! — continuing without layer optimization")
 
     skippable = optimize_tower_skip(int(v.max_tower_z_delta / v.layer_height))
     if v.tower_delta:
