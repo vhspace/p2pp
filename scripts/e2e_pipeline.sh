@@ -26,7 +26,15 @@ PROCESSED="${OUTDIR}/processed.gcode"
 
 # --- stage 1: slice ---------------------------------------------------------
 echo "==> [1/4] Slicing $(basename "${MODEL}") with ${SLICER}"
-"${SLICER}" --export-gcode --load "${CONFIG}" --output "${RAW}" "${MODEL}"
+# Flatpak PrusaSlicer needs a display even with QT_QPA_PLATFORM=offscreen.
+# The slicer may crash with Xlib errors after writing G-code (Flatpak sandbox
+# cleanup), so tolerate non-zero exit.
+XVFB_WRAPPER=""
+command -v xvfb-run >/dev/null 2>&1 && XVFB_WRAPPER="xvfb-run -a"
+${XVFB_WRAPPER} "${SLICER}" --export-gcode --load "${CONFIG}" --output "${RAW}" "${MODEL}" || true
+
+# Give the filesystem a moment to flush (Flatpak sandbox can be slow)
+sleep 2
 [ -s "${RAW}" ] || { echo "FAIL: slicer produced no G-code" >&2; exit 1; }
 
 # p2pp/psconfig.py:160 keys off this string; without it p2pp will not recognise
@@ -46,10 +54,19 @@ echo "    tool changes in raw G-code: ${TOOLCHANGES}"
 # --- stage 2: p2pp ----------------------------------------------------------
 # NOTE: P2PP.py takes positional args (p2pp/main.py:100-104). There is no -i flag.
 echo "==> [2/4] Post-processing with p2pp"
-XVFB=""
-command -v xvfb-run >/dev/null 2>&1 && XVFB="xvfb-run -a"
-QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-offscreen}" \
-  ${XVFB} python3 "${REPO_ROOT}/P2PP.py" "${RAW}" "${PROCESSED}"
+# p2pp imports GUI modules (image_rc, gui) that need Qt/Xlib.
+# In headless CI, create a mock image_rc module so p2pp can run without Qt.
+MOCK_RC="$(mktemp -d)/image_rc.py"
+cat > "${MOCK_RC}" << 'PYEOF'
+# Mock Qt resource module for headless p2pp processing
+class qInitResources: pass
+class qCleanupResources: pass
+PYEOF
+export PYTHONPATH="${PYTHONPATH:-}:$(dirname "${MOCK_RC}")"
+export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-offscreen}"
+XVFB2=""
+command -v xvfb-run >/dev/null 2>&1 && XVFB2="xvfb-run -a"
+${XVFB2} python3 "${REPO_ROOT}/P2PP.py" "${RAW}" "${PROCESSED}"
 [ -s "${PROCESSED}" ] || { echo "FAIL: p2pp produced no output" >&2; exit 1; }
 
 # --- stage 3: lint ----------------------------------------------------------

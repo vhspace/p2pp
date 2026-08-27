@@ -37,8 +37,9 @@ flatpak info "${APP_ID}" | sed -n 's/^ *\(Version\|Commit\|Date\):/\1:/p'
 # read the model/config out of the workspace and write the G-code back.
 sudo tee /usr/local/bin/prusa-slicer >/dev/null <<'SHIM'
 #!/usr/bin/env bash
-exec flatpak run --filesystem=host \
+exec flatpak run --filesystem=host --filesystem=/tmp \
   --env=QT_QPA_PLATFORM=offscreen \
+  --env=DISPLAY="${DISPLAY:-:99}" \
   com.prusa3d.PrusaSlicer "$@"
 SHIM
 sudo chmod +x /usr/local/bin/prusa-slicer
