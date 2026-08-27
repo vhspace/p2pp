@@ -26,7 +26,25 @@ PROCESSED="${OUTDIR}/processed.gcode"
 
 # --- stage 1: slice ---------------------------------------------------------
 echo "==> [1/4] Slicing $(basename "${MODEL}") with ${SLICER}"
-"${SLICER}" --export-gcode --load "${CONFIG}" --output "${RAW}" "${MODEL}"
+# Flatpak PrusaSlicer needs a display even with QT_QPA_PLATFORM=offscreen.
+# The slicer may crash with Xlib errors after writing G-code (Flatpak sandbox
+# cleanup), so tolerate non-zero exit.
+XVFB_WRAPPER=""
+command -v xvfb-run >/dev/null 2>&1 && XVFB_WRAPPER="xvfb-run -a"
+${XVFB_WRAPPER} "${SLICER}" --export-gcode --load "${CONFIG}" --output "${RAW}" "${MODEL}" || true
+
+# Give the filesystem a moment to flush (Flatpak sandbox can be slow)
+sleep 3
+
+# If the slicer didn't write to the expected path, check /tmp
+if [ ! -s "${RAW}" ]; then
+    echo "WARNING: G-code not at ${RAW}, checking alternatives..."
+    found=$(find /tmp -name "raw.gcode" -newer "${MODEL}" 2>/dev/null | head -1)
+    if [ -n "${found}" ]; then
+        cp "${found}" "${RAW}"
+    fi
+fi
+
 [ -s "${RAW}" ] || { echo "FAIL: slicer produced no G-code" >&2; exit 1; }
 
 # p2pp/psconfig.py:160 keys off this string; without it p2pp will not recognise
