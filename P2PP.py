@@ -13,6 +13,9 @@ import sys
 
 if "--cli" in sys.argv:
     sys.argv.remove("--cli")
+    # Signal to all modules that we're in headless mode
+    import os
+    os.environ["P2PP_HEADLESS"] = "1"
     # Install headless shim BEFORE any p2pp submodule import.
     # All modules that do `import p2pp.gui as gui` will get this Qt-free
     # version — no QApplication, no event loop, no image_rc.
