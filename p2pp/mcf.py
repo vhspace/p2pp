@@ -1033,6 +1033,17 @@ def config_checks():
 
 # Section Main
 
+def p2pp_process_file_cli(input_file, output_file):
+    """Headless CLI entry point — no GUI, no QApplication, no event loop.
+
+    Sets cli_mode=True so all cli_* helper functions log to stdout instead of
+    calling gui methods. The processing pipeline is identical to GUI mode.
+    """
+    global cli_mode
+    cli_mode = True
+    return p2pp_process_file(input_file, output_file)
+
+
 def p2pp_process_file(input_file, output_file):
     starttime = time.time()
 
