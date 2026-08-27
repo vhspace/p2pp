@@ -28,9 +28,11 @@ PROCESSED="${OUTDIR}/processed.gcode"
 echo "==> [1/4] Slicing $(basename "${MODEL}") with ${SLICER}"
 # Flatpak PrusaSlicer needs a display even with QT_QPA_PLATFORM=offscreen —
 # wrap in xvfb-run so it works headless in CI.
+# The slicer may crash with Xlib errors after writing G-code (Flatpak sandbox
+# cleanup), so don't use set -e for this command.
 XVFB_WRAPPER=""
 command -v xvfb-run >/dev/null 2>&1 && XVFB_WRAPPER="xvfb-run -a"
-${XVFB_WRAPPER} "${SLICER}" --export-gcode --load "${CONFIG}" --output "${RAW}" "${MODEL}"
+${XVFB_WRAPPER} "${SLICER}" --export-gcode --load "${CONFIG}" --output "${RAW}" "${MODEL}" || true
 [ -s "${RAW}" ] || { echo "FAIL: slicer produced no G-code" >&2; exit 1; }
 
 # p2pp/psconfig.py:160 keys off this string; without it p2pp will not recognise
