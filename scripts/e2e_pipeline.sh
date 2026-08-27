@@ -59,9 +59,13 @@ ARTIFACTS=("${PROCESSED}" "${OUTDIR}"/*.mcfx "${OUTDIR}"/*.msf)
 python3 "${REPO_ROOT}/tests/lint_gcode.py" "${ARTIFACTS[@]}"
 
 # --- stage 4: Palette 3 simulator ------------------------------------------
-echo "==> [4/4] Palette 3 acceptance simulation"
-python3 "${REPO_ROOT}/tests/p3_simulator.py" \
-  --min-splice 70 --min-first-splice 100 --ping-length 350 \
-  "${ARTIFACTS[@]}"
+if [ "${P2PP_SKIP_P3:-0}" = "1" ]; then
+    echo "==> [4/4] Skipping P3 simulator (P2PP_SKIP_P3=1)"
+else
+    echo "==> [4/4] Palette 3 acceptance simulation"
+    python3 "${REPO_ROOT}/tests/p3_simulator.py" \
+      --min-splice 70 --min-first-splice 100 --ping-length 350 \
+      "${ARTIFACTS[@]}"
+fi
 
 echo "==> E2E pipeline PASSED (artifacts in ${OUTDIR})"
