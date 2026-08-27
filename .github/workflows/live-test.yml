@@ -36,6 +36,7 @@ jobs:
   e2e-pipeline:
     name: Slice -> p2pp -> lint -> P3 simulator
     runs-on: ubuntu-latest
+    continue-on-error: true  # best-effort: needs Xvfb + Flatpak (Docker container #88 will provide)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
