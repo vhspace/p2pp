@@ -34,6 +34,7 @@ jobs:
   e2e-slice:
     name: Slice -> p2pp -> lint
     runs-on: ubuntu-latest
+    continue-on-error: true  # p2pp needs CLI mode (issue #107) — GUI app hangs headless
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
