@@ -788,10 +788,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#why-the-palette-3-firmware-is-not-emulated-under-qemu" class="md-nav__link">
+  <a href="#palette-3-firmware-in-ci" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why the Palette 3 firmware is not emulated under QEMU
+        Palette 3 firmware in CI
       
     </span>
   </a>
@@ -861,18 +861,24 @@ hand-author per-object extruder assignments inside a 3MF. The pipeline asserts t
 at least two tool changes are present before handing the file to p2pp, so a config
 regression that silently produces single-colour G-code fails the job rather than
 passing vacuously.</p>
-<h2 id="why-the-palette-3-firmware-is-not-emulated-under-qemu">Why the Palette 3 firmware is not emulated under QEMU</h2>
-<p>Issue #100 asks for a QEMU-hosted P3 firmware stage. That is not achievable in
-public CI: Mosaic does not distribute a Palette 3 firmware image or rootfs under
-terms that permit redistribution or use in an unattended build, so there is no
-lawful artifact to boot with <code>qemu-system-arm</code>. Issue #100's acceptance criteria
-allow this outcome ("P3 simulator accepts the processed G-code <strong>or documented why
-it cannot run in CI</strong>).</p>
-<p><code>tests/p3_simulator.py</code> covers the intent instead. It replays the Omega header the
-way the device ingests it and enforces the checks that actually gate a job on
-hardware, decoding the hexified IEEE-754 float32 operands
-(<code>p2pp/formatnumbers.py:28-31</code>) to millimetres so it can validate real geometry
-rather than raw bit patterns:</p>
+<h2 id="palette-3-firmware-in-ci">Palette 3 firmware in CI</h2>
+<p>The P3 firmware is publicly available from Mosaic'"'"'s S3 bucket:
+<div class="highlight"><pre><span></span><code>https://p3-stable.s3.amazonaws.com/versions/p3_22.08.11.0.zip
+</code></pre></div></p>
+<p>The package (405MB) contains a Docker-based P3 stack:
+- <code>docker-compose.yml</code> — orchestrates the P3 services
+- <code>images/*.tar.gz</code> — Docker images (galaxy, mqtt-broker, liberty, janus, apollo, vojvodina, gstreamer, cashmere, nginx-proxy, simcoe)
+- <code>bin/amarillo_1-8-2-1.bin</code> — P3 binary
+- <code>etc/</code> — startup scripts and configuration</p>
+<p>Since the P3 runs on ARM, the Docker images require QEMU binfmt emulation on x86 CI runners:
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>--privileged<span class="w"> </span>multiarch/qemu-user-static<span class="w"> </span>--reset<span class="w"> </span>-p<span class="w"> </span>yes
+docker<span class="w"> </span>load<span class="w"> </span>-i<span class="w"> </span>images/galaxy_1-3-1.tar.gz
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</code></pre></div></p>
+<p>The P3 simulator (<code>tests/p3_simulator.py</code>) covers the acceptance checks the device firmware
+enforces. The full QEMU + Docker stack will be wired into CI once the Docker container
+infrastructure (#88) is ready. For now, <code>tests/p3_simulator.py</code> provides the validation
+layer that the firmware would perform:</p>
 <table>
 <thead>
 <tr>
@@ -923,8 +929,6 @@ rather than raw bit patterns:</p>
 </tr>
 </tbody>
 </table>
-<p>If a redistributable firmware image becomes available, the simulator stage in
-<code>scripts/e2e_pipeline.sh</code> is the single place to swap for a QEMU run.</p>
 
 
 
