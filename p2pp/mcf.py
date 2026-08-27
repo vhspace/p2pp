@@ -595,7 +595,7 @@ def parse_gcode_second_pass():
                             extruder_num = int(extruder[17:])
                         except (ValueError, IndexError):
                             extruder_num = None
-cli_log_warning("KLIPPER - Named extruders are not supported ({})".format(extruder))
+                            cli_log_warning("KLIPPER - Named extruders are not supported ({})".format(extruder))
 
                     if extruder_num is not None:
                         gcode_process_toolchange(extruder_num)
