@@ -1,8 +1,12 @@
 name: live-test
 
-# End-to-end validation of p2pp output (issue #86).
-# lint-selftest always runs; slice-and-lint runs PrusaSlicer + OrcaSlicer
-# against test models and lints the output.
+# End-to-end validation of p2pp output (issues #86, #100).
+#
+#   PrusaSlicer (Flathub, pinnable) -> p2pp -> G-code lint -> Palette 3 simulator
+#
+# The Palette 3 stage is a behavioural simulator, not emulated firmware: Mosaic
+# publishes no redistributable P3 firmware image, so there is nothing to boot
+# under QEMU in public CI. See docs/e2e_pipeline.md.
 
 on:
   push:
@@ -10,9 +14,14 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  # Pin a Flathub build here (see docs/e2e_pipeline.md and issue #99).
+  # Empty means "current stable".
+  PRUSASLICER_FLATPAK_COMMIT: ''
+
 jobs:
   lint-selftest:
-    name: G-code lint self-test
+    name: Validator self-tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,81 +30,43 @@ jobs:
           python-version: '3.11'
       - name: Run lint validator unit tests
         run: python3 tests/test_lint_gcode.py
+      - name: Run Palette 3 simulator unit tests
+        run: python3 tests/test_p3_simulator.py
 
-  slice-and-lint:
-    name: Slice with PrusaSlicer and lint
+  e2e-pipeline:
+    name: Slice -> p2pp -> lint -> P3 simulator
     runs-on: ubuntu-latest
-    continue-on-error: true  # best-effort: AppImage needs FUSE + models may not exist
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Load slicer versions
+      - name: Install p2pp dependencies
         run: |
-          cat .slicer-versions.env >> "$GITHUB_ENV"
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            xvfb libgl1 libegl1 libxkbcommon-x11-0 libxcb-cursor0 \
+            libxcb-icccm4 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
+          python3 -m pip install --upgrade pip
+          pip install -r requirements-common.txt -r requirements-linux.txt
 
-      - name: Install PrusaSlicer
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libfuse2 xvfb
-          wget -q "$PRUSA_SLICER_URL" -O prusa-slicer.AppImage
-          chmod +x prusa-slicer.AppImage
-
-      - name: Slice test model
-        run: |
-          # Slice a simple test model if available
-          if [ -f tests/test_inputs/two_color_logo.gcode ]; then
-            # We have pre-sliced G-code — just run p2pp + lint
-            python3 P2PP.py tests/test_inputs/two_color_logo.gcode tests/output_prusa.gcode \
-              || echo "p2pp processing failed"
-          else
-            echo "no test model found — skipping slice"
-          fi
-
-      - name: Lint sliced output
-        run: |
-          if [ -f tests/output_prusa.gcode ]; then
-            python3 tests/lint_gcode.py tests/output_prusa.gcode
-          else
-            echo "no output to lint — skipping"
-          fi
-
-  slice-orcaslicer:
-    name: Slice with OrcaSlicer and lint
-    runs-on: ubuntu-latest
-    continue-on-error: true  # best-effort: AppImage needs FUSE + models may not exist
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Cache Flatpak installation
+        uses: actions/cache@v4
         with:
-          python-version: '3.11'
+          path: /var/lib/flatpak
+          key: flatpak-prusaslicer-${{ env.PRUSASLICER_FLATPAK_COMMIT || 'stable' }}
 
-      - name: Load slicer versions
-        run: |
-          cat .slicer-versions.env >> "$GITHUB_ENV"
+      - name: Install PrusaSlicer from Flathub
+        run: bash scripts/install_prusaslicer.sh
 
-      - name: Install OrcaSlicer
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libfuse2 xvfb
-          wget -q "$ORCA_SLICER_URL" -O orca-slicer.AppImage
-          chmod +x orca-slicer.AppImage
+      - name: Run end-to-end pipeline
+        run: bash scripts/e2e_pipeline.sh
 
-      - name: Slice test model
-        run: |
-          if [ -f tests/test_inputs/two_color_logo.gcode ]; then
-            python3 P2PP.py tests/test_inputs/two_color_logo.gcode tests/output_orca.gcode \
-              || echo "p2pp processing failed"
-          else
-            echo "no test model found — skipping slice"
-          fi
-
-      - name: Lint sliced output
-        run: |
-          if [ -f tests/output_orca.gcode ]; then
-            python3 tests/lint_gcode.py tests/output_orca.gcode
-          else
-            echo "no output to lint — skipping"
-          fi
+      - name: Upload pipeline artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-test-output
+          path: .live-test-out/
+          if-no-files-found: warn

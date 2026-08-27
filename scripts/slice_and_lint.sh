@@ -12,7 +12,7 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MODEL="${1:-}"
-CONFIG="${2:-}"
+CONFIG="${2:-${REPO_ROOT}/profiles/prusaslicer/Palette3-cli.ini}"
 OUTDIR="${OUTDIR:-${REPO_ROOT}/.live-test-out}"
 
 if [ -z "${MODEL}" ]; then
@@ -47,7 +47,10 @@ else
 fi
 
 echo "==> Running p2pp over ${GCODE}"
-python3 "${REPO_ROOT}/P2PP.py" -i "${GCODE}"
+# P2PP.py takes positional args (p2pp/main.py:100-104); there is no -i flag.
+PROCESSED="${OUTDIR}/$(basename "${MODEL%.*}")-p2pp.gcode"
+QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-offscreen}" \
+  python3 "${REPO_ROOT}/P2PP.py" "${GCODE}" "${PROCESSED}"
 
 echo "==> Linting p2pp output"
 shopt -s nullglob
