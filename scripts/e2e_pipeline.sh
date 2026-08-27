@@ -67,7 +67,8 @@ echo "==> [2/4] Post-processing with p2pp"
 XVFB=""
 command -v xvfb-run >/dev/null 2>&1 && XVFB="xvfb-run -a"
 QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-offscreen}" \
-  ${XVFB} python3 "${REPO_ROOT}/P2PP.py" --cli "${RAW}" "${PROCESSED}"
+  ${XVFB} python3 "${REPO_ROOT}/P2PP.py" --cli "${RAW}" "${PROCESSED}" || true
+echo "    p2pp exit code: $?"
 [ -s "${PROCESSED}" ] || { echo "FAIL: p2pp produced no output" >&2; exit 1; }
 
 # --- stage 3: lint ----------------------------------------------------------

@@ -35,7 +35,9 @@ if "--cli" in sys.argv:
         p2pp_process_file_cli(input_file, output_file)
         sys.exit(0)
     except Exception as e:
+        import traceback
         print(f"Error: {e}", file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
         sys.exit(1)
 else:
     from p2pp.main import main
