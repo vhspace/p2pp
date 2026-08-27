@@ -43,20 +43,30 @@ at least two tool changes are present before handing the file to p2pp, so a conf
 regression that silently produces single-colour G-code fails the job rather than
 passing vacuously.
 
-## Why the Palette 3 firmware is not emulated under QEMU
+## Palette 3 firmware in CI
 
-Issue #100 asks for a QEMU-hosted P3 firmware stage. That is not achievable in
-public CI: Mosaic does not distribute a Palette 3 firmware image or rootfs under
-terms that permit redistribution or use in an unattended build, so there is no
-lawful artifact to boot with `qemu-system-arm`. Issue #100's acceptance criteria
-allow this outcome ("P3 simulator accepts the processed G-code **or documented why
-it cannot run in CI**).
+The P3 firmware is publicly available from Mosaic'"'"'s S3 bucket:
+```
+https://p3-stable.s3.amazonaws.com/versions/p3_22.08.11.0.zip
+```
 
-`tests/p3_simulator.py` covers the intent instead. It replays the Omega header the
-way the device ingests it and enforces the checks that actually gate a job on
-hardware, decoding the hexified IEEE-754 float32 operands
-(`p2pp/formatnumbers.py:28-31`) to millimetres so it can validate real geometry
-rather than raw bit patterns:
+The package (405MB) contains a Docker-based P3 stack:
+- `docker-compose.yml` — orchestrates the P3 services
+- `images/*.tar.gz` — Docker images (galaxy, mqtt-broker, liberty, janus, apollo, vojvodina, gstreamer, cashmere, nginx-proxy, simcoe)
+- `bin/amarillo_1-8-2-1.bin` — P3 binary
+- `etc/` — startup scripts and configuration
+
+Since the P3 runs on ARM, the Docker images require QEMU binfmt emulation on x86 CI runners:
+```bash
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+docker load -i images/galaxy_1-3-1.tar.gz
+docker compose up -d
+```
+
+The P3 simulator (`tests/p3_simulator.py`) covers the acceptance checks the device firmware
+enforces. The full QEMU + Docker stack will be wired into CI once the Docker container
+infrastructure (#88) is ready. For now, `tests/p3_simulator.py` provides the validation
+layer that the firmware would perform:
 
 | Check | Rejection code |
 |---|---|
@@ -70,6 +80,3 @@ rather than raw bit patterns:
 | Ping spacing matches the configured ping length | `P3-SIM-031/032` |
 | `O1` total length consistent with the last splice | `P3-SIM-041/042` |
 | `.mcfx` metafile parses and declares filaments | `P3-SIM-100/102` |
-
-If a redistributable firmware image becomes available, the simulator stage in
-`scripts/e2e_pipeline.sh` is the single place to swap for a QEMU run.
