@@ -23,6 +23,8 @@ rm -rf "${OUTDIR}"
 mkdir -p "${OUTDIR}"
 RAW="${OUTDIR}/raw.gcode"
 PROCESSED="${OUTDIR}/processed.gcode"
+# p2pp in Palette 3 mode writes .mcfx (zip) instead of .gcode
+PROCESSED_MCFX="${OUTDIR}/processed.mcfx"
 
 # --- stage 1: slice ---------------------------------------------------------
 echo "==> [1/4] Slicing $(basename "${MODEL}") with ${SLICER}"
@@ -69,6 +71,16 @@ command -v xvfb-run >/dev/null 2>&1 && XVFB="xvfb-run -a"
 QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-offscreen}" \
   ${XVFB} python3 "${REPO_ROOT}/P2PP.py" --cli "${RAW}" "${PROCESSED}" || true
 echo "    p2pp exit code: $?"
+
+# p2pp in Palette 3 mode writes .mcfx (renamed from .gcode)
+if [ ! -s "${PROCESSED}" ] && [ -s "${PROCESSED_MCFX}" ]; then
+    echo "    p2pp wrote MCFX output: ${PROCESSED_MCFX}"
+    PROCESSED="${PROCESSED_MCFX}"
+fi
+# Also check for print.gcode (intermediate file in P3 mode)
+if [ ! -s "${PROCESSED}" ] && [ -s "${OUTDIR}/print.gcode" ]; then
+    cp "${OUTDIR}/print.gcode" "${PROCESSED}"
+fi
 [ -s "${PROCESSED}" ] || { echo "FAIL: p2pp produced no output" >&2; exit 1; }
 
 # --- stage 3: lint ----------------------------------------------------------
