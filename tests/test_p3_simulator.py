@@ -16,7 +16,7 @@ from p3_simulator import decode_float, simulate, simulate_metafile
 
 def hexify_float(value):
     """Mirror of p2pp/formatnumbers.py:hexify_float."""
-    return "D{:0>8}".format(hex(struct.unpack("<I", struct.pack("<f", value))[0])[2:])
+    return "D" + struct.pack("<f", value).hex()
 
 
 def job(splices=((0, 150.0), (1, 400.0), (0, 700.0)), pings=(350.0, 700.0),
@@ -26,7 +26,7 @@ def job(splices=((0, 150.0), (1, 400.0), (0, 700.0)), pings=(350.0, 700.0),
         "O21 D0014",
         "O22 {}".format(profile),
         "O25 {}".format(drives),
-        "O26 {:0>4x}".format(len(splices)).join(["D", ""]),
+        "O26 D{:0>4x}".format(len(splices)),
         "O27 D{:0>4x}".format(len(pings)),
         "O28 D{:0>4x}".format(algos),
         "O29 D0000",
