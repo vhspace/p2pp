@@ -50,10 +50,11 @@ echo "    tool changes in raw G-code: ${TOOLCHANGES}"
 # --- stage 2: p2pp ----------------------------------------------------------
 # NOTE: P2PP.py takes positional args (p2pp/main.py:100-104). There is no -i flag.
 echo "==> [2/4] Post-processing with p2pp"
-XVFB=""
-command -v xvfb-run >/dev/null 2>&1 && XVFB="xvfb-run -a"
+# p2pp imports GUI modules that use Xlib; wrap in xvfb-run in CI
+XVFB2=""
+command -v xvfb-run >/dev/null 2>&1 && XVFB2="xvfb-run -a"
 QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-offscreen}" \
-  ${XVFB} python3 "${REPO_ROOT}/P2PP.py" "${RAW}" "${PROCESSED}"
+  ${XVFB2} python3 "${REPO_ROOT}/P2PP.py" "${RAW}" "${PROCESSED}"
 [ -s "${PROCESSED}" ] || { echo "FAIL: p2pp produced no output" >&2; exit 1; }
 
 # --- stage 3: lint ----------------------------------------------------------
