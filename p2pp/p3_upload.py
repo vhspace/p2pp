@@ -13,9 +13,17 @@ import requests
 import p2pp.variables as v
 import p2pp.gui as gui
 import p2pp.uifiles as uifiles
-from PyQt5 import uic, QtCore
-from PyQt5.QtGui import QTextCursor, QTransform
-from PyQt5.QtWebEngineWidgets import QWebEngineView
+if not os.environ.get("P2PP_HEADLESS"):
+    try:
+        from PyQt5 import uic, QtCore
+        from PyQt5.QtGui import QTextCursor, QTransform
+        from PyQt5.QtWebEngineWidgets import QWebEngineView
+    except (ImportError, ModuleNotFoundError):
+        uic = None
+        QtCore = None
+else:
+    uic = None
+    QtCore = None
 
 total_bytes = 0
 
@@ -172,29 +180,40 @@ def on_clickabort():
 
 # SECTION ERROR WINDOWS
 
-Form, Window = uic.loadUiType(uifiles.find_ui("SendError.ui"))
-window = Window()
-form = Form()
+Form, Window = (uic.loadUiType(uifiles.find_ui("SendError.ui")) if uic else (None, None))
 
-form.setupUi(window)
-window.setWindowFlag(QtCore.Qt.CustomizeWindowHint, True)
-window.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
-window.setWindowFlag(QtCore.Qt.WindowMinMaxButtonsHint, False)
+if Window is not None:
+    window = Window()
+    form = Form()
 
-form.AbortButton.clicked.connect(on_clickabort)
-form.RetryButton.clicked.connect(on_clickretry)
+    form.setupUi(window)
+    window.setWindowFlag(QtCore.Qt.CustomizeWindowHint, True)
+    window.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
+    window.setWindowFlag(QtCore.Qt.WindowMinMaxButtonsHint, False)
+
+    form.AbortButton.clicked.connect(on_clickabort)
+    form.RetryButton.clicked.connect(on_clickretry)
+else:
+    window = None
+    form = None
 
 
 # SECTION BROWSER
 
-WebForm, WebWindow = uic.loadUiType(uifiles.find_ui("p3browser.ui"))
-webwindow = WebWindow()
+WebForm, WebWindow = (uic.loadUiType(uifiles.find_ui("p3browser.ui")) if uic else (None, None))
 
-webwindow.setWindowFlags(webwindow.windowFlags() | QtCore.Qt.CustomizeWindowHint)
-webwindow.setWindowFlags(webwindow.windowFlags() & ~QtCore.Qt.WindowCloseButtonHint)
-webform = WebForm()
-webform.webBrowser = QWebEngineView()
-webform.setupUi(webwindow)
-webform.closeButton.clicked.connect(on_clickclose)
+if WebWindow is not None:
+    webwindow = WebWindow()
+    webwindow.setWindowFlags(webwindow.windowFlags() | QtCore.Qt.CustomizeWindowHint)
+    webwindow.setWindowFlags(webwindow.windowFlags() & ~QtCore.Qt.WindowCloseButtonHint)
+    webform = WebForm()
+    webform.webBrowser = QWebEngineView()
+    webform.setupUi(webwindow)
+else:
+    webwindow = None
+    webform = None
+
+if webform is not None:
+    webform.closeButton.clicked.connect(on_clickclose)
 
 

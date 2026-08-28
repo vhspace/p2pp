@@ -23,6 +23,8 @@ rm -rf "${OUTDIR}"
 mkdir -p "${OUTDIR}"
 RAW="${OUTDIR}/raw.gcode"
 PROCESSED="${OUTDIR}/processed.gcode"
+# p2pp in Palette 3 mode writes .mcfx (zip) instead of .gcode
+PROCESSED_MCFX="${OUTDIR}/processed.mcfx"
 
 # --- stage 1: slice ---------------------------------------------------------
 echo "==> [1/4] Slicing $(basename "${MODEL}") with ${SLICER}"
@@ -34,7 +36,17 @@ command -v xvfb-run >/dev/null 2>&1 && XVFB_WRAPPER="xvfb-run -a"
 ${XVFB_WRAPPER} "${SLICER}" --export-gcode --load "${CONFIG}" --output "${RAW}" "${MODEL}" || true
 
 # Give the filesystem a moment to flush (Flatpak sandbox can be slow)
-sleep 2
+sleep 3
+
+# If the slicer didn't write to the expected path, check /tmp
+if [ ! -s "${RAW}" ]; then
+    echo "WARNING: G-code not at ${RAW}, checking alternatives..."
+    found=$(find /tmp -name "raw.gcode" -newer "${MODEL}" 2>/dev/null | head -1)
+    if [ -n "${found}" ]; then
+        cp "${found}" "${RAW}"
+    fi
+fi
+
 [ -s "${RAW}" ] || { echo "FAIL: slicer produced no G-code" >&2; exit 1; }
 
 # p2pp/psconfig.py:160 keys off this string; without it p2pp will not recognise
@@ -54,19 +66,21 @@ echo "    tool changes in raw G-code: ${TOOLCHANGES}"
 # --- stage 2: p2pp ----------------------------------------------------------
 # NOTE: P2PP.py takes positional args (p2pp/main.py:100-104). There is no -i flag.
 echo "==> [2/4] Post-processing with p2pp"
-# p2pp imports GUI modules (image_rc, gui) that need Qt/Xlib.
-# In headless CI, create a mock image_rc module so p2pp can run without Qt.
-MOCK_RC="$(mktemp -d)/image_rc.py"
-cat > "${MOCK_RC}" << 'PYEOF'
-# Mock Qt resource module for headless p2pp processing
-class qInitResources: pass
-class qCleanupResources: pass
-PYEOF
-export PYTHONPATH="${PYTHONPATH:-}:$(dirname "${MOCK_RC}")"
-export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-offscreen}"
-XVFB2=""
-command -v xvfb-run >/dev/null 2>&1 && XVFB2="xvfb-run -a"
-${XVFB2} python3 "${REPO_ROOT}/P2PP.py" "${RAW}" "${PROCESSED}"
+XVFB=""
+command -v xvfb-run >/dev/null 2>&1 && XVFB="xvfb-run -a"
+QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-offscreen}" \
+  ${XVFB} python3 "${REPO_ROOT}/P2PP.py" --cli "${RAW}" "${PROCESSED}" || true
+echo "    p2pp exit code: $?"
+
+# p2pp in Palette 3 mode writes .mcfx (renamed from .gcode)
+if [ ! -s "${PROCESSED}" ] && [ -s "${PROCESSED_MCFX}" ]; then
+    echo "    p2pp wrote MCFX output: ${PROCESSED_MCFX}"
+    PROCESSED="${PROCESSED_MCFX}"
+fi
+# Also check for print.gcode (intermediate file in P3 mode)
+if [ ! -s "${PROCESSED}" ] && [ -s "${OUTDIR}/print.gcode" ]; then
+    cp "${OUTDIR}/print.gcode" "${PROCESSED}"
+fi
 [ -s "${PROCESSED}" ] || { echo "FAIL: p2pp produced no output" >&2; exit 1; }
 
 # --- stage 3: lint ----------------------------------------------------------
