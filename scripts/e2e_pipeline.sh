@@ -68,9 +68,12 @@ echo "    tool changes in raw G-code: ${TOOLCHANGES}"
 echo "==> [2/4] Post-processing with p2pp"
 XVFB=""
 command -v xvfb-run >/dev/null 2>&1 && XVFB="xvfb-run -a"
+set +e
 QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-offscreen}" \
-  ${XVFB} python3 "${REPO_ROOT}/P2PP.py" --cli "${RAW}" "${PROCESSED}" || true
-echo "    p2pp exit code: $?"
+  ${XVFB} python3 "${REPO_ROOT}/P2PP.py" --cli "${RAW}" "${PROCESSED}"
+P2PP_RC=$?
+set -e
+echo "    p2pp exit code: ${P2PP_RC}"
 
 # p2pp in Palette 3 mode writes .mcfx (renamed from .gcode)
 if [ ! -s "${PROCESSED}" ] && [ -s "${PROCESSED_MCFX}" ]; then
